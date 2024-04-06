@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {create} from 'zustand';
-import {AlarmIcon} from "../svgComponents";
+import {AlarmIcon} from "../../svgComponents";
 
 /** 토스트알림에 대한 상태관리 store */
 export const useToastsStore = create((setState) => ({

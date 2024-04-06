@@ -6,10 +6,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "brand-ivory": "#F8F6E3",
-        "brand-blue-300": "#7AA2E3",
-        "brand-blue-200": "#6AD4DD",
-        "brand-blue-100": "#97E7E1",
+        "brand-ivory": "#F7EEDD",
+        "brand-blue-300": "#008DDA",
+        "brand-blue-200": "#41C9E2",
+        "brand-blue-100": "#ACE2E1",
       }
     },
   },

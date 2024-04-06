@@ -1,7 +1,7 @@
 import React from "react";
 import {Navigate, Outlet} from "react-router-dom";
 import {getAuthStorage} from "../../utils/common";
-import {useToastsStore} from "../../modules/common/Toasts";
+import {useToastsStore} from "../../modules/common/components/Toasts";
 
 /**@param { boolean } isOnlyNonCertificate 비인증 접속자만 연결 가능한 경우 추가 */
 const PrivateComponent = ({ isOnlyNonCertificate }) => {
