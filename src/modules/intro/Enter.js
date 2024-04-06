@@ -20,8 +20,8 @@ const Enter = () => {
 
         if (nickName.trim() === "") return toastStore.addToast("닉네임을 입력해주세요.");
 
-        const isAdmin = certificate === process.env.CERTIFICATE_ADMIN;
-        const isAccess = certificate === process.env.CERTIFICATE_NUMBER;
+        const isAdmin = certificate === process.env.REACT_APP_CERTIFICATE_ADMIN;
+        const isAccess = certificate === process.env.REACT_APP_CERTIFICATE_NUMBER;
 
         if (isAccess || isAdmin) {
             setAuthStorage(nickName, isAdmin);
