@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {setAuthStorage} from "../../utils/common";
 
 const Enter = () => {
     const [nickName, setNickName] = useState();
@@ -8,7 +9,11 @@ const Enter = () => {
     const navigate = useNavigate();
 
     const submitCertificateNumber = () => {
-        if (certificate === process.env.CERTIFICATE_NUMBER) navigate("/queue");
+        const isAdmin = certificate === process.env.CERTIFICATE_ADMIN;
+        if (certificate === process.env.CERTIFICATE_NUMBER || isAdmin) {
+            setAuthStorage(nickName, isAdmin);
+            navigate("/queuePlayer");
+        }
     }
 
     useEffect(() => {
