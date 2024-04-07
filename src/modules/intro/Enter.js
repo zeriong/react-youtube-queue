@@ -40,12 +40,12 @@ const Enter = () => {
     }, []);
 
     return (
-        <div className="w-full h-full flex flex-col gap-[100px] justify-center items-center">
+        <div className="w-full h-full flex flex-col gap-[60px] justify-center items-center">
             <div className="flex flex-col gap-[40px] text-center">
                 <h1 className="text-7xl">YouTube Queue Player!</h1>
-                <p>원하는 유튜브 음악의 URL을 요청하면 플레이리스트에 등록되고,<br/> 순차적으로 재생시켜주는 웹앱이에요</p>
+                <p className="text-xl">원하는 유튜브 음악의 URL을 요청하면 플레이리스트에 등록되고<br/> 순차적으로 재생시켜주는 웹앱이에요</p>
             </div>
-            <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber} autoComplete="off">
+            <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber} >
                 <div className="flex gap-5 items-center">
                     <p className="w-[146px] text-[24px] text-center" onClick={() => nickNameRef.current.focus()}>
                         Nick Name
@@ -56,7 +56,6 @@ const Enter = () => {
                         type="text"
                         onChange={(e) => setNickName(e.target.value)}
                         value={nickName}
-                        autoComplete="off"
                     />
                 </div>
 
@@ -67,14 +66,14 @@ const Enter = () => {
                     <input
                         className="py-1 px-4 bg-gray-100 text-[18px] rounded-[8px]"
                         ref={certificateRef}
-                        type="new-password"
+                        type="password"
                         onChange={(e) => setCertificate(e.target.value)}
                         value={certificate}
-                        autoComplete="off"
+                        autoComplete="new-password"
                     />
                 </div>
 
-                <button className="text-6xl hover:scale-110 hover:bg-gray-50" type="submit">
+                <button className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4" type="submit">
                     Enter
                 </button>
             </form>

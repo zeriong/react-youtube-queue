@@ -9,6 +9,7 @@
 
 * {
     font-family: 'DungGeunMo', serif;
+    white-space: nowrap;
 }
 
 html, body, #root {

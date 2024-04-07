@@ -23,12 +23,11 @@ const PrivateComponent = ({ isOnlyNonCertificate }) => {
             // 비인증 상태에서만 접속 가능한 컴포넌트인 경우
             if (isOnlyNonCertificate) return <Outlet/>
             // 인증 상태에서만 접속 가능한 경우
-            toast("사용자 인증 후 이용 가능합니다.");
+            toast("사용자 인증 후 이용 가능한 페이지입니다.");
             return <Navigate to="/"/>;
         }
         // 로그인 상태에서 비인증자만 접속 가능한 페이지인 경우
         if (isOnlyNonCertificate) {
-            toast("비인증 사용자만 접근 가능합니다.");
             return <Navigate to="/queuePlayer"/>;
         }
         // 토큰이 있다면 routing
