@@ -72,19 +72,35 @@ const YoutubeQueuePlay = () => {
                     "음악 재생은 어드민 인증자에게 맡겨주세요!"
                     "신청곡은 신청하고 삭제도 가능합니다."
                     */}
-                    <ReactPlayer
-                        url={currentURL}
-                        width='100%'
-                        height='100%'
-                        controls={true}
-                        onEnded={() => {
-                            // 동영상이 끝나면 실행할 함수
-                            console.log("동영상 끝남")
-                        }}
-                        // onStart={()=>setPlayStart(true)}
-                        className="react-player"
-                        ref={playerRef}
-                    />
+                    {
+                        (token.role === 1
+                        ) ? (
+                            <ReactPlayer
+                                url={currentURL}
+                                width='100%'
+                                height='100%'
+                                controls={true}
+                                onEnded={() => {
+                                    // 동영상이 끝나면 실행할 함수
+                                    console.log("동영상 끝남")
+                                }}
+                                // onStart={()=>setPlayStart(true)}
+                                className="react-player"
+                                ref={playerRef}
+                            />
+                        ) : (
+                            <div className="flex flex-col justify-center items-center w-[500px] h-[200px] bg-black text-white text-center gap-4">
+                                <p className="text-[24px]">
+                                    음악 재생은 어드민 유저에게 맡겨주세요!
+                                </p>
+                                <p>
+                                    일반 인증 유저는 원하는 유튜브 음악을<br/>
+                                    신청, 삭제, 수정할 수 있습니다.
+                                </p>
+                            </div>
+                        )
+                    }
+
                 </section>
                 {/* 신청 리스트 */}
                 <div>
