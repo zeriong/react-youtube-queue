@@ -5,6 +5,8 @@ import {useNavigate} from "react-router-dom";
 import ReactPlayer from "react-player";
 import {useEffect, useRef, useState} from "react";
 import {DEFAULT_PLAYLIST} from "../../constants/defaultPlaylist";
+import {addDoc, collection} from "firebase/firestore";
+import {initFireStore} from "../../libs/firebase";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
@@ -28,7 +30,25 @@ const YoutubeQueuePlay = () => {
     // 신청곡 url submit
     const submitURL = (e) => {
         e.preventDefault();
-        const list = {url: submitInput, from: token.nickName, timestamp: Date.now()}
+        const list = {
+            userId: token.nickName,
+            createAt: Date.now(),
+            link: submitInput,
+        };
+        addDoc(collection(initFireStore, "playList"), {
+            userId: token.nickName,
+            createAt: Date.now(),
+            link: submitInput,
+        })
+            .then((res) => {
+                alert("tjdrhd!!!!")
+                console.log("성공!!!",res);
+                setSubmitInput("");
+            })
+            .catch((e) => {
+                alert("플레이리스트 추가에 실패하였습니다.");
+                console.log(e);
+            })
         setSubmitList(prev => [...prev, list]);
     }
 
@@ -101,13 +121,19 @@ const YoutubeQueuePlay = () => {
                     <form onSubmit={submitURL}>
                         <label className="flex gap-4">
                             <p>신청곡</p>
-                            <input className="w-full" type="text" onChange={(e) => setSubmitInput(e.target.value)} placeholder="유튜브 음악 URL을 입력해주세요."/>
+                            <input
+                                className="w-full"
+                                type="text"
+                                onChange={(e) => setSubmitInput(e.target.value)}
+                                placeholder="유튜브 음악 URL을 입력해주세요."
+                                value={submitInput}
+                            />
                         </label>
                     </form>
                     <ul>
                         {submitList?.map((list, idx) =>
                             <li className="flex" key={idx}>
-
+                                {list.link}
                             </li>
                         )}
                     </ul>
