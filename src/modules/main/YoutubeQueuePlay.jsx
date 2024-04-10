@@ -8,6 +8,7 @@ import {DEFAULT_PLAYLIST} from "../../constants/defaultPlaylist";
 import {addDoc, collection, onSnapshot, query, orderBy} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import PreViewModal from "../common/components/PreViewModal";
+import {CloseIcon, EditIcon} from "../svgComponents";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
@@ -16,7 +17,7 @@ const YoutubeQueuePlay = () => {
     const [currentURL, setCurrentURL] = useState("https://www.youtube.com/watch?v=_GNk6lSvH08");
     const [submitList, setSubmitList] = useState([]);
     const [submitInput, setSubmitInput] = useState("");
-    const [preViewURL, setPreViewURL] = useState("");
+    const [preViewData, setPreViewData] = useState({});
     const [isShowPreViewModal, setIsShowPreViewModal] = useState(false);
 
     const token = getAuthStorage();
@@ -33,6 +34,11 @@ const YoutubeQueuePlay = () => {
     // 신청곡 url submit
     const submitURL = (e) => {
         e.preventDefault();
+        // 유튜브 링크인지 체크 후 아니라면 toast 알림을 띄움
+        if (!submitInput.includes("https://www.youtube.com/watch")) {
+            return toastStore.addToast("유튜브 링크를 입력해주세요.");
+        }
+        // fireStore에 저장
         addDoc(collection(initFireStore, "playList"), {
             nickName: token.nickName,
             createAt: Date.now(),
@@ -88,6 +94,8 @@ const YoutubeQueuePlay = () => {
             }))
            setSubmitList(contentArr);
         })
+
+        console.log(token.expire)
     }, []);
 
     return (
@@ -141,15 +149,34 @@ const YoutubeQueuePlay = () => {
                     </form>
                     <ul>
                         {submitList?.map((list, idx) =>
-                            <li
-                                key={idx}
-                                className="flex"
-                                onClick={() => {
-                                    setPreViewURL(list.link);
-                                    setIsShowPreViewModal(true);
-                                }}
-                            >
-                                {list.link}
+                            <li key={idx} className="flex">
+                                <div>
+                                    <p>{`${idx + 1}.`}</p>
+                                    <p>{`${list.nickName}님의 신청곡`}</p>
+                                </div>
+
+                                <div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setPreViewData(list);
+                                            setIsShowPreViewModal(true);
+                                        }}
+                                    >
+                                        미리 보기
+                                    </button>
+                                    {((list.nickName === token.nickName) || (token.role === 1)) &&
+                                        <div className="flex gap-2">
+                                            <button type="button" onClick={() => console.log("에디트!")}>
+                                                <EditIcon/>
+                                            </button>
+                                            <button type="button" onClick={() => console.log("삭제!")}>
+                                                <CloseIcon/>
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+
                             </li>
                         )}
                     </ul>
@@ -169,7 +196,7 @@ const YoutubeQueuePlay = () => {
             <PreViewModal
                 setIsShow={setIsShowPreViewModal}
                 isShow={isShowPreViewModal}
-                preViewURL={preViewURL}
+                preViewData={preViewData}
             />
         </>
     )
