@@ -5,8 +5,9 @@ import {useNavigate} from "react-router-dom";
 import ReactPlayer from "react-player";
 import {useEffect, useRef, useState} from "react";
 import {DEFAULT_PLAYLIST} from "../../constants/defaultPlaylist";
-import {addDoc, collection} from "firebase/firestore";
+import {addDoc, collection, onSnapshot, query, orderBy} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
+import PreViewModal from "../common/components/PreViewModal";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
@@ -15,6 +16,8 @@ const YoutubeQueuePlay = () => {
     const [currentURL, setCurrentURL] = useState("https://www.youtube.com/watch?v=_GNk6lSvH08");
     const [submitList, setSubmitList] = useState([]);
     const [submitInput, setSubmitInput] = useState("");
+    const [preViewURL, setPreViewURL] = useState("");
+    const [isShowPreViewModal, setIsShowPreViewModal] = useState(false);
 
     const token = getAuthStorage();
     const toastStore = useToastsStore();
@@ -30,26 +33,18 @@ const YoutubeQueuePlay = () => {
     // 신청곡 url submit
     const submitURL = (e) => {
         e.preventDefault();
-        const list = {
-            userId: token.nickName,
-            createAt: Date.now(),
-            link: submitInput,
-        };
         addDoc(collection(initFireStore, "playList"), {
-            userId: token.nickName,
+            nickName: token.nickName,
             createAt: Date.now(),
             link: submitInput,
         })
-            .then((res) => {
-                alert("tjdrhd!!!!")
-                console.log("성공!!!",res);
+            .then(() => {
                 setSubmitInput("");
             })
             .catch((e) => {
                 alert("플레이리스트 추가에 실패하였습니다.");
                 console.log(e);
-            })
-        setSubmitList(prev => [...prev, list]);
+            });
     }
 
     // 기본 Lofi음악 리스트 랜덤 재생
@@ -79,6 +74,20 @@ const YoutubeQueuePlay = () => {
         // 이 후에 currentURL state 변경으로 인해 바로 위 useEffect 가 감지하여 실행하도록 설계
 
         // 만약 받아온 데이터가 없다면 여기에서 즉시 랜덤플레이어 실행되도록 설정
+
+        // 데이터 쿼리를 생성 날짜 오름차순으로 정렬 (queue 형태를 구현하기 위함)
+        const setFireStoreQuery = query(
+            collection(initFireStore, "playList"),
+            orderBy("createAt", "asc"));
+
+        // onSnapshot을 활용한 실시간 데이터 불러오기
+        onSnapshot(setFireStoreQuery, (snapshot) => {
+            const contentArr = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }))
+           setSubmitList(contentArr);
+        })
     }, []);
 
     return (
@@ -132,7 +141,14 @@ const YoutubeQueuePlay = () => {
                     </form>
                     <ul>
                         {submitList?.map((list, idx) =>
-                            <li className="flex" key={idx}>
+                            <li
+                                key={idx}
+                                className="flex"
+                                onClick={() => {
+                                    setPreViewURL(list.link);
+                                    setIsShowPreViewModal(true);
+                                }}
+                            >
                                 {list.link}
                             </li>
                         )}
@@ -148,6 +164,13 @@ const YoutubeQueuePlay = () => {
             >
                 접속 종료
             </button>
+
+            {/* 미리보기 모달 */}
+            <PreViewModal
+                setIsShow={setIsShowPreViewModal}
+                isShow={isShowPreViewModal}
+                preViewURL={preViewURL}
+            />
         </>
     )
 }
