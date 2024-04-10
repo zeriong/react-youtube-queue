@@ -3,6 +3,9 @@ import {useNavigate} from "react-router-dom";
 import {setAuthStorage} from "../../utils/common";
 import {useToastsStore} from "../common/components/Toasts";
 import {cipher, decipher} from "../../utils/crypto";
+import {addDoc, collection} from "firebase/firestore";
+import {initFireStore} from "../../libs/firebase";
+import {add, format} from "date-fns";
 
 const Enter = () => {
     const nickNameRef = useRef(null);
@@ -16,28 +19,46 @@ const Enter = () => {
     const navigate = useNavigate();
 
     const submitCertificateNumber = (e) => {
-        e.preventDefault();
+        (async () => {
+            e.preventDefault();
 
-        if (nickName.trim() === "") return toastStore.addToast("닉네임을 입력해주세요.");
+            if (nickName.trim() === "") return toastStore.addToast("닉네임을 입력해주세요.");
 
-        const isAdmin = certificate === process.env.REACT_APP_CERTIFICATE_ADMIN;
-        const isAccess = certificate === process.env.REACT_APP_CERTIFICATE_NUMBER;
+            const isAdmin = certificate === process.env.REACT_APP_CERTIFICATE_ADMIN;
+            const isAccess = certificate === process.env.REACT_APP_CERTIFICATE_NUMBER;
 
-        if (isAccess || isAdmin) {
-            setAuthStorage(nickName, isAdmin);
-            return navigate("/queuePlayer");
-        }
+            if (isAccess || isAdmin) {
+                // 로컬스토리지에 저장할 유저데이터 생성
+                // const expire = format(add(Date.now(), {months: 1}), "yyyy-MM-dd");
+                // const testExpire = format(add(Date.now(), {months: 1}), "yyyy-MM-dd");
+                const dateGet = new Date(Date.now());
+                const expire = format(dateGet.setDate(dateGet.getDate() - 1), "yyyy-MM-dd");
 
-        return toastStore.addToast("인증번호가 맞지않습니다.");
+                const role = isAdmin ? 1 : 0;
+                let userData = { nickName, expire, role };
+
+                // 이미 등록된 닉네임의 경우
+
+                // fireStore db에 users에 nickName 저장
+                await addDoc(collection(initFireStore, "users"), {nickName})
+                    .then((res) => {
+                        // 토큰에 fireStore 에 지정된 id 저장
+                        userData.id = res.id;
+                    })
+                    .catch((e) => {
+                        console.log("error: ",e);
+                        return toastStore.addToast("유저데이터 저장에 실패하였습니다.");
+                    });
+
+                // 로컬스토리지에 암호화하여 토큰형태로 저장
+                setAuthStorage(userData);
+
+                return navigate("/queuePlayer");
+            }
+
+            return toastStore.addToast("인증번호가 일치하지 않습니다.");
+        })()
     }
-
-    useEffect(() => {
-        const amho = cipher("sdf");
-        const bocho = decipher(amho)
-        console.log("암호화?", amho)
-        console.log("복호?", bocho)
-        console.log(process.env.REACT_APP_CERTIFICATE_NUMBER)
-    }, []);
 
     return (
         <div className="w-full h-full flex flex-col gap-[60px] justify-center items-center">
