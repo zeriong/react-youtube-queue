@@ -66,12 +66,6 @@ const YoutubeQueuePlay = () => {
             <div className="flex w-full h-full">
                 {/* 플레이어 래퍼 */}
                 <section className="w-[500px] h-[300px]">
-                    {/*
-                    어드민은 플레이어 보여주고
-                    아닌 인증자는 아래 문구와 함께 검정 박스 ㄱㄱ
-                    "음악 재생은 어드민 인증자에게 맡겨주세요!"
-                    "신청곡은 신청하고 삭제도 가능합니다."
-                    */}
                     {
                         (token.role === 1
                         ) ? (
