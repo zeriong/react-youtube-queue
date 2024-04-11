@@ -2,16 +2,17 @@ import {useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {setAuthStorage} from "../../utils/common";
 import {useToastsStore} from "../common/components/Toasts";
-import {cipher, decipher} from "../../utils/crypto";
 import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import {add, format} from "date-fns";
+import {useTokenStore} from "../../App";
 
 const Enter = () => {
     const nickNameRef = useRef(null);
     const certificateRef = useRef(null);
 
     const toastStore = useToastsStore();
+    const tokenStore = useTokenStore();
 
     const [nickName, setNickName] = useState("");
     const [certificate, setCertificate] = useState("");
@@ -29,10 +30,11 @@ const Enter = () => {
 
             if (isAccess || isAdmin) {
                 // 로컬스토리지에 저장할 유저데이터 생성
-                // const expire = format(add(Date.now(), {months: 1}), "yyyy-MM-dd");
-                // const testExpire = format(add(Date.now(), {months: 1}), "yyyy-MM-dd");
-                const dateGet = new Date(Date.now());
-                const expire = format(dateGet.setDate(dateGet.getDate() - 1), "yyyy-MM-dd");
+                const expire = format(add(Date.now(), {months: 1}), "yyyy-MM-dd");
+
+                // 유효기간 지나도록 설정 test
+                // const dateGet = new Date(Date.now());
+                // const expire = format(dateGet.setDate(dateGet.getDate() - 1), "yyyy-MM-dd");
 
                 const role = isAdmin ? 1 : 0;
                 let userData = { nickName, expire, role };
@@ -52,6 +54,8 @@ const Enter = () => {
 
                 // 로컬스토리지에 암호화하여 토큰형태로 저장
                 setAuthStorage(userData);
+                // 이후 스토어에도 저장
+                tokenStore.setToken(userData);
 
                 return navigate("/queuePlayer");
             }
@@ -60,8 +64,15 @@ const Enter = () => {
         })()
     }
 
+    useEffect(() => {
+
+    }, []);
+
     return (
         <div className="w-full h-full flex flex-col gap-[60px] justify-center items-center">
+
+            {/*<div className="p-5 fixed left-1/2 top-1/2 bg-black text-white" onClick={() =>  console.log("이거슨 토큰", tokenStore.token)}> test </div>*/}
+
             <div className="flex flex-col gap-[40px] text-center">
                 <h1 className="text-7xl">YouTube Queue Player!</h1>
                 <p className="text-xl">원하는 유튜브 음악의 URL을 요청하면 플레이리스트에 등록되고<br/> 순차적으로 재생시켜주는 웹앱이에요</p>

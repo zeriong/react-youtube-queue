@@ -1,5 +1,4 @@
 import {getAuthStorage} from "../../utils/common";
-import {TOKEN_NAME} from "../../constants";
 import {useToastsStore} from "../common/components/Toasts";
 import {useNavigate} from "react-router-dom";
 import ReactPlayer from "react-player";
@@ -9,6 +8,8 @@ import {addDoc, collection, onSnapshot, query, orderBy} from "firebase/firestore
 import {initFireStore} from "../../libs/firebase";
 import PreViewModal from "../common/components/PreViewModal";
 import {CloseIcon, EditIcon} from "../svgComponents";
+import {deleteUser} from "../../utils/firebase";
+import {useTokenStore} from "../../App";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
@@ -20,27 +21,26 @@ const YoutubeQueuePlay = () => {
     const [preViewData, setPreViewData] = useState({});
     const [isShowPreViewModal, setIsShowPreViewModal] = useState(false);
 
-    const token = getAuthStorage();
     const toastStore = useToastsStore();
-    const navigate = useNavigate();
+    const tokenStore = useTokenStore();
     
     // 접속 종료
-    const logout = () => {
-        localStorage.removeItem(TOKEN_NAME);
-        navigate("/")
+    const logout = async () => {
+        await deleteUser(tokenStore.token.id);
+        tokenStore.deleteToken();
         toastStore.addToast("로그아웃 되었습니다.");
     }
 
     // 신청곡 url submit
-    const submitURL = (e) => {
+    const submitURL = async (e) => {
         e.preventDefault();
         // 유튜브 링크인지 체크 후 아니라면 toast 알림을 띄움
         if (!submitInput.includes("https://www.youtube.com/watch")) {
             return toastStore.addToast("유튜브 링크를 입력해주세요.");
         }
         // fireStore에 저장
-        addDoc(collection(initFireStore, "playList"), {
-            nickName: token.nickName,
+        await addDoc(collection(initFireStore, "playList"), {
+            nickName: tokenStore.token.nickName,
             createAt: Date.now(),
             link: submitInput,
         })
@@ -93,18 +93,19 @@ const YoutubeQueuePlay = () => {
                 ...doc.data(),
             }))
            setSubmitList(contentArr);
-        })
-
-        console.log(token.expire)
+        });
     }, []);
 
     return (
         <>
             <div className="flex w-full h-full">
+
+                <div className="fixed top-1/2 left-1/2 p-6 text-white bg-black" onClick={() => console.log("토큰", tokenStore.token)}>test</div>
+
                 {/* 플레이어 래퍼 */}
                 <section className="w-[500px] h-[300px]">
                     {
-                        (token.role === 1
+                        (tokenStore.token?.role === 1
                         ) ? (
                             <ReactPlayer
                                 url={currentURL}
@@ -152,7 +153,7 @@ const YoutubeQueuePlay = () => {
                             <li key={idx} className="flex">
                                 <div>
                                     <p>{`${idx + 1}.`}</p>
-                                    <p>{`${list.nickName}님의 신청곡`}</p>
+                                    <p>{`${list?.nickName}님의 신청곡`}</p>
                                 </div>
 
                                 <div>
@@ -165,7 +166,7 @@ const YoutubeQueuePlay = () => {
                                     >
                                         미리 보기
                                     </button>
-                                    {((list.nickName === token.nickName) || (token.role === 1)) &&
+                                    {((list?.nickName === tokenStore.token?.nickName) || (tokenStore.token?.role === 1)) &&
                                         <div className="flex gap-2">
                                             <button type="button" onClick={() => console.log("에디트!")}>
                                                 <EditIcon/>
