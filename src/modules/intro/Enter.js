@@ -6,10 +6,13 @@ import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import {add, format} from "date-fns";
 import {useTokenStore} from "../../App";
+import {getUsers} from "../../utils/firebase";
+import usePreventSpam from "../../hooks/usePreventSpam";
 
 const Enter = () => {
     const nickNameRef = useRef(null);
     const certificateRef = useRef(null);
+    const { isPrevent, preventSpamTrigger, preventCounting } = usePreventSpam();
 
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
@@ -22,6 +25,10 @@ const Enter = () => {
     const submitCertificateNumber = (e) => {
         (async () => {
             e.preventDefault();
+
+            // 광클방지
+            if (isPrevent) return preventCounting();
+            preventSpamTrigger();
 
             if (nickName.trim() === "") return toastStore.addToast("닉네임을 입력해주세요.");
 
@@ -40,6 +47,8 @@ const Enter = () => {
                 let userData = { nickName, expire, role };
 
                 // 이미 등록된 닉네임의 경우
+                const users = await getUsers();
+                if (users.some(user => user === nickName)) return toastStore.addToast("이미 접속중인 닉네임입니다, 다른 닉네임으로 접속해주세요!")
 
                 // fireStore db에 users에 nickName 저장
                 await addDoc(collection(initFireStore, "users"), {nickName})
@@ -63,10 +72,6 @@ const Enter = () => {
             return toastStore.addToast("인증번호가 일치하지 않습니다.");
         })()
     }
-
-    useEffect(() => {
-
-    }, []);
 
     return (
         <div className="w-full h-full flex flex-col gap-[60px] justify-center items-center">

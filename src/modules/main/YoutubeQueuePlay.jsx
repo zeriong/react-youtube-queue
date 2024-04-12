@@ -100,8 +100,6 @@ const YoutubeQueuePlay = () => {
         <>
             <div className="flex w-full h-full">
 
-                <div className="fixed top-1/2 left-1/2 p-6 text-white bg-black" onClick={() => console.log("토큰", tokenStore.token)}>test</div>
-
                 {/* 플레이어 래퍼 */}
                 <section className="w-[500px] h-[300px]">
                     {
@@ -134,6 +132,7 @@ const YoutubeQueuePlay = () => {
                     }
 
                 </section>
+
                 {/* 신청 리스트 */}
                 <div>
                     <form onSubmit={submitURL}>
@@ -151,7 +150,7 @@ const YoutubeQueuePlay = () => {
                     <ul>
                         {submitList?.map((list, idx) =>
                             <li key={idx} className="flex">
-                                <div>
+                                <div className="flex">
                                     <p>{`${idx + 1}.`}</p>
                                     <p>{`${list?.nickName}님의 신청곡`}</p>
                                 </div>
@@ -187,7 +186,7 @@ const YoutubeQueuePlay = () => {
             {/* fixed box */}
             <button
                 type="button"
-                className="fixed right-[20px] top-[20px] bg-brand-blue-300 text-white p-3 rounded-xl text-[20px]"
+                className="fixed right-[20px] top-[20px] bg-black text-white p-3 rounded-xl text-[20px] hover:scale-110"
                 onClick={logout}
             >
                 접속 종료

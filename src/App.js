@@ -4,7 +4,7 @@ import Toasts from "./modules/common/components/Toasts";
 import {TOKEN_NAME} from "./constants";
 import {create} from "zustand";
 import {getAuthStorage} from "./utils/common";
-import {deleteUser} from "./utils/firebase";
+import {deleteUser, getUsers} from "./utils/firebase";
 
 /** Token store */
 export const useTokenStore = create((setState) => ({
@@ -38,7 +38,7 @@ function App() {
         // 지속보존된 tokenRef.current 를 통해 fireStore data 삭제 후 로그아웃
         if (!tokenRef.current) return;
         deleteUser(tokenRef.current.id).then(() => tokenStore.deleteToken());
-        alert("로컬스토리지 조작을 멈춰주세요!\n로그인되어있다면 자동으로 로그아웃합니다.");
+        alert("해당 페이지는 로컬스토리지 조작을 해킹시도로 인식합니다.\n로그인되어있다면 자동으로 로그아웃되며 초기페이지로 이동합니다.");
     }
 
     // 토큰이 있는 경우에만 지속적으로 별도의 DOM 에 깊은 복사하여 보존
@@ -63,6 +63,14 @@ function App() {
         <>
             {!isLoading &&
                 <>
+                    <div className="fixed left-1/2 top-1/3 bg-black text-white p-5"
+                         onClick={() => getUsers().then(res => console.log("결과값",res))}>get users test
+                    </div>
+
+                    {/*<div className="fixed left-1/2 top-1/2 bg-black text-white p-5"*/}
+                    {/*     onClick={() => console.log("토큰레프", tokenRef.current)}>tokenRef test*/}
+                    {/*</div>*/}
+
                     <Router/>
                     <Toasts/>
                 </>
