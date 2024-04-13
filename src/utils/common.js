@@ -52,3 +52,9 @@ export const setAuthStorage = (userData) => {
     // 로컬스토리지에 저장
     localStorage.setItem(TOKEN_NAME, cipherToken);
 }
+
+/**@desc 매개변수에 진동 이벤트를 일으킬 ref를 넣어주면 된다. 해당 요소는 반드시 position이 등록되어 있어야 하고 진동 css 클래스는 Global.css에 존재한다. */
+export const vibrate = (targetRef) => {
+    targetRef.current.classList.add("vibrate");
+    targetRef.current.onanimationend = () => targetRef.current.classList.remove("vibrate");
+}

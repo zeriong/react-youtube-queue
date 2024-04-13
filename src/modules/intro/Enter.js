@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {setAuthStorage} from "../../utils/common";
 import {useToastsStore} from "../common/components/Toasts";
@@ -10,8 +10,8 @@ import {getUsers} from "../../utils/firebase";
 import usePreventSpam from "../../hooks/usePreventSpam";
 
 const Enter = () => {
-    const nickNameRef = useRef(null);
-    const certificateRef = useRef(null);
+    const nickNameInputRef = useRef(null);
+    const certificateInputRef = useRef(null);
     const { isPrevent, preventSpamTrigger, preventCounting } = usePreventSpam();
 
     const toastStore = useToastsStore();
@@ -30,7 +30,9 @@ const Enter = () => {
             if (isPrevent) return preventCounting();
             preventSpamTrigger();
 
-            if (nickName.trim() === "") return toastStore.addToast("닉네임을 입력해주세요.");
+            const trimNickName = nickName.trim();
+
+            if (trimNickName === "") return toastStore.addToast("닉네임을 입력해주세요.");
 
             const isAdmin = certificate === process.env.REACT_APP_CERTIFICATE_ADMIN;
             const isAccess = certificate === process.env.REACT_APP_CERTIFICATE_NUMBER;
@@ -44,14 +46,14 @@ const Enter = () => {
                 // const expire = format(dateGet.setDate(dateGet.getDate() - 1), "yyyy-MM-dd");
 
                 const role = isAdmin ? 1 : 0;
-                let userData = { nickName, expire, role };
+                let userData = { nickName: trimNickName, expire, role };
 
                 // 이미 등록된 닉네임의 경우
                 const users = await getUsers();
-                if (users.some(user => user === nickName)) return toastStore.addToast("이미 접속중인 닉네임입니다, 다른 닉네임으로 접속해주세요!")
+                if (users.some(user => user === trimNickName)) return toastStore.addToast("이미 접속중인 닉네임입니다, 다른 닉네임으로 접속해주세요!")
 
                 // fireStore db에 users에 nickName 저장
-                await addDoc(collection(initFireStore, "users"), {nickName})
+                await addDoc(collection(initFireStore, "users"), {trimNickName})
                     .then((res) => {
                         // 토큰에 fireStore 에 지정된 id 저장
                         userData.id = res.id;
@@ -84,12 +86,12 @@ const Enter = () => {
             </div>
             <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber} >
                 <div className="flex gap-5 items-center">
-                    <p className="w-[146px] text-[24px] text-center" onClick={() => nickNameRef.current.focus()}>
+                    <p className="w-[146px] text-[24px] text-center" onClick={() => nickNameInputRef.current.focus()}>
                         Nick Name
                     </p>
                     <input
                         className="py-1 px-4 bg-gray-100 text-[18px] rounded-[8px]"
-                        ref={nickNameRef}
+                        ref={nickNameInputRef}
                         type="text"
                         onChange={(e) => setNickName(e.target.value)}
                         value={nickName}
@@ -97,12 +99,12 @@ const Enter = () => {
                 </div>
 
                 <div className="flex gap-5 items-center">
-                    <p className="w-[146px] text-[24px] text-center" onClick={() => certificateRef.current.focus()}>
+                    <p className="w-[146px] text-[24px] text-center" onClick={() => certificateInputRef.current.focus()}>
                         Certificate
                     </p>
                     <input
                         className="py-1 px-4 bg-gray-100 text-[18px] rounded-[8px]"
-                        ref={certificateRef}
+                        ref={certificateInputRef}
                         type="password"
                         onChange={(e) => setCertificate(e.target.value)}
                         value={certificate}

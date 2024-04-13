@@ -16,3 +16,18 @@ html, body, #root {
     width: 100%;
     height: 100%;
 }
+
+.vibrate {
+    animation-name: vibrate;
+    animation-duration: 50ms;
+    animation-iteration-count: 8;
+}
+
+@keyframes vibrate {
+    0% {
+        left: 3px;
+    }
+    100% {
+        left: -3px;
+    }
+}

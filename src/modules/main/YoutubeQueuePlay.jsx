@@ -9,6 +9,7 @@ import {deleteUser} from "../../utils/firebase";
 import {useTokenStore} from "../../App";
 import SubmitListItem from "./components/SubmitListItem";
 import EditModal from "./components/modal/Edit.modal";
+import {YOUTUBE_BASE_URL} from "../../constants";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
@@ -17,8 +18,7 @@ const YoutubeQueuePlay = () => {
     const [currentURL, setCurrentURL] = useState("https://www.youtube.com/watch?v=_GNk6lSvH08");
     const [submitList, setSubmitList] = useState([]);
     const [submitInput, setSubmitInput] = useState("");
-    const [preViewData, setPreViewData] = useState({});
-    const [editInputValue, setEditInputValue] = useState("");
+    const [currentData, setCurrentData] = useState({});
     const [isShowPreViewModal, setIsShowPreViewModal] = useState(false);
     const [isShowEditModal, setIsShowEditModal] = useState(false);
 
@@ -36,7 +36,7 @@ const YoutubeQueuePlay = () => {
     const submitURL = async (e) => {
         e.preventDefault();
         // 유튜브 링크인지 체크 후 아니라면 toast 알림을 띄움
-        if (!submitInput.includes("https://www.youtube.com/watch")) {
+        if (!submitInput.includes(YOUTUBE_BASE_URL)) {
             return toastStore.addToast("유튜브 링크를 입력해주세요.");
         }
         // fireStore에 저장
@@ -151,12 +151,11 @@ const YoutubeQueuePlay = () => {
                     <ul>
                         {submitList?.map((list, idx) =>
                             <SubmitListItem
+                                key={idx}
                                 // 미리보기 모달을 띄울 setState
                                 setIsShowPreViewModal={setIsShowPreViewModal}
-                                // 미리보기할 데이터를 전달 하는 setState
-                                setPreViewData={setPreViewData}
-                                // 에디트 모달에 전달할 URL lnk setState
-                                setEditInputValue={setEditInputValue}
+                                // 클릭한 데이터를 전달 하는 setState
+                                setCurrentData={setCurrentData}
                                 // 에디트 모달을 띄울 setState
                                 setIsShowEditModal={setIsShowEditModal}
                                 tokenStore={tokenStore}
@@ -181,12 +180,11 @@ const YoutubeQueuePlay = () => {
             <PreViewModal
                 setIsShow={setIsShowPreViewModal}
                 isShow={isShowPreViewModal}
-                preViewData={preViewData}
+                preViewData={currentData}
             />
             {/* 에디트 모달 */}
             <EditModal
-                editInputValue={editInputValue}
-                setEditInputValue={setEditInputValue}
+                currentData={currentData}
                 setIsShow={setIsShowEditModal}
                 isShow={isShowEditModal}
             />
