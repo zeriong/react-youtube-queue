@@ -1,7 +1,6 @@
 import React from "react";
-import {useEffect} from "react";
 import ReactPlayer from "react-player";
-import {CloseIcon} from "../../svgComponents";
+import {CloseIcon} from "../../../svgComponents";
 
 const PreViewModal = ({ isShow, setIsShow, preViewData }) => {
     return isShow &&
