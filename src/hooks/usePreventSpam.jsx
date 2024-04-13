@@ -37,9 +37,10 @@ const usePreventSpam = () => {
   }
 
   // 광클을 방지할 함수 마지막 라인에 넣는 함수
-  const preventSpamTrigger = (delay = 2000) => {
+  const preventSpamTrigger = (delay = 1500) => {
     isPrevent.current = true;
     timeoutRef.current = setTimeout(() => {
+      countRef.current = 0;
       isPrevent.current = false;
       timeoutRef.current = null;
     }, delay);
