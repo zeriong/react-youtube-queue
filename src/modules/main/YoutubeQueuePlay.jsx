@@ -1,15 +1,14 @@
-import {getAuthStorage} from "../../utils/common";
 import {useToastsStore} from "../common/components/Toasts";
-import {useNavigate} from "react-router-dom";
 import ReactPlayer from "react-player";
 import {useEffect, useRef, useState} from "react";
 import {DEFAULT_PLAYLIST} from "../../constants/defaultPlaylist";
 import {addDoc, collection, onSnapshot, query, orderBy} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
-import PreViewModal from "../common/components/PreViewModal";
-import {CloseIcon, EditIcon} from "../svgComponents";
+import PreViewModal from "./components/modal/PreView.modal";
 import {deleteUser} from "../../utils/firebase";
 import {useTokenStore} from "../../App";
+import SubmitListItem from "./components/SubmitListItem";
+import EditModal from "./components/modal/Edit.modal";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
@@ -19,7 +18,9 @@ const YoutubeQueuePlay = () => {
     const [submitList, setSubmitList] = useState([]);
     const [submitInput, setSubmitInput] = useState("");
     const [preViewData, setPreViewData] = useState({});
+    const [editInputValue, setEditInputValue] = useState("");
     const [isShowPreViewModal, setIsShowPreViewModal] = useState(false);
+    const [isShowEditModal, setIsShowEditModal] = useState(false);
 
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
@@ -149,35 +150,19 @@ const YoutubeQueuePlay = () => {
                     </form>
                     <ul>
                         {submitList?.map((list, idx) =>
-                            <li key={idx} className="flex">
-                                <div className="flex">
-                                    <p>{`${idx + 1}.`}</p>
-                                    <p>{`${list?.nickName}님의 신청곡`}</p>
-                                </div>
-
-                                <div>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setPreViewData(list);
-                                            setIsShowPreViewModal(true);
-                                        }}
-                                    >
-                                        미리 보기
-                                    </button>
-                                    {((list?.nickName === tokenStore.token?.nickName) || (tokenStore.token?.role === 1)) &&
-                                        <div className="flex gap-2">
-                                            <button type="button" onClick={() => console.log("에디트!")}>
-                                                <EditIcon/>
-                                            </button>
-                                            <button type="button" onClick={() => console.log("삭제!")}>
-                                                <CloseIcon/>
-                                            </button>
-                                        </div>
-                                    }
-                                </div>
-
-                            </li>
+                            <SubmitListItem
+                                // 미리보기 모달을 띄울 setState
+                                setIsShowPreViewModal={setIsShowPreViewModal}
+                                // 미리보기할 데이터를 전달 하는 setState
+                                setPreViewData={setPreViewData}
+                                // 에디트 모달에 전달할 URL lnk setState
+                                setEditInputValue={setEditInputValue}
+                                // 에디트 모달을 띄울 setState
+                                setIsShowEditModal={setIsShowEditModal}
+                                tokenStore={tokenStore}
+                                item={list}
+                                idx={idx}
+                            />
                         )}
                     </ul>
                 </div>
@@ -197,6 +182,13 @@ const YoutubeQueuePlay = () => {
                 setIsShow={setIsShowPreViewModal}
                 isShow={isShowPreViewModal}
                 preViewData={preViewData}
+            />
+            {/* 에디트 모달 */}
+            <EditModal
+                editInputValue={editInputValue}
+                setEditInputValue={setEditInputValue}
+                setIsShow={setIsShowEditModal}
+                isShow={isShowEditModal}
             />
         </>
     )
