@@ -4,6 +4,7 @@ import {useToastsStore} from "../../../common/components/Toasts";
 import {vibrate} from "../../../../utils/common";
 import {YOUTUBE_BASE_URL} from "../../../../constants";
 import {updatePlayLink} from "../../../../utils/firebase";
+import ReactPlayer from "react-player";
 
 const EditModal = ({ isShow, setIsShow, currentData }) => {
     const modalRef = useRef();
@@ -19,6 +20,7 @@ const EditModal = ({ isShow, setIsShow, currentData }) => {
             vibrate(modalRef); // 진동 애니메이션
             return toastStore.addToast("유튜브 링크를 입력해주세요.");
         }
+        if (!ReactPlayer.canPlay(editInputValue)) return toastStore.addToast("재생 가능한 동영상 링크가 아닙니다.");
         // 업데이트 요청
         const isUpdate = updatePlayLink(currentData.id, { link: editInputValue });
         // 업데이트 성공, 실패 처리
@@ -55,7 +57,7 @@ const EditModal = ({ isShow, setIsShow, currentData }) => {
                                     type="text"
                                     value={editInputValue}
                                     onChange={e => setEditInputValue(e.target.value)}
-                                    className="pl-2 pr-5 py-1 w-full"
+                                    className="pl-2 pr-5 py-1 w-full border-2 rounded-md"
                                 />
                                 <button
                                     type="button"
@@ -63,7 +65,7 @@ const EditModal = ({ isShow, setIsShow, currentData }) => {
                                         setEditInputValue("");
                                         inputRef.current.focus();
                                     }}
-                                    className="absolute p-[2px] bg-black right-1 top-1/2 -translate-y-1/2 rounded-full opacity-70"
+                                    className="absolute p-[2px] bg-black right-[7px] top-1/2 -translate-y-1/2 rounded-full opacity-70"
                                 >
                                     <CloseIcon fill="#fff" width={10} height={10}/>
                                 </button>

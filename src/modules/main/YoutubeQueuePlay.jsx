@@ -41,24 +41,35 @@ const YoutubeQueuePlay = () => {
     // 신청곡 url submit
     const submitURL = async (e) => {
         e.preventDefault();
+
         // 유튜브 링크인지 체크 후 아니라면 toast 알림을 띄움
         if (!submitInput.includes(YOUTUBE_BASE_URL)) {
             vibrate(submitInputAreaRef);
             return toastStore.addToast("유튜브 링크를 입력해주세요.");
         }
-        // fireStore에 저장
-        await addDoc(collection(initFireStore, "playList"), {
-            nickName: tokenStore.token.nickName,
-            createAt: Date.now(),
-            link: submitInput,
-        })
-            .then(() => {
-                setSubmitInput("");
+
+        // 정상적인 비디오 링크인지 검증
+        if (!ReactPlayer.canPlay(submitInput)) return toastStore.addToast("재생가능한 동영상 링크가 아닙니다!");
+
+        // confirm을 체크 후 fireStore에 저장
+        const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
+        if (confirmSubmit) {
+            await addDoc(collection(initFireStore, "playList"), {
+                nickName: tokenStore.token.nickName,
+                createAt: Date.now(),
+                link: submitInput,
             })
-            .catch((e) => {
-                alert("플레이리스트 추가에 실패하였습니다.");
-                console.log(e);
-            });
+                .then(() => {
+                    toastStore.addToast("플레이리스트에 추가되었습니다.");
+                    setSubmitInput("");
+                })
+                .catch((e) => {
+                    alert("플레이리스트 추가에 실패하였습니다.");
+                    console.log(e);
+                });
+        } else {
+            toastStore.addToast("플레이리스트 신청이 취소되었습니다.");
+        }
     }
 
     // 기본 Lofi음악 리스트 랜덤 재생
@@ -109,7 +120,7 @@ const YoutubeQueuePlay = () => {
             <div className="flex w-full h-full cursor-default">
 
                 {/* 플레이어 컨텐츠 섹션 */}
-                <section className="w-full flex flex-col items-center mt-[60px] gap-12">
+                <section className="w-full flex flex-col items-center mt-[100px] gap-12">
                     {
                         // 어드민인 경우 플레이어 렌더링
                         (tokenStore.token?.role === 1
@@ -131,23 +142,26 @@ const YoutubeQueuePlay = () => {
                             </div>
                         ) : (
                             // 일반 인증자인 경우 블랙보드 렌더링
-                            <div className="flex flex-col justify-center items-center w-[600px] h-[330px] bg-black text-white text-center gap-4">
-                                <p className="text-[24px]">
-                                    음악 재생은 어드민 유저에게 맡겨주세요!
-                                </p>
-                                <p>
-                                    일반 인증 유저는 원하는 유튜브 음악을<br/>
-                                    신청, 삭제, 수정할 수 있습니다.
-                                </p>
+                            <div className="border-2 border-gray-500 rounded-lg p-5">
+                                <div
+                                    className="flex flex-col justify-center items-center w-[600px] h-[330px] bg-black text-white text-center gap-4 rounded-lg">
+                                    <p className="text-[24px]">
+                                        음악 재생은 어드민 유저에게 맡겨주세요!
+                                    </p>
+                                    <p>
+                                        일반 인증 유저는 원하는 유튜브 음악을<br/>
+                                        신청, 삭제, 수정할 수 있습니다.
+                                    </p>
+                                </div>
                             </div>
                         )
                     }
                     <div className="p-10 grow w-full">
-                        <div className="border-2 w-full h-full rounded-2xl p-4">
-                            <p className="text-2xl">
+                        <div className="border-4 border-gray-500 w-full h-full rounded-2xl p-4">
+                            <div className="text-2xl">
                                 준비중인 기능입니다.
                                 <Cursor/>
-                            </p>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -200,8 +214,8 @@ const YoutubeQueuePlay = () => {
                     </header>
 
                     {/* 신청 리스트 */}
-                    <section className="p-2 border rounded-md grow overflow-hidden">
-                        <ul className="h-full overflow-auto">
+                    <section className="p-2 bg-gray-100 rounded-md grow overflow-hidden">
+                        <ul className="flex flex-col gap-1 h-full overflow-auto customScroll-vertical">
                             {submitList?.map((list, idx) =>
                                 <SubmitListItem
                                     key={idx}

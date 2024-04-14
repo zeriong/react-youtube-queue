@@ -24,16 +24,19 @@ const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, toke
     }
 
     return (
-        <li key={idx} className="flex">
-            <div className="flex">
-                <p>{`${idx + 1}.`}</p>
-                <p>{`${item?.nickName}님의 신청곡`}</p>
+        <li key={idx} className="flex justify-between border-2 border-gray-400 px-2 py-1 rounded-md bg-white">
+            <div className="flex gap-3">
+                <p>{`${idx + 1}. ${item?.nickName}님의 신청곡`}</p>
+                <button
+                    className="text-[12px] border border-gray-600 px-2 rounded-md"
+                    type="button"
+                    onClick={onPreViewModal}
+                >
+                    미리 보기
+                </button>
             </div>
 
             <div className="flex">
-                <button type="button" onClick={onPreViewModal}>
-                    미리 보기
-                </button>
                 {((item?.nickName === tokenStore.token?.nickName) || (tokenStore.token?.role === 1)) &&
                     <div className="flex gap-2">
                         {/* 에디트 아이콘은 반드시 본인에게만 나타남 */}

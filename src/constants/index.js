@@ -1,2 +1,2 @@
 export const TOKEN_NAME = "youtubeQueueToken";
-export const YOUTUBE_BASE_URL = "https://www.youtube.com/watch";
+export const YOUTUBE_BASE_URL = "youtu";

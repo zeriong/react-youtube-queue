@@ -18,6 +18,20 @@ html, body, #root {
     height: 100%;
 }
 
+/* 커스텀 스크롤 */
+/* 세로 */
+.customScroll-vertical::-webkit-scrollbar {
+    width: 9px;
+}
+.customScroll-vertical::-webkit-scrollbar-thumb {
+    background-color: #fff;
+    border: solid 2px #afafaf;
+    border-radius: 5px;
+}
+.customScroll-vertical::-webkit-scrollbar-track {
+    background-color: #f6f6f6;
+}
+
 .vibrate {
     animation-name: vibrate;
     animation-duration: 50ms;
