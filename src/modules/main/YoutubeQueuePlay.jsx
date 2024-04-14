@@ -10,10 +10,14 @@ import {useTokenStore} from "../../App";
 import SubmitListItem from "./components/SubmitListItem";
 import EditModal from "./components/modal/Edit.modal";
 import {YOUTUBE_BASE_URL} from "../../constants";
+import {LogoutIcon} from "../svgComponents";
+import {vibrate} from "../../utils/common";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
+    const submitInputRef = useRef(null);
     const shuffleRef = useRef([]);
+
 
     const [currentURL, setCurrentURL] = useState("https://www.youtube.com/watch?v=_GNk6lSvH08");
     const [submitList, setSubmitList] = useState([]);
@@ -37,6 +41,7 @@ const YoutubeQueuePlay = () => {
         e.preventDefault();
         // 유튜브 링크인지 체크 후 아니라면 toast 알림을 띄움
         if (!submitInput.includes(YOUTUBE_BASE_URL)) {
+            vibrate(submitInputRef);
             return toastStore.addToast("유튜브 링크를 입력해주세요.");
         }
         // fireStore에 저장
@@ -101,26 +106,30 @@ const YoutubeQueuePlay = () => {
         <>
             <div className="flex w-full h-full">
 
-                {/* 플레이어 래퍼 */}
-                <section className="w-[500px] h-[300px]">
+                {/* 플레이어 컨텐츠 섹션 */}
+                <section className="w-full">
                     {
+                        // 어드민인 경우 플레이어 렌더링
                         (tokenStore.token?.role === 1
                         ) ? (
-                            <ReactPlayer
-                                url={currentURL}
-                                width='100%'
-                                height='100%'
-                                controls={true}
-                                onEnded={() => {
-                                    // 동영상이 끝나면 실행할 함수
-                                    console.log("동영상 끝남")
-                                }}
-                                // onStart={()=>setPlayStart(true)}
-                                className="react-player"
-                                ref={playerRef}
-                            />
+                            <div className="w-[600px] h-[330px]">
+                                <ReactPlayer
+                                    url={currentURL}
+                                    width='100%'
+                                    height='100%'
+                                    controls={true}
+                                    onEnded={() => {
+                                        // 동영상이 끝나면 실행할 함수
+                                        console.log("동영상 끝남")
+                                    }}
+                                    // onStart={()=>setPlayStart(true)}
+                                    className="react-player"
+                                    ref={playerRef}
+                                />
+                            </div>
                         ) : (
-                            <div className="flex flex-col justify-center items-center w-[500px] h-[200px] bg-black text-white text-center gap-4">
+                            // 일반 인증자인 경우 블랙보드 렌더링
+                            <div className="flex flex-col justify-center items-center w-[600px] h-[330px] bg-black text-white text-center gap-4">
                                 <p className="text-[24px]">
                                     음악 재생은 어드민 유저에게 맡겨주세요!
                                 </p>
@@ -131,50 +140,67 @@ const YoutubeQueuePlay = () => {
                             </div>
                         )
                     }
-
                 </section>
 
-                {/* 신청 리스트 */}
-                <div>
-                    <form onSubmit={submitURL}>
-                        <label className="flex gap-4">
-                            <p>신청곡</p>
+                {/* 어사이드 바 */}
+                <section className="flex flex-col relative right-0 pt-4 px-6 pb-6 border-l-[5px] border-gray-700">
+
+                    {/* 헤더 */}
+                    <header className="flex flex-col gap-6 mb-4">
+                        {/* 상단 헤드라인 */}
+                        <div className="flex gap-4 items-center">
+                            <p className="font-bold text-4xl">
+                                Youtube Queue Player!
+                            </p>
+                            <button
+                                type="button"
+                                className="bg-gray-300 px-3 py-2 rounded-md text-[20px] hover:scale-110"
+                                onClick={logout}
+                            >
+                                <LogoutIcon/>
+                            </button>
+                        </div>
+
+                        {/* 신청 폼 */}
+                        <form className="flex gap-2" onSubmit={submitURL}>
                             <input
-                                className="w-full"
+                                ref={submitInputRef}
                                 type="text"
+                                className="w-full border px-2 py-1 rounded-md relative"
                                 onChange={(e) => setSubmitInput(e.target.value)}
                                 placeholder="유튜브 음악 URL을 입력해주세요."
                                 value={submitInput}
                             />
-                        </label>
-                    </form>
-                    <ul>
-                        {submitList?.map((list, idx) =>
-                            <SubmitListItem
-                                key={idx}
-                                // 미리보기 모달을 띄울 setState
-                                setIsShowPreViewModal={setIsShowPreViewModal}
-                                // 클릭한 데이터를 전달 하는 setState
-                                setCurrentData={setCurrentData}
-                                // 에디트 모달을 띄울 setState
-                                setIsShowEditModal={setIsShowEditModal}
-                                tokenStore={tokenStore}
-                                item={list}
-                                idx={idx}
-                            />
-                        )}
-                    </ul>
-                </div>
+                            <button type="submit">
+                                신청하기
+                            </button>
+                        </form>
+                    </header>
+
+                    {/* 신청 리스트 */}
+                    <section className="p-2 border rounded-md grow overflow-hidden">
+                        <ul className="h-full overflow-auto">
+                            {submitList?.map((list, idx) =>
+                                <SubmitListItem
+                                    key={idx}
+                                    // 미리보기 모달을 띄울 setState
+                                    setIsShowPreViewModal={setIsShowPreViewModal}
+                                    // 클릭한 데이터를 전달 하는 setState
+                                    setCurrentData={setCurrentData}
+                                    // 에디트 모달을 띄울 setState
+                                    setIsShowEditModal={setIsShowEditModal}
+                                    tokenStore={tokenStore}
+                                    item={list}
+                                    idx={idx}
+                                />
+                            )}
+                        </ul>
+                    </section>
+                </section>
             </div>
 
             {/* fixed box */}
-            <button
-                type="button"
-                className="fixed right-[20px] top-[20px] bg-black text-white p-3 rounded-xl text-[20px] hover:scale-110"
-                onClick={logout}
-            >
-                접속 종료
-            </button>
+
 
             {/* 미리보기 모달 */}
             <PreViewModal
