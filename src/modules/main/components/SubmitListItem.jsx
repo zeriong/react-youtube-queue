@@ -30,7 +30,7 @@ const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, toke
                 <p>{`${item?.nickName}님의 신청곡`}</p>
             </div>
 
-            <div>
+            <div className="flex">
                 <button type="button" onClick={onPreViewModal}>
                     미리 보기
                 </button>

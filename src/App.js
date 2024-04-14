@@ -63,9 +63,9 @@ function App() {
         <>
             {!isLoading &&
                 <>
-                    <div className="fixed left-1/2 top-1/3 bg-black text-white p-5"
-                         onClick={() => getUsers().then(res => console.log("결과값",res))}>get users test
-                    </div>
+                    {/*<div className="fixed left-1/2 top-1/3 bg-black text-white p-5"*/}
+                    {/*     onClick={() => getUsers().then(res => console.log("결과값",res))}>get users test*/}
+                    {/*</div>*/}
 
                     {/*<div className="fixed left-1/2 top-1/2 bg-black text-white p-5"*/}
                     {/*     onClick={() => console.log("토큰레프", tokenRef.current)}>tokenRef test*/}

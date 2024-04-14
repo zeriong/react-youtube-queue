@@ -10,12 +10,14 @@ import {useTokenStore} from "../../App";
 import SubmitListItem from "./components/SubmitListItem";
 import EditModal from "./components/modal/Edit.modal";
 import {YOUTUBE_BASE_URL} from "../../constants";
-import {LogoutIcon} from "../svgComponents";
+import {CloseIcon, LogoutIcon} from "../svgComponents";
 import {vibrate} from "../../utils/common";
+import Cursor from "../common/components/Cursor";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
     const submitInputRef = useRef(null);
+    const submitInputAreaRef = useRef(null);
     const shuffleRef = useRef([]);
 
 
@@ -41,7 +43,7 @@ const YoutubeQueuePlay = () => {
         e.preventDefault();
         // 유튜브 링크인지 체크 후 아니라면 toast 알림을 띄움
         if (!submitInput.includes(YOUTUBE_BASE_URL)) {
-            vibrate(submitInputRef);
+            vibrate(submitInputAreaRef);
             return toastStore.addToast("유튜브 링크를 입력해주세요.");
         }
         // fireStore에 저장
@@ -104,10 +106,10 @@ const YoutubeQueuePlay = () => {
 
     return (
         <>
-            <div className="flex w-full h-full">
+            <div className="flex w-full h-full cursor-default">
 
                 {/* 플레이어 컨텐츠 섹션 */}
-                <section className="w-full">
+                <section className="w-full flex flex-col items-center mt-[60px] gap-12">
                     {
                         // 어드민인 경우 플레이어 렌더링
                         (tokenStore.token?.role === 1
@@ -140,6 +142,14 @@ const YoutubeQueuePlay = () => {
                             </div>
                         )
                     }
+                    <div className="p-10 grow w-full">
+                        <div className="border-2 w-full h-full rounded-2xl p-4">
+                            <p className="text-2xl">
+                                준비중인 기능입니다.
+                                <Cursor/>
+                            </p>
+                        </div>
+                    </div>
                 </section>
 
                 {/* 어사이드 바 */}
@@ -163,15 +173,27 @@ const YoutubeQueuePlay = () => {
 
                         {/* 신청 폼 */}
                         <form className="flex gap-2" onSubmit={submitURL}>
-                            <input
-                                ref={submitInputRef}
-                                type="text"
-                                className="w-full border px-2 py-1 rounded-md relative"
-                                onChange={(e) => setSubmitInput(e.target.value)}
-                                placeholder="유튜브 음악 URL을 입력해주세요."
-                                value={submitInput}
-                            />
-                            <button type="submit">
+                            <div ref={submitInputAreaRef} className="relative w-full">
+                                <input
+                                    ref={submitInputRef}
+                                    type="text"
+                                    className="w-full border-2 border-gray-500 pl-2 pr-6 py-1 rounded-md relative text-[15px] items-center"
+                                    onChange={(e) => setSubmitInput(e.target.value)}
+                                    placeholder="유튜브 음악 URL을 입력하여 신청해주세요!"
+                                    value={submitInput}
+                                />
+                                <button
+                                    type="button"
+                                    className="bg-black absolute right-[7px] top-1/2 -translate-y-1/2 rounded-full p-[2px] opacity-80"
+                                    onClick={() => {
+                                        setSubmitInput("");
+                                        submitInputRef.current.focus();
+                                    }}
+                                >
+                                    <CloseIcon fill="#fff" width={12} height={12}/>
+                                </button>
+                            </div>
+                            <button className="border px-2 rounded-md bg-gray-200 hover:scale-105" type="submit">
                                 신청하기
                             </button>
                         </form>
