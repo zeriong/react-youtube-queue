@@ -5,28 +5,31 @@ import {DEFAULT_PLAYLIST} from "../../constants/defaultPlaylist";
 import {addDoc, collection, onSnapshot, query, orderBy} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import PreViewModal from "./components/modal/PreView.modal";
-import {deleteUser} from "../../utils/firebase";
+import {deletePlayList, deleteUser} from "../../utils/firebase";
 import {useTokenStore} from "../../App";
 import SubmitListItem from "./components/SubmitListItem";
-import EditModal from "./components/modal/Edit.modal";
+import EditModal2 from "./components/modal/Edit.modal2";
 import {YOUTUBE_BASE_URL} from "../../constants";
-import {CloseIcon, LogoutIcon} from "../svgComponents";
+import {CloseIcon, LogoutIcon, PlayIcon} from "../svgComponents";
 import {vibrate} from "../../utils/common";
 import Cursor from "../common/components/Cursor";
+import EditModal from "./components/modal/Edit.modal";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
-    const submitInputRef = useRef(null);
-    const submitInputAreaRef = useRef(null);
+
     const shuffleRef = useRef([]);
+    const isSubmitPlaying = useRef(false);
 
-
-    const [currentURL, setCurrentURL] = useState("https://www.youtube.com/watch?v=_GNk6lSvH08");
+    const [currentURL, setCurrentURL] = useState("");
     const [submitList, setSubmitList] = useState([]);
-    const [submitInput, setSubmitInput] = useState("");
-    const [currentData, setCurrentData] = useState({});
+
+    const [currentData, setCurrentData] = useState(null);
     const [isShowPreViewModal, setIsShowPreViewModal] = useState(false);
     const [isShowEditModal, setIsShowEditModal] = useState(false);
+    const [isStart, setIsStart] = useState(false);
+    const [isPlay, setIsPlay] = useState(false);
+    const [isShowSubmitModal, setIsShowSubmitModal] = useState(false);
 
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
@@ -38,39 +41,7 @@ const YoutubeQueuePlay = () => {
         toastStore.addToast("로그아웃 되었습니다.");
     }
 
-    // 신청곡 url submit
-    const submitURL = async (e) => {
-        e.preventDefault();
 
-        // 유튜브 링크인지 체크 후 아니라면 toast 알림을 띄움
-        if (!submitInput.includes(YOUTUBE_BASE_URL)) {
-            vibrate(submitInputAreaRef);
-            return toastStore.addToast("유튜브 링크를 입력해주세요.");
-        }
-
-        // 정상적인 비디오 링크인지 검증
-        if (!ReactPlayer.canPlay(submitInput)) return toastStore.addToast("재생가능한 동영상 링크가 아닙니다!");
-
-        // confirm을 체크 후 fireStore에 저장
-        const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
-        if (confirmSubmit) {
-            await addDoc(collection(initFireStore, "playList"), {
-                nickName: tokenStore.token.nickName,
-                createAt: Date.now(),
-                link: submitInput,
-            })
-                .then(() => {
-                    toastStore.addToast("플레이리스트에 추가되었습니다.");
-                    setSubmitInput("");
-                })
-                .catch((e) => {
-                    alert("플레이리스트 추가에 실패하였습니다.");
-                    console.log(e);
-                });
-        } else {
-            toastStore.addToast("플레이리스트 신청이 취소되었습니다.");
-        }
-    }
 
     // 기본 Lofi음악 리스트 랜덤 재생
     const defaultPlayer = () => {
@@ -86,26 +57,36 @@ const YoutubeQueuePlay = () => {
         if (shuffleRef.current.length === DEFAULT_PLAYLIST.length) shuffleRef.current = [];
     }
 
-    // currentURL effect
+    // 재생상태를 지정하고 상태에 따른 플레이어 재생
+    const playYoutubeMusic = () => {
+        // 첫 재생을 위한 컴포넌트 변경
+        if (!isStart) setIsStart(true);
+        // 기본 플리 재생중인지 아닌지 체크할 수 있도록
+        isSubmitPlaying.current = !!submitList.length;
+        // 신청곡이 없다면 기본 곡 에서 랜덤재생
+        if (!isSubmitPlaying.current) return defaultPlayer();
+        // 신청곡이 있다면 차례로 재생
+        const firstItem = submitList[0];
+        const isDeleted = deletePlayList(firstItem.id);
+        if (!isDeleted) return alert("삭제에 실패하였습니다, 서버를 점검해주세요.");
+        // currentURL state를 변경하여 즉시 플레이어 실행
+        setCurrentURL(firstItem.link);
+    }
+
+    // 신청곡을 감지하여 기본 플리 재생중일 땐 즉시 신청곡을 재생하도록 구성
     useEffect(() => {
-        // currentURL이 변경되면 변경된 url 로드 후 즉시 재생되도록 구현
-    }, [currentURL]);
+        if (isStart && !isSubmitPlaying.current) playYoutubeMusic();
+        console.log(isStart)
+    }, [submitList]);
 
     // init effect
     useEffect(() => {
-        // todo: 아래 설계를 함수로 만든 후 실행되도록 설계 (onEnded 에 사용할 가능성 매우 높음)
-        // 파이어베이스 데이터 가져와서 .shift() 사용해서 데이터를 셀렉트/잘라내기 하여
-        // setCurrentURL(shiftObj.url)을 넣은 후 파이어베이스에서 해당 객체 삭제
-        // 이 후에 currentURL state 변경으로 인해 바로 위 useEffect 가 감지하여 실행하도록 설계
-
-        // 만약 받아온 데이터가 없다면 여기에서 즉시 랜덤플레이어 실행되도록 설정
-
         // 데이터 쿼리를 생성 날짜 오름차순으로 정렬 (queue 형태를 구현하기 위함)
         const setFireStoreQuery = query(
             collection(initFireStore, "playList"),
-            orderBy("createAt", "asc"));
-
-        // onSnapshot을 활용한 실시간 데이터 불러오기
+            orderBy("createAt", "asc")
+        );
+        // onSnapshot을 활용하여 실시간 데이터를 받음
         onSnapshot(setFireStoreQuery, (snapshot) => {
             const contentArr = snapshot.docs.map((doc) => ({
                 id: doc.id,
@@ -117,6 +98,9 @@ const YoutubeQueuePlay = () => {
 
     return (
         <>
+            <div className="fixed left-1/2 top-1/2 p-5 bg-black text-white" onClick={() => setCurrentURL("https://youtu.be/IHLLYeFc5sg?si=nOv29DWKhj4DaYHd")}>
+                test
+            </div>
             <div className="flex w-full h-full cursor-default">
 
                 {/* 플레이어 컨텐츠 섹션 */}
@@ -126,19 +110,27 @@ const YoutubeQueuePlay = () => {
                         (tokenStore.token?.role === 1
                         ) ? (
                             <div className="w-[600px] h-[330px]">
-                                <ReactPlayer
-                                    url={currentURL}
-                                    width='100%'
-                                    height='100%'
-                                    controls={true}
-                                    onEnded={() => {
-                                        // 동영상이 끝나면 실행할 함수
-                                        console.log("동영상 끝남")
-                                    }}
-                                    // onStart={()=>setPlayStart(true)}
-                                    className="react-player"
-                                    ref={playerRef}
-                                />
+                                {isStart ?
+                                    <ReactPlayer
+                                        url={currentURL}
+                                        width='100%'
+                                        height='100%'
+                                        controls={true}
+                                        playing={isPlay}
+                                        onEnded={playYoutubeMusic}
+                                        // onStart={()=>setPlayStart(true)}
+                                        onReady={() => setIsPlay(true)}
+                                        className="react-player"
+                                        ref={playerRef}
+                                    />
+                                    :
+                                    <div onClick={playYoutubeMusic} className="group w-full h-full bg-black text-white flex justify-center items-center cursor-pointer">
+                                        <div className="flex flex-col justify-center items-center gap-4 group-hover:scale-105">
+                                            <p className="text-4xl">플레이리스트 재생하기</p>
+                                            <PlayIcon fill="#fff" width={100} height={100}/>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         ) : (
                             // 일반 인증자인 경우 블랙보드 렌더링
@@ -185,32 +177,7 @@ const YoutubeQueuePlay = () => {
                             </button>
                         </div>
 
-                        {/* 신청 폼 */}
-                        <form className="flex gap-2" onSubmit={submitURL}>
-                            <div ref={submitInputAreaRef} className="relative w-full">
-                                <input
-                                    ref={submitInputRef}
-                                    type="text"
-                                    className="w-full border-2 border-gray-500 pl-2 pr-6 py-1 rounded-md relative text-[15px] items-center"
-                                    onChange={(e) => setSubmitInput(e.target.value)}
-                                    placeholder="유튜브 음악 URL을 입력하여 신청해주세요!"
-                                    value={submitInput}
-                                />
-                                <button
-                                    type="button"
-                                    className="bg-black absolute right-[7px] top-1/2 -translate-y-1/2 rounded-full p-[2px] opacity-80"
-                                    onClick={() => {
-                                        setSubmitInput("");
-                                        submitInputRef.current.focus();
-                                    }}
-                                >
-                                    <CloseIcon fill="#fff" width={12} height={12}/>
-                                </button>
-                            </div>
-                            <button className="border px-2 rounded-md bg-gray-200 hover:scale-105" type="submit">
-                                신청하기
-                            </button>
-                        </form>
+
                     </header>
 
                     {/* 신청 리스트 */}
@@ -235,20 +202,19 @@ const YoutubeQueuePlay = () => {
                 </section>
             </div>
 
-            {/* fixed box */}
-
-
+            {/* 신청/수정 모달 */}
+            <EditModal
+                setIsShow={setIsShowEditModal}
+                isShow={isShowEditModal}
+                setCurrentData={setCurrentData}
+                currentData={currentData}
+            />
             {/* 미리보기 모달 */}
             <PreViewModal
                 setIsShow={setIsShowPreViewModal}
                 isShow={isShowPreViewModal}
                 preViewData={currentData}
-            />
-            {/* 에디트 모달 */}
-            <EditModal
-                currentData={currentData}
-                setIsShow={setIsShowEditModal}
-                isShow={isShowEditModal}
+                setPreviewData={setCurrentData}
             />
         </>
     )

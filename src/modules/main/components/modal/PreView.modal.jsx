@@ -1,8 +1,14 @@
-import React from "react";
+import React, {useEffect} from "react";
 import ReactPlayer from "react-player";
 import {CloseIcon} from "../../../svgComponents";
 
-const PreViewModal = ({ isShow, setIsShow, preViewData }) => {
+const PreViewModal = ({ isShow, setIsShow, preViewData, setPreviewData }) => {
+
+    // 모달이 사라지면 state 초기화
+    useEffect(() => {
+        if (!isShow) setPreviewData(null);
+    }, [isShow]);
+
     return isShow &&
         <div onClick={() => setIsShow(false)} className="fixed top-0 left-0 z-50 w-full h-full bg-black/50 flex justify-center items-center">
             {/* 미리보기 영역 */}
