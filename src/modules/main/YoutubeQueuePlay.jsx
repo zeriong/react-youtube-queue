@@ -2,22 +2,18 @@ import {useToastsStore} from "../common/components/Toasts";
 import ReactPlayer from "react-player";
 import {useEffect, useRef, useState} from "react";
 import {DEFAULT_PLAYLIST} from "../../constants/defaultPlaylist";
-import {addDoc, collection, onSnapshot, query, orderBy} from "firebase/firestore";
+import {collection, onSnapshot, query, orderBy} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import PreViewModal from "./components/modal/PreView.modal";
 import {deletePlayList, deleteUser} from "../../utils/firebase";
 import {useTokenStore} from "../../App";
 import SubmitListItem from "./components/SubmitListItem";
-import EditModal2 from "./components/modal/Edit.modal2";
-import {YOUTUBE_BASE_URL} from "../../constants";
-import {CloseIcon, LogoutIcon, PlayIcon} from "../svgComponents";
-import {vibrate} from "../../utils/common";
+import {LogoutIcon, PlayIcon} from "../svgComponents";
 import Cursor from "../common/components/Cursor";
 import EditModal from "./components/modal/Edit.modal";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
-
     const shuffleRef = useRef([]);
     const isSubmitPlaying = useRef(false);
 
@@ -29,7 +25,7 @@ const YoutubeQueuePlay = () => {
     const [isShowEditModal, setIsShowEditModal] = useState(false);
     const [isStart, setIsStart] = useState(false);
     const [isPlay, setIsPlay] = useState(false);
-    const [isShowSubmitModal, setIsShowSubmitModal] = useState(false);
+    const [isReady, setIsReady] = useState(false);
 
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
@@ -40,8 +36,6 @@ const YoutubeQueuePlay = () => {
         tokenStore.deleteToken();
         toastStore.addToast("로그아웃 되었습니다.");
     }
-
-
 
     // 기본 Lofi음악 리스트 랜덤 재생
     const defaultPlayer = () => {
@@ -73,10 +67,15 @@ const YoutubeQueuePlay = () => {
         setCurrentURL(firstItem.link);
     }
 
+    // 동영상이 준비된 상태를 체크하여 실행
+    useEffect(() => {
+        if (isReady) setIsPlay(true);
+        else setIsPlay(false);
+    }, [isReady]);
+
     // 신청곡을 감지하여 기본 플리 재생중일 땐 즉시 신청곡을 재생하도록 구성
     useEffect(() => {
         if (isStart && !isSubmitPlaying.current) playYoutubeMusic();
-        console.log(isStart)
     }, [submitList]);
 
     // init effect
@@ -117,9 +116,11 @@ const YoutubeQueuePlay = () => {
                                         height='100%'
                                         controls={true}
                                         playing={isPlay}
-                                        onEnded={playYoutubeMusic}
-                                        // onStart={()=>setPlayStart(true)}
-                                        onReady={() => setIsPlay(true)}
+                                        onEnded={() => {
+                                            playYoutubeMusic();
+                                            setIsReady(false);
+                                        }}
+                                        onReady={() => setIsReady(true)}
                                         className="react-player"
                                         ref={playerRef}
                                     />
