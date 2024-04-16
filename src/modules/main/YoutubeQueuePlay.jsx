@@ -177,7 +177,12 @@ const YoutubeQueuePlay = () => {
                             </button>
                         </div>
 
-
+                        {/* 신청 버튼 */}
+                        <button type="button" onClick={() => setIsShowEditModal(true)} className="rounded-[12px] p-[3px] border-2 border-gray-500 bg-gray-300">
+                            <p className="font-bold text-white bg-red-500/85 py-3 text-[20px] rounded-[9px] text-line border-2 border-gray-500">
+                                유튜브음악 신청하기
+                            </p>
+                        </button>
                     </header>
 
                     {/* 신청 리스트 */}

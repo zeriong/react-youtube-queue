@@ -38,6 +38,10 @@ html, body, #root {
     animation-iteration-count: 8;
 }
 
+.text-line {
+    text-shadow: -2px 0 #000, 0 2px #000, 2px 0 #000, 0 -2px #000;
+}
+
 @keyframes vibrate {
     0% {
         left: 3px;

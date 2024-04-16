@@ -65,7 +65,7 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData }) => {
                 })
                     .then(() => {
                         toastStore.addToast("플레이리스트에 추가되었습니다.");
-                        setSubmitInput("");
+                        setIsShow(false);
                     })
                     .catch((e) => {
                         alert("플레이리스트 추가에 실패하였습니다.");
