@@ -97,9 +97,6 @@ const YoutubeQueuePlay = () => {
 
     return (
         <>
-            <div className="fixed left-1/2 top-1/2 p-5 bg-black text-white" onClick={() => setCurrentURL("https://youtu.be/IHLLYeFc5sg?si=nOv29DWKhj4DaYHd")}>
-                test
-            </div>
             <div className="flex w-full h-full cursor-default">
 
                 {/* 플레이어 컨텐츠 섹션 */}
