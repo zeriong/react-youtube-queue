@@ -1,6 +1,6 @@
 import {useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {setAuthStorage} from "../../utils/common";
+import {setAuthStorage, validateByteFormLength} from "../../utils/common";
 import {useToastsStore} from "../common/components/Toasts";
 import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
@@ -18,9 +18,19 @@ const Enter = () => {
     const tokenStore = useTokenStore();
 
     const [nickName, setNickName] = useState("");
+    const [byteCount, setByteCount] = useState(0);
     const [certificate, setCertificate] = useState("");
 
     const navigate = useNavigate();
+
+    const onChangeNickName = ({ target: { value } }) => {
+        const { isValidate, byte } = validateByteFormLength(value, 16);
+        console.log("얍얍", isValidate)
+        if (isValidate) {
+            setByteCount(byte);
+            setNickName(value);
+        }
+    }
 
     const submitCertificateNumber = (e) => {
         (async () => {
@@ -86,24 +96,28 @@ const Enter = () => {
             </div>
             <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber} >
                 <div className="flex gap-5 items-center">
-                    <p className="w-[146px] text-[24px] text-center" onClick={() => nickNameInputRef.current.focus()}>
+                    <p className="w-[160px] text-[24px] text-center" onClick={() => nickNameInputRef.current.focus()}>
                         Nick Name
                     </p>
-                    <input
-                        className="py-1 px-4 bg-gray-100 text-[18px] rounded-[8px]"
-                        ref={nickNameInputRef}
-                        type="text"
-                        onChange={(e) => setNickName(e.target.value)}
-                        value={nickName}
-                    />
+                    <div className="relative">
+                        <input
+                            className="py-1 pl-4 pr-12 bg-gray-100 text-[18px] rounded-[8px] w-[300px]"
+                            ref={nickNameInputRef}
+                            type="text"
+                            onChange={onChangeNickName}
+                            value={nickName}
+                        />
+                        <p className="absolute right-2 top-1/2 -translate-y-1/2 text-[14px]">{`${byteCount}/16 byte`}</p>
+                    </div>
                 </div>
 
                 <div className="flex gap-5 items-center">
-                    <p className="w-[146px] text-[24px] text-center" onClick={() => certificateInputRef.current.focus()}>
+                    <p className="w-[160px] text-[24px] text-center"
+                       onClick={() => certificateInputRef.current.focus()}>
                         Certificate
                     </p>
                     <input
-                        className="py-1 px-4 bg-gray-100 text-[18px] rounded-[8px]"
+                        className="py-1 px-4 bg-gray-100 text-[18px] rounded-[8px] w-[300px]"
                         ref={certificateInputRef}
                         type="password"
                         onChange={(e) => setCertificate(e.target.value)}
