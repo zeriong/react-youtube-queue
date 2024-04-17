@@ -93,6 +93,18 @@ const YoutubeQueuePlay = () => {
             }))
            setSubmitList(contentArr);
         });
+
+        window.addEventListener("online", () => {
+            if (isStart && !isReady) setIsReady(true);
+        });
+        window.addEventListener("offline", () => {
+            if (isStart && isReady) setIsReady(false);
+        });
+
+        return () => {
+            window.removeEventListener("online");
+            window.removeEventListener("offline");
+        }
     }, []);
 
     return (
@@ -116,6 +128,10 @@ const YoutubeQueuePlay = () => {
                                         onEnded={() => {
                                             playYoutubeMusic();
                                             setIsReady(false);
+                                        }}
+                                        onPause={() => {
+                                            console.log("on Pause!!!!!!!!!!!!")
+                                            setIsReady(false)
                                         }}
                                         onReady={() => setIsReady(true)}
                                         className="react-player"
