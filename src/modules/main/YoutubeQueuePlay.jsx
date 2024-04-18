@@ -58,13 +58,26 @@ const YoutubeQueuePlay = () => {
         // 기본 플리 재생중인지 아닌지 체크할 수 있도록
         isSubmitPlaying.current = !!submitList.length;
         // 신청곡이 없다면 기본 곡 에서 랜덤재생
-        if (!isSubmitPlaying.current) return defaultPlayer();
+        if (!isSubmitPlaying.current) {
+            return defaultPlayer();
+        }
         // 신청곡이 있다면 차례로 재생
         const firstItem = submitList[0];
+        // 리스트에서 삭제
         const isDeleted = deletePlayList(firstItem.id);
         if (!isDeleted) return alert("삭제에 실패하였습니다, 서버를 점검해주세요.");
         // currentURL state를 변경하여 즉시 플레이어 실행
         setCurrentURL(firstItem.link);
+    }
+
+    // 온라인 함수
+    const onFunc = () => {
+        if (isStart && !isReady) setIsReady(true);
+    }
+
+    // 오프라인 함수
+    const offFunc = () => {
+        if (isStart && isReady) setIsReady(false);
     }
 
     // 동영상이 준비된 상태를 체크하여 실행
@@ -94,16 +107,12 @@ const YoutubeQueuePlay = () => {
            setSubmitList(contentArr);
         });
 
-        window.addEventListener("online", () => {
-            if (isStart && !isReady) setIsReady(true);
-        });
-        window.addEventListener("offline", () => {
-            if (isStart && isReady) setIsReady(false);
-        });
+        window.addEventListener("online", onFunc);
+        window.addEventListener("offline", offFunc);
 
         return () => {
-            window.removeEventListener("online");
-            window.removeEventListener("offline");
+            window.removeEventListener("online", onFunc);
+            window.removeEventListener("offline", offFunc);
         }
     }, []);
 
@@ -117,26 +126,35 @@ const YoutubeQueuePlay = () => {
                         // 어드민인 경우 플레이어 렌더링
                         (tokenStore.token?.role === 1
                         ) ? (
-                            <div className="w-[600px] h-[330px]">
+                            <div className="w-[600px] h-[330px] relative">
                                 {isStart ?
-                                    <ReactPlayer
-                                        url={currentURL}
-                                        width='100%'
-                                        height='100%'
-                                        controls={true}
-                                        playing={isPlay}
-                                        onEnded={() => {
-                                            playYoutubeMusic();
-                                            setIsReady(false);
-                                        }}
-                                        onPause={() => {
-                                            console.log("on Pause!!!!!!!!!!!!")
-                                            setIsReady(false)
-                                        }}
-                                        onReady={() => setIsReady(true)}
-                                        className="react-player"
-                                        ref={playerRef}
-                                    />
+                                    <>
+                                        <ReactPlayer
+                                            url={currentURL}
+                                            width='100%'
+                                            height='100%'
+                                            controls={true}
+                                            playing={isPlay}
+                                            onEnded={() => {
+                                                playYoutubeMusic();
+                                                setIsReady(false);
+                                            }}
+                                            onPause={() => setIsReady(false)}
+                                            onReady={() => setIsReady(true)}
+                                            className="react-player"
+                                            ref={playerRef}
+                                        />
+                                        <button
+                                            type="button"
+                                            className="absolute top-1/2 -translate-y-1/2 -right-[150px] border-2 border-gray-700 play-next bg-black text-white h-[80px] w-[110px] text-[18px] font-bold hover:scale-110"
+                                            onClick={playYoutubeMusic}
+                                        >
+
+                                            <p className="relative -translate-x-[5px]">
+                                                다음 곡
+                                            </p>
+                                        </button>
+                                    </>
                                     :
                                     <div onClick={playYoutubeMusic} className="group w-full h-full bg-black text-white flex justify-center items-center cursor-pointer">
                                         <div className="flex flex-col justify-center items-center gap-4 group-hover:scale-105">
