@@ -15,7 +15,8 @@ import EditModal from "./components/modal/Edit.modal";
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
     const shuffleRef = useRef([]);
-    const isSubmitPlaying = useRef(false);
+    const isSubmitPlayingRef = useRef(false);
+    const submitMaxRef= useRef(20);
 
     const [currentURL, setCurrentURL] = useState("");
     const [submitList, setSubmitList] = useState([]);
@@ -37,6 +38,14 @@ const YoutubeQueuePlay = () => {
         toastStore.addToast("로그아웃 되었습니다.");
     }
 
+    // 신청하기 버튼 함수
+    const submitMusic = () => {
+        if (submitMaxRef.current <= submitList.length) {
+            return toastStore.addToast(`신청 가능한 플레이리스트는 최대 ${submitMaxRef.current}개입니다.`)
+        }
+        setIsShowEditModal(true);
+    }
+
     // 기본 Lofi음악 리스트 랜덤 재생
     const defaultPlayer = () => {
         // 난수 생성
@@ -56,9 +65,9 @@ const YoutubeQueuePlay = () => {
         // 첫 재생을 위한 컴포넌트 변경
         if (!isStart) setIsStart(true);
         // 기본 플리 재생중인지 아닌지 체크할 수 있도록
-        isSubmitPlaying.current = !!submitList.length;
+        isSubmitPlayingRef.current = !!submitList.length;
         // 신청곡이 없다면 기본 곡 에서 랜덤재생
-        if (!isSubmitPlaying.current) {
+        if (!isSubmitPlayingRef.current) {
             return defaultPlayer();
         }
         // 신청곡이 있다면 차례로 재생
@@ -88,7 +97,7 @@ const YoutubeQueuePlay = () => {
 
     // 신청곡을 감지하여 기본 플리 재생중일 땐 즉시 신청곡을 재생하도록 구성
     useEffect(() => {
-        if (isStart && !isSubmitPlaying.current) playYoutubeMusic();
+        if (isStart && !isSubmitPlayingRef.current) playYoutubeMusic();
     }, [submitList]);
 
     // init effect
@@ -149,7 +158,6 @@ const YoutubeQueuePlay = () => {
                                             className="absolute top-1/2 -translate-y-1/2 -right-[150px] border-2 border-gray-700 play-next bg-black text-white h-[80px] w-[110px] text-[18px] font-bold hover:scale-110"
                                             onClick={playYoutubeMusic}
                                         >
-
                                             <p className="relative -translate-x-[5px]">
                                                 다음 곡
                                             </p>
@@ -210,7 +218,7 @@ const YoutubeQueuePlay = () => {
                         </div>
 
                         {/* 신청 버튼 */}
-                        <button type="button" onClick={() => setIsShowEditModal(true)} className="rounded-[12px] p-[3px] border-2 border-gray-500 bg-gray-300">
+                        <button type="button" onClick={submitMusic} className="rounded-[12px] p-[3px] border-2 border-gray-500 bg-gray-300">
                             <p className="font-bold text-white bg-red-500/85 py-3 text-[20px] rounded-[9px] text-line border-2 border-gray-500">
                                 유튜브음악 신청하기
                             </p>
@@ -245,6 +253,8 @@ const YoutubeQueuePlay = () => {
                 isShow={isShowEditModal}
                 setCurrentData={setCurrentData}
                 currentData={currentData}
+                listLength={submitList.length}
+                listMax={submitMaxRef.current}
             />
             {/* 미리보기 모달 */}
             <PreViewModal

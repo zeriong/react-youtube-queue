@@ -9,7 +9,7 @@ import {initFireStore} from "../../../../libs/firebase";
 import {addDoc, collection} from "firebase/firestore";
 import {updatePlayLink} from "../../../../utils/firebase";
 
-const EditModal = ({ setIsShow, isShow, currentData, setCurrentData }) => {
+const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength, listMax }) => {
     const timeoutRef = useRef(null);
     const submitInputRef = useRef(null);
     const submitInputAreaRef = useRef(null);
@@ -55,6 +55,11 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData }) => {
 
         // 새로 추가인 경우
         if (!currentData) {
+            // 신청곡 최대 개수 이상인 경우
+            if (listMax <= listLength) {
+                setIsShow(false);
+                return toastStore.addToast(`신청 가능한 플레이리스트는 최대 ${listMax}개입니다.`);
+            }
             // confirm을 체크 후 fireStore에 저장
             const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
             if (confirmSubmit) {
