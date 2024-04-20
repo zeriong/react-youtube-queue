@@ -218,7 +218,8 @@ const YoutubeQueuePlay = () => {
                         </div>
 
                         {/* 신청 버튼 */}
-                        <button type="button" onClick={submitMusic} className="rounded-[12px] p-[3px] border-2 border-gray-500 bg-gray-300">
+                        <button type="button" onClick={submitMusic}
+                                className="rounded-[12px] p-[3px] border-2 border-gray-500 bg-gray-300">
                             <p className="font-bold text-white bg-red-500/85 py-3 text-[20px] rounded-[9px] text-line border-2 border-gray-500">
                                 유튜브음악 신청하기
                             </p>
@@ -226,6 +227,12 @@ const YoutubeQueuePlay = () => {
                     </header>
 
                     {/* 신청 리스트 */}
+                    <div className="flex justify-between text-[20px] font-bold text-white text-line mb-2 mt-3">
+                        <p>유튜브 음악 리스트</p>
+                        <p>
+                            {`${submitList.length + '/' + submitMaxRef.current}`}
+                        </p>
+                    </div>
                     <section className="p-2 bg-gray-100 rounded-md grow overflow-hidden">
                         <ul className="flex flex-col gap-1 h-full overflow-auto customScroll-vertical">
                             {submitList?.map((list, idx) =>
