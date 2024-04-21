@@ -127,7 +127,7 @@ const YoutubeQueuePlay = () => {
 
     return (
         <>
-            <div className="flex w-full h-full cursor-default">
+            <div className="flex flex-col pc:flex-row w-full h-full cursor-default ">
 
                 {/* 플레이어 컨텐츠 섹션 */}
                 <section className="w-full flex flex-col items-center mt-[100px] gap-12">
@@ -199,7 +199,7 @@ const YoutubeQueuePlay = () => {
                 </section>
 
                 {/* 어사이드 바 */}
-                <section className="flex flex-col relative right-0 pt-4 px-6 pb-6 border-l-[5px] border-gray-700">
+                <aside className="flex flex-col relative right-0 pt-4 px-6 pb-6 border-dashed max-pc:border-t-[5px] pc:border-l-[5px] pc:border-gray-700">
 
                     {/* 헤더 */}
                     <header className="flex flex-col gap-6 mb-4">
@@ -227,31 +227,33 @@ const YoutubeQueuePlay = () => {
                     </header>
 
                     {/* 신청 리스트 */}
-                    <div className="flex justify-between text-[20px] font-bold text-white text-line mb-2 mt-3">
-                        <p>유튜브 음악 리스트</p>
-                        <p>
-                            {`${submitList.length + '/' + submitMaxRef.current}`}
-                        </p>
-                    </div>
-                    <section className="p-2 bg-gray-100 rounded-md grow overflow-hidden">
-                        <ul className="flex flex-col gap-1 h-full overflow-auto customScroll-vertical">
-                            {submitList?.map((list, idx) =>
-                                <SubmitListItem
-                                    key={idx}
-                                    // 미리보기 모달을 띄울 setState
-                                    setIsShowPreViewModal={setIsShowPreViewModal}
-                                    // 클릭한 데이터를 전달 하는 setState
-                                    setCurrentData={setCurrentData}
-                                    // 에디트 모달을 띄울 setState
-                                    setIsShowEditModal={setIsShowEditModal}
-                                    tokenStore={tokenStore}
-                                    item={list}
-                                    idx={idx}
-                                />
-                            )}
-                        </ul>
+                    <section className="h-full flex flex-col ">
+                        <div className="flex justify-between text-[20px] font-bold text-white text-line mb-2 mt-3">
+                            <p>유튜브 음악 리스트</p>
+                            <p>
+                                {`${submitList.length + '/' + submitMaxRef.current}`}
+                            </p>
+                        </div>
+                        <div className="p-2 bg-gray-100 rounded-md grow overflow-hidden min-h-[200px]">
+                            <ul className="flex flex-col gap-1 h-full overflow-auto customScroll-vertical">
+                                {submitList?.map((list, idx) =>
+                                    <SubmitListItem
+                                        key={idx}
+                                        // 미리보기 모달을 띄울 setState
+                                        setIsShowPreViewModal={setIsShowPreViewModal}
+                                        // 클릭한 데이터를 전달 하는 setState
+                                        setCurrentData={setCurrentData}
+                                        // 에디트 모달을 띄울 setState
+                                        setIsShowEditModal={setIsShowEditModal}
+                                        tokenStore={tokenStore}
+                                        item={list}
+                                        idx={idx}
+                                    />
+                                )}
+                            </ul>
+                        </div>
                     </section>
-                </section>
+                </aside>
             </div>
 
             {/* 신청/수정 모달 */}
