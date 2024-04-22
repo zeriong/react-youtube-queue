@@ -139,7 +139,6 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
                                 placeholder={currentData ? "수정할 유튜브 음악 URL을 입력해주세요!" : "유튜브 음악 URL을 입력하여 신청해주세요!"}
                             />
                             <button
-                                disabled={!canSubmit}
                                 type="button"
                                 className="bg-black absolute right-[7px] top-1/2 -translate-y-1/2 rounded-full p-[2px] opacity-80"
                                 onClick={() => {

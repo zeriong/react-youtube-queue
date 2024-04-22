@@ -79,6 +79,11 @@ const YoutubeQueuePlay = () => {
         setCurrentURL(firstItem.link);
     }
 
+    // 이전곡을 재생할 함수
+    const playPrevMusic = () => {
+        console.log("아직은 미구현!")
+    }
+
     // 온라인 함수
     const onFunc = () => {
         if (isStart && !isReady) setIsReady(true);
@@ -130,32 +135,46 @@ const YoutubeQueuePlay = () => {
             <div className="flex flex-col pc:flex-row w-full h-full cursor-default ">
 
                 {/* 플레이어 컨텐츠 섹션 */}
-                <section className="w-full flex flex-col items-center mt-[100px] gap-12">
+                <section className="w-full flex flex-col items-center mt-[100px] gap-12 p-10">
                     {
                         // 어드민인 경우 플레이어 렌더링
                         (tokenStore.token?.role === 1
                         ) ? (
-                            <div className="w-[600px] h-[330px] relative">
+                            <div className="w-full min-h-[330px] relative flex items-center gap-4">
                                 {isStart ?
                                     <>
-                                        <ReactPlayer
-                                            url={currentURL}
-                                            width='100%'
-                                            height='100%'
-                                            controls={true}
-                                            playing={isPlay}
-                                            onEnded={() => {
-                                                playYoutubeMusic();
-                                                setIsReady(false);
-                                            }}
-                                            onPause={() => setIsReady(false)}
-                                            onReady={() => setIsReady(true)}
-                                            className="react-player"
-                                            ref={playerRef}
-                                        />
+                                        {/* todo: 이전 곡 버튼 구현 */}
+                                        <button
+                                            disabled={true}
+                                            type="button"
+                                            // className="border-2 border-gray-700 play-prev bg-black text-white h-[80px] w-[110px] text-[18px] font-bold hover:scale-110"
+                                            className="border-2 border-gray-300 play-prev bg-gray-300 text-white h-[80px] w-[110px] text-[18px] font-bold"
+                                            onClick={playPrevMusic}
+                                        >
+                                            <p className="relative translate-x-[5px]">
+                                                이전 곡
+                                            </p>
+                                        </button>
+                                        <div className="w-full h-full">
+                                            <ReactPlayer
+                                                url={currentURL}
+                                                width='100%'
+                                                height='100%'
+                                                controls={true}
+                                                playing={isPlay}
+                                                onEnded={() => {
+                                                    playYoutubeMusic();
+                                                    setIsReady(false);
+                                                }}
+                                                onPause={() => setIsReady(false)}
+                                                onReady={() => setIsReady(true)}
+                                                className="react-player"
+                                                ref={playerRef}
+                                            />
+                                        </div>
                                         <button
                                             type="button"
-                                            className="absolute top-1/2 -translate-y-1/2 -right-[150px] border-2 border-gray-700 play-next bg-black text-white h-[80px] w-[110px] text-[18px] font-bold hover:scale-110"
+                                            className="border-2 border-gray-700 play-next bg-black text-white h-[80px] w-[110px] text-[18px] font-bold hover:scale-110"
                                             onClick={playYoutubeMusic}
                                         >
                                             <p className="relative -translate-x-[5px]">
@@ -164,7 +183,10 @@ const YoutubeQueuePlay = () => {
                                         </button>
                                     </>
                                     :
-                                    <div onClick={playYoutubeMusic} className="group w-full h-full bg-black text-white flex justify-center items-center cursor-pointer">
+                                    <div
+                                        onClick={playYoutubeMusic}
+                                        className="group w-full h-full bg-black text-white flex justify-center items-center cursor-pointer"
+                                    >
                                         <div className="flex flex-col justify-center items-center gap-4 group-hover:scale-105">
                                             <p className="text-4xl">플레이리스트 재생하기</p>
                                             <PlayIcon fill="#fff" width={100} height={100}/>
@@ -188,7 +210,7 @@ const YoutubeQueuePlay = () => {
                             </div>
                         )
                     }
-                    <div className="p-10 grow w-full">
+                    <div className="py-10 grow w-full">
                         <div className="border-4 border-gray-500 w-full h-full rounded-2xl p-4">
                             <div className="text-2xl">
                                 준비중인 기능입니다.
