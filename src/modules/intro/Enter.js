@@ -63,7 +63,7 @@ const Enter = () => {
                 if (users.some(user => user === trimNickName)) return toastStore.addToast("이미 접속중인 닉네임입니다, 다른 닉네임으로 접속해주세요!")
 
                 // fireStore db에 users에 nickName 저장
-                await addDoc(collection(initFireStore, "users"), {trimNickName})
+                await addDoc(collection(initFireStore, "users"), {nickName: trimNickName})
                     .then((res) => {
                         // 토큰에 fireStore 에 지정된 id 저장
                         userData.id = res.id;

@@ -11,6 +11,9 @@ import SubmitListItem from "./components/SubmitListItem";
 import {LogoutIcon, PlayIcon} from "../svgComponents";
 import Cursor from "../common/components/Cursor";
 import EditModal from "./components/modal/Edit.modal";
+import PlayPrev from "./components/buttons/PlayPrev";
+import playPrev from "./components/buttons/PlayPrev";
+import PlayNext from "./components/buttons/PlayNext";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
@@ -27,6 +30,8 @@ const YoutubeQueuePlay = () => {
     const [isStart, setIsStart] = useState(false);
     const [isPlay, setIsPlay] = useState(false);
     const [isReady, setIsReady] = useState(false);
+    // todo: 이전 버튼 구현 시 사용할 disabled state
+    const [prevDisabled, setPrevDisabled] = useState(true);
 
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
@@ -140,22 +145,14 @@ const YoutubeQueuePlay = () => {
                         // 어드민인 경우 플레이어 렌더링
                         (tokenStore.token?.role === 1
                         ) ? (
-                            <div className="w-full min-h-[330px] relative flex items-center gap-4">
+                            <div className="w-full min-h-[330px] relative flex items-center justify-center gap-4">
                                 {isStart ?
                                     <>
-                                        {/* todo: 이전 곡 버튼 구현 */}
-                                        <button
-                                            disabled={true}
-                                            type="button"
-                                            // className="border-2 border-gray-700 play-prev bg-black text-white h-[80px] w-[110px] text-[18px] font-bold hover:scale-110"
-                                            className="border-2 border-gray-300 play-prev bg-gray-300 text-white h-[80px] w-[110px] text-[18px] font-bold"
-                                            onClick={playPrevMusic}
-                                        >
-                                            <p className="relative translate-x-[5px]">
-                                                이전 곡
-                                            </p>
-                                        </button>
-                                        <div className="w-full h-full">
+                                        {/* todo: 이전 곡 버튼 구현예정 */}
+                                        <PlayPrev onClick={playPrev} disabled={prevDisabled}/>
+
+                                        {/* 플레이어 */}
+                                        <div className="w-full h-full max-w-[580px]">
                                             <ReactPlayer
                                                 url={currentURL}
                                                 width='100%'
@@ -172,24 +169,17 @@ const YoutubeQueuePlay = () => {
                                                 ref={playerRef}
                                             />
                                         </div>
-                                        <button
-                                            type="button"
-                                            className="border-2 border-gray-700 play-next bg-black text-white h-[80px] w-[110px] text-[18px] font-bold hover:scale-110"
-                                            onClick={playYoutubeMusic}
-                                        >
-                                            <p className="relative -translate-x-[5px]">
-                                                다음 곡
-                                            </p>
-                                        </button>
+
+                                        {/* 다음 곡 버튼 */}
+                                        <PlayNext onClick={playYoutubeMusic}/>
                                     </>
                                     :
-                                    <div
-                                        onClick={playYoutubeMusic}
-                                        className="group w-full h-full bg-black text-white flex justify-center items-center cursor-pointer"
-                                    >
-                                        <div className="flex flex-col justify-center items-center gap-4 group-hover:scale-105">
-                                            <p className="text-4xl">플레이리스트 재생하기</p>
-                                            <PlayIcon fill="#fff" width={100} height={100}/>
+                                    <div className=" w-full h-full text-white flex justify-center items-center">
+                                        <div className="group flex flex-col justify-center items-center bg-black max-w-[580px] w-full h-full cursor-pointer">
+                                            <div onClick={playYoutubeMusic} className="w-full h-full group-hover:scale-105 flex flex-col items-center justify-center gap-4">
+                                                <p className="text-4xl">플레이리스트 재생하기</p>
+                                                <PlayIcon fill="#fff" width={100} height={100}/>
+                                            </div>
                                         </div>
                                     </div>
                                 }
