@@ -14,6 +14,7 @@ import EditModal from "./components/modal/Edit.modal";
 import PlayPrev from "./components/buttons/PlayPrev";
 import playPrev from "./components/buttons/PlayPrev";
 import PlayNext from "./components/buttons/PlayNext";
+import SavedListModal from "./components/modal/SavedList.modal";
 
 const YoutubeQueuePlay = () => {
     const playerRef = useRef(null);
@@ -27,6 +28,7 @@ const YoutubeQueuePlay = () => {
     const [currentData, setCurrentData] = useState(null);
     const [isShowPreViewModal, setIsShowPreViewModal] = useState(false);
     const [isShowEditModal, setIsShowEditModal] = useState(false);
+    const [isShowSavedListModal, setIsShowSavedListModal] = useState(false);
     const [isStart, setIsStart] = useState(false);
     const [isPlay, setIsPlay] = useState(false);
     const [isReady, setIsReady] = useState(false);
@@ -283,6 +285,11 @@ const YoutubeQueuePlay = () => {
                 isShow={isShowPreViewModal}
                 preViewData={currentData}
                 setPreviewData={setCurrentData}
+            />
+            {/* 저장된 리스트 모달 */}
+            <SavedListModal
+                isShow={isShowSavedListModal}
+                setIsShow={setIsShowSavedListModal}
             />
         </>
     )
