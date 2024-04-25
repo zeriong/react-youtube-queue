@@ -1,4 +1,4 @@
-import {CloseIcon} from "../../../svgComponents";
+import {CloseIcon} from "../../../svgComponents/svgComponents";
 import ReactPlayer from "react-player";
 import React from "react";
 

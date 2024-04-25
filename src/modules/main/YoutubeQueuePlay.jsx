@@ -8,7 +8,7 @@ import PreViewModal from "./components/modal/PreView.modal";
 import {deletePlayList, deleteUser} from "../../utils/firebase";
 import {useTokenStore} from "../../App";
 import SubmitListItem from "./components/SubmitListItem";
-import {LogoutIcon, PlayIcon} from "../svgComponents";
+import {LogoutIcon, PlayIcon, SavedPlayList} from "../svgComponents/svgComponents";
 import Cursor from "../common/components/Cursor";
 import EditModal from "./components/modal/Edit.modal";
 import PlayPrev from "./components/buttons/PlayPrev";
@@ -139,7 +139,16 @@ const YoutubeQueuePlay = () => {
 
     return (
         <>
-            <div className="flex flex-col pc:flex-row w-full h-full cursor-default ">
+            <div className="flex flex-col pc:flex-row w-full h-full cursor-default relative">
+
+                {/* 저장된 플레이리스트 버튼 */}
+                <button
+                     type="button"
+                     className="fixed left-[20px] top-[20px] border-4 border-gray-800 rounded-lg"
+                     onClick={() => setIsShowSavedListModal(true)}
+                >
+                    <SavedPlayList width={50} height={50}/>
+                </button>
 
                 {/* 플레이어 컨텐츠 섹션 */}
                 <section className="w-full flex flex-col items-center mt-[100px] gap-12 p-10">
@@ -248,7 +257,7 @@ const YoutubeQueuePlay = () => {
                                 {`${submitList.length + '/' + submitMaxRef.current}`}
                             </p>
                         </div>
-                        <div className="p-2 bg-gray-100 rounded-md grow overflow-hidden min-h-[200px]">
+                        <div className="p-2 bg-gray-100 rounded-md grow overflow-hidden h-full min-h-[200px]">
                             <ul className="flex flex-col gap-1 h-full overflow-auto customScroll-vertical">
                                 {submitList?.map((list, idx) =>
                                     <SubmitListItem

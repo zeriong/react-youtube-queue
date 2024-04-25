@@ -1,4 +1,4 @@
-import {CloseIcon, EditIcon} from "../../svgComponents";
+import {CloseIcon, EditIcon} from "../../svgComponents/svgComponents";
 import {deletePlayList} from "../../../utils/firebase";
 import {useToastsStore} from "../../common/components/Toasts";
 

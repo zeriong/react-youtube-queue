@@ -2,7 +2,7 @@ import ReactPlayer from "react-player";
 import React, {useEffect, useRef, useState} from "react";
 import {useToastsStore} from "../../../common/components/Toasts";
 import {useTokenStore} from "../../../../App";
-import {CloseIcon} from "../../../svgComponents";
+import {CloseIcon} from "../../../svgComponents/svgComponents";
 import {YOUTUBE_BASE_URL} from "../../../../constants";
 import {vibrate} from "../../../../utils/common";
 import {initFireStore} from "../../../../libs/firebase";
