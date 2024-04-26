@@ -1,9 +1,11 @@
 import {CloseIcon, EditIcon} from "../../svgComponents/svgComponents";
 import {deletePlayList} from "../../../utils/firebase";
 import {useToastsStore} from "../../common/components/Toasts";
+import {useTokenStore} from "../../../App";
 
-const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, tokenStore, setIsShowEditModal }) => {
+const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setIsShowEditModal }) => {
     const toastStore = useToastsStore();
+    const tokenStore = useTokenStore();
     // 미리보기 모달 함수
     const onPreViewModal = () => {
         setCurrentData(item);

@@ -20,7 +20,7 @@ const SavedListModal = ({ isShow, setIsShow }) => {
                             <CloseIcon/>
                         </button>
                     </header>
-                    {/* 플레이어 영역 */}
+                    {/* 저장된 플레이리스트 영역 */}
                     <section className="grow px-2 pb-2">
                         <div className="rounded-xl overflow-hidden h-full w-full">
                             저장된 플레이 리스트
