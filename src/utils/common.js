@@ -1,7 +1,17 @@
 import {add, format} from "date-fns";
 import {TOKEN_NAME} from "../constants";
-import {cipher, decipher} from "./crypto";
-import {deleteUser} from "./firebase";
+import {deleteUser, getUsers} from "./firebase";
+import CryptoJS from "crypto-js";
+import {DEFAULT_PLAYLIST} from "../constants/defaultPlaylist";
+
+/** 암호화 유틸 */
+// 대칭형 키
+const cryptoKey = process.env.REACT_APP_CRYPTO_KEY;
+// 암호화 메서드
+export const cipher = (token) => CryptoJS.AES.encrypt(token, cryptoKey).toString();
+// 복호화 메서드
+export const decipher = (token) => CryptoJS.AES.decrypt(token, cryptoKey).toString(CryptoJS.enc.Utf8);
+
 
 /**@desc 로컬스토리지에서 로그인 유지 정보를 확인 후 있다면 자동 연장 후 로그인 유지
  * @return { null || { expire: string, nickName: string } }*/
@@ -11,6 +21,14 @@ export const getAuthStorage = async () => {
     if (getToken) {
         const getDecipher = decipher(getToken); // 토큰 복호화
         const token = JSON.parse(getDecipher); // 객체화
+
+        // 토큰이 존재하고 파이어베이스에도 유저가 존재하는지 validate
+        const users = await getUsers();
+        if (!users.some(user => token.nickName === user)) {
+            localStorage.removeItem(TOKEN_NAME)
+            return alert("존재하지 않는 유저입니다.\n다시 로그인해주세요.");
+        }
+
         const getNow = Number(format(Date.now(), "yyyyMMdd")); // 비교를 위해 이어붙인 숫자로 변환
         const getExpire = Number(format(token.expire, "yyyyMMdd")); // 비교를 위해 이어붙인 숫자로 변환
 
@@ -90,4 +108,17 @@ export function validateByteFormLength(text, maxByte = 40, minByte) {
     if ( minByte && (byte < minByte) ) isValidate = false;
 
     return {isValidate, byte};
+}
+
+export const defaultPlayer = (shuffleRef, setCurrentURL) => {
+    // 난수 생성
+    const randomNum = Math.floor(Math.random() * DEFAULT_PLAYLIST.length);
+    // 난수가 이미 배열에 존재하면 재귀하여 재생성
+    if (shuffleRef.current.some(val => randomNum === val)) return defaultPlayer(shuffleRef, setCurrentURL);
+    // 존재하지 않는 난수를 생성 시 셔플ref에 푸시
+    shuffleRef.current?.push(randomNum);
+    // 해당 번호의 리스트를 currentURL에 setState
+    setCurrentURL(DEFAULT_PLAYLIST[randomNum]);
+    // 셔플ref가 가득 차면 초기화
+    if (shuffleRef.current.length === DEFAULT_PLAYLIST.length) shuffleRef.current = [];
 }

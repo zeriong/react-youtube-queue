@@ -1,22 +1,16 @@
 import {useToastsStore} from "../common/components/Toasts";
-import ReactPlayer from "react-player";
 import {useEffect, useRef, useState} from "react";
-import {DEFAULT_PLAYLIST} from "../../constants/defaultPlaylist";
 import {collection, onSnapshot, query, orderBy} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import PreViewModal from "./components/modal/PreView.modal";
 import {deletePlayList, deleteUser} from "../../utils/firebase";
 import {useTokenStore} from "../../App";
-import SubmitListItem from "./components/lists/SubmitListItem";
-import {LogoutIcon, PlayIcon, SavedPlayList} from "../svgComponents/svgComponents";
-import Cursor from "../common/components/Cursor";
+import {SavedPlayList} from "../svgComponents/svgComponents";
 import EditModal from "./components/modal/Edit.modal";
-import PlayPrev from "./components/buttons/PlayPrev";
-import playPrev from "./components/buttons/PlayPrev";
-import PlayNext from "./components/buttons/PlayNext";
 import SavedListModal from "./components/modal/SavedList.modal";
 import PlayerAside from "./components/section/PlayerAside";
 import PlayerSection from "./components/section/PlayerSection";
+import {defaultPlayer} from "../../utils/common";
 
 const YoutubeQueuePlay = () => {
     const shuffleRef = useRef([]);
@@ -55,18 +49,7 @@ const YoutubeQueuePlay = () => {
     }
 
     // 기본 Lofi음악 리스트 랜덤 재생
-    const defaultPlayer = () => {
-        // 난수 생성
-        const randomNum = Math.floor(Math.random() * DEFAULT_PLAYLIST.length);
-        // 난수가 이미 배열에 존재하면 재귀하여 재생성
-        if (shuffleRef.current.some(val => randomNum === val)) return defaultPlayer();
-        // 존재하지 않는 난수를 생성 시 셔플ref에 푸시
-        shuffleRef.current.push(randomNum);
-        // 해당 번호의 리스트를 currentURL에 setState
-        setCurrentURL(DEFAULT_PLAYLIST[randomNum]);
-        // 셔플ref가 가득 차면 초기화
-        if (shuffleRef.current.length === DEFAULT_PLAYLIST.length) shuffleRef.current = [];
-    }
+
 
     // 재생상태를 지정하고 상태에 따른 플레이어 재생
     const playYoutubeMusic = () => {
@@ -76,7 +59,7 @@ const YoutubeQueuePlay = () => {
         isSubmitPlayingRef.current = !!submitList.length;
         // 신청곡이 없다면 기본 곡 에서 랜덤재생
         if (!isSubmitPlayingRef.current) {
-            return defaultPlayer();
+            return defaultPlayer(shuffleRef, setCurrentURL);
         }
         // 신청곡이 있다면 차례로 재생
         const firstItem = submitList[0];
@@ -154,6 +137,7 @@ const YoutubeQueuePlay = () => {
                 {/* 플레이어 컨텐츠 섹션 */}
                 <PlayerSection
                     currentURL={currentURL}
+                    playPrevMusic={playPrevMusic}
                     playYoutubeMusic={playYoutubeMusic}
                     isPlay={isPlay}
                     isStart={isStart}

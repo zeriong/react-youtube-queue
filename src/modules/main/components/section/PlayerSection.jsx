@@ -1,48 +1,73 @@
 import {useTokenStore} from "../../../../App";
 import PlayPrev from "../buttons/PlayPrev";
-import playPrev from "../buttons/PlayPrev";
 import ReactPlayer from "react-player";
 import PlayNext from "../buttons/PlayNext";
 import {PlayIcon} from "../../../svgComponents/svgComponents";
 import Cursor from "../../../common/components/Cursor";
+import SaveCurrentMusic from "../buttons/SaveCurrentMusic";
 
-const PlayerSection = ({ isStart, prevDisabled, currentURL, isPlay, playYoutubeMusic, setIsReady,  }) => {
+const PlayerSection = ({ isStart, prevDisabled, currentURL, isPlay, playYoutubeMusic, setIsReady, playPrevMusic }) => {
     const tokenStore = useTokenStore();
 
     return (
-        <section className="w-full flex flex-col items-center mt-[100px] gap-12 p-10">
+        <section className="w-full flex flex-col items-center mt-[100px] gap-6 p-10">
+
+            {/* 플레이어 섹션 */}
             {
                 // 어드민인 경우 플레이어 렌더링
                 (tokenStore.token?.role === 1
                 ) ? (
-                    <div className="w-full min-h-[330px] relative flex items-center justify-center gap-4">
+                    <div className="w-full  flex flex-col">
                         {isStart ?
                             <>
-                                {/* todo: 이전 곡 버튼 구현예정 */}
-                                <PlayPrev onClick={playPrev} disabled={prevDisabled}/>
+                                <div className="relative flex items-center h-full justify-center gap-4">
+                                    {/* todo: 이전 곡 버튼 구현예정 */}
+                                    <div className="hidden pc:block">
+                                        <PlayPrev onClick={playPrevMusic} disabled={prevDisabled}/>
+                                    </div>
 
-                                {/* 플레이어 */}
-                                <div className="w-full h-full max-w-[580px]">
-                                    <ReactPlayer
-                                        url={currentURL}
-                                        width='100%'
-                                        height='100%'
-                                        controls={true}
-                                        playing={isPlay}
-                                        onEnded={() => {
-                                            playYoutubeMusic();
-                                            setIsReady(false);
-                                        }}
-                                        onPause={() => setIsReady(false)}
-                                        onReady={() => setIsReady(true)}
-                                    />
+                                    {/* 플레이어 */}
+                                    <div className="w-full max-w-[580px] h-[330px]">
+                                        <ReactPlayer
+                                            url={currentURL}
+                                            width='100%'
+                                            height='100%'
+                                            controls={true}
+                                            playing={isPlay}
+                                            onEnded={() => {
+                                                playYoutubeMusic();
+                                                setIsReady(false);
+                                            }}
+                                            onPause={() => setIsReady(false)}
+                                            onReady={() => setIsReady(true)}
+                                        />
+                                    </div>
+
+                                    {/* 다음 곡 버튼 */}
+                                    <div className="hidden pc:block">
+                                        <PlayNext onClick={playYoutubeMusic}/>
+                                    </div>
+                                </div>
+                                <div className="flex justify-center mt-[12px]">
+                                    <div className="flex items-center gap-4">
+                                        {/* 모바일버전 이전 곡 버튼 */}
+                                        <div className="block pc:hidden">
+                                            <PlayPrev onClick={playPrevMusic} disabled={prevDisabled}/>
+                                        </div>
+
+                                        {/* 현재 재생중인 음악 저장버튼 */}
+                                        <SaveCurrentMusic currentURL={currentURL}/>
+
+                                        {/* 모바일버전 다음 곡 버튼 */}
+                                        <div className="block pc:hidden">
+                                            <PlayNext classNames="h-[40px]" onClick={playYoutubeMusic}/>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                {/* 다음 곡 버튼 */}
-                                <PlayNext onClick={playYoutubeMusic}/>
                             </>
                             :
-                            <div className=" w-full h-full text-white flex justify-center items-center">
+                            <div className=" w-[580px] h-[330px] m-auto text-white flex justify-center items-center">
                                 <div
                                     className="group flex flex-col justify-center items-center bg-black max-w-[580px] w-full h-full cursor-pointer">
                                     <div onClick={playYoutubeMusic}
@@ -70,7 +95,9 @@ const PlayerSection = ({ isStart, prevDisabled, currentURL, isPlay, playYoutubeM
                     </div>
                 )
             }
-            <div className="py-10 grow w-full">
+
+            {/* todo: 추가적인 컨텐츠 구상해보기 */}
+            <div className="grow w-full">
                 <div className="border-4 border-gray-500 w-full h-full rounded-2xl p-4">
                     <div className="text-2xl">
                         준비중인 기능입니다.
