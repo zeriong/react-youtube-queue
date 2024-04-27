@@ -1,5 +1,5 @@
-import {LogoutIcon} from "../../svgComponents/svgComponents";
-import SubmitListItem from "./SubmitListItem";
+import {LogoutIcon} from "../../../svgComponents/svgComponents";
+import SubmitListItem from "../lists/SubmitListItem";
 
 /**@desc 유튜브 음악 플레이어 화면 Aside
  * @param {any} logout 로그아웃
