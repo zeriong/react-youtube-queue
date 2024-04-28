@@ -1,12 +1,12 @@
 import {useTokenStore} from "../../../../App";
-import PlayPrev from "../buttons/PlayPrev";
+import PlayPrevButton from "../buttons/PlayPrevButton";
 import ReactPlayer from "react-player";
-import PlayNext from "../buttons/PlayNext";
+import PlayNextButton from "../buttons/PlayNextButton";
 import {PlayIcon} from "../../../svgComponents/svgComponents";
 import Cursor from "../../../common/components/Cursor";
-import SaveCurrentMusic from "../buttons/SaveCurrentMusic";
+import SaveCurrentMusicButton from "../buttons/SaveCurrentMusicButton";
 
-const PlayerSection = ({ isStart, prevDisabled, currentURL, isPlay, playYoutubeMusic, setIsReady, playPrevMusic }) => {
+const PlayerSection = ({ isStart, prevDisabled, currentListItem, isPlay, playYoutubeMusic, setIsReady, playPrevMusic, isSubmitPlayingRef }) => {
     const tokenStore = useTokenStore();
 
     return (
@@ -23,13 +23,13 @@ const PlayerSection = ({ isStart, prevDisabled, currentURL, isPlay, playYoutubeM
                                 <div className="relative flex items-center h-full justify-center gap-4">
                                     {/* todo: 이전 곡 버튼 구현예정 */}
                                     <div className="hidden pc:block">
-                                        <PlayPrev onClick={playPrevMusic} disabled={prevDisabled}/>
+                                        <PlayPrevButton onClick={playPrevMusic} disabled={prevDisabled}/>
                                     </div>
 
                                     {/* 플레이어 */}
                                     <div className="w-full max-w-[580px] h-[330px]">
                                         <ReactPlayer
-                                            url={currentURL}
+                                            url={currentListItem.link}
                                             width='100%'
                                             height='100%'
                                             controls={true}
@@ -45,22 +45,25 @@ const PlayerSection = ({ isStart, prevDisabled, currentURL, isPlay, playYoutubeM
 
                                     {/* 다음 곡 버튼 */}
                                     <div className="hidden pc:block">
-                                        <PlayNext onClick={playYoutubeMusic}/>
+                                        <PlayNextButton onClick={playYoutubeMusic}/>
                                     </div>
                                 </div>
                                 <div className="flex justify-center mt-[12px]">
                                     <div className="flex items-center gap-4">
                                         {/* 모바일버전 이전 곡 버튼 */}
                                         <div className="block pc:hidden">
-                                            <PlayPrev onClick={playPrevMusic} disabled={prevDisabled}/>
+                                            <PlayPrevButton onClick={playPrevMusic} disabled={prevDisabled}/>
                                         </div>
 
                                         {/* 현재 재생중인 음악 저장버튼 */}
-                                        <SaveCurrentMusic currentURL={currentURL}/>
+                                        <SaveCurrentMusicButton
+                                            currentListItem={currentListItem}
+                                            isSubmitPlayingRef={isSubmitPlayingRef}
+                                        />
 
                                         {/* 모바일버전 다음 곡 버튼 */}
                                         <div className="block pc:hidden">
-                                            <PlayNext classNames="h-[40px]" onClick={playYoutubeMusic}/>
+                                            <PlayNextButton classNames="h-[40px]" onClick={playYoutubeMusic}/>
                                         </div>
                                     </div>
                                 </div>

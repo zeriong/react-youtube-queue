@@ -1,6 +1,6 @@
 import {add, format} from "date-fns";
 import {TOKEN_NAME} from "../constants";
-import {deleteUser, getUsers} from "./firebase";
+import {deleteUser, getFireStoreData} from "./firebase";
 import CryptoJS from "crypto-js";
 import {DEFAULT_PLAYLIST} from "../constants/defaultPlaylist";
 
@@ -23,8 +23,8 @@ export const getAuthStorage = async () => {
         const token = JSON.parse(getDecipher); // 객체화
 
         // 토큰이 존재하고 파이어베이스에도 유저가 존재하는지 validate
-        const users = await getUsers();
-        if (!users.some(user => token.nickName === user)) {
+        const users = await getFireStoreData("users");
+        if (!users.some(user => token.nickName === user.nickName)) {
             localStorage.removeItem(TOKEN_NAME)
             return alert("존재하지 않는 유저입니다.\n다시 로그인해주세요.");
         }
@@ -110,15 +110,15 @@ export function validateByteFormLength(text, maxByte = 40, minByte) {
     return {isValidate, byte};
 }
 
-export const defaultPlayer = (shuffleRef, setCurrentURL) => {
+export const defaultPlayer = (shuffleRef, setCurrentListItem) => {
     // 난수 생성
     const randomNum = Math.floor(Math.random() * DEFAULT_PLAYLIST.length);
     // 난수가 이미 배열에 존재하면 재귀하여 재생성
-    if (shuffleRef.current.some(val => randomNum === val)) return defaultPlayer(shuffleRef, setCurrentURL);
+    if (shuffleRef.current.some(val => randomNum === val)) return defaultPlayer(shuffleRef, setCurrentListItem);
     // 존재하지 않는 난수를 생성 시 셔플ref에 푸시
     shuffleRef.current?.push(randomNum);
-    // 해당 번호의 리스트를 currentURL에 setState
-    setCurrentURL(DEFAULT_PLAYLIST[randomNum]);
+    // 해당 번호의 리스트를 setState
+    setCurrentListItem(prev => ({ ...prev, link: DEFAULT_PLAYLIST[randomNum] }));
     // 셔플ref가 가득 차면 초기화
     if (shuffleRef.current.length === DEFAULT_PLAYLIST.length) shuffleRef.current = [];
 }

@@ -1,4 +1,4 @@
-const PlayPrev = ({onClick, disabled, classNames}) => {
+const PlayPrevButton = ({onClick, disabled, classNames}) => {
     // todo: 버튼 구현 시 disabled에 따른 스타일 변경 필요
     return (
         <button
@@ -15,4 +15,4 @@ const PlayPrev = ({onClick, disabled, classNames}) => {
     )
 }
 
-export default PlayPrev;
+export default PlayPrevButton;

@@ -7,7 +7,7 @@ import {YOUTUBE_BASE_URL} from "../../../../constants";
 import {vibrate} from "../../../../utils/common";
 import {initFireStore} from "../../../../libs/firebase";
 import {addDoc, collection} from "firebase/firestore";
-import {updatePlayLink} from "../../../../utils/firebase";
+import {updateFireStoreData} from "../../../../utils/firebase";
 
 const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength, listMax }) => {
     const timeoutRef = useRef(null);
@@ -88,7 +88,7 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
                 return setIsShow(false);
             }
             // 업데이트 요청
-            const isUpdate = updatePlayLink(currentData.id, { link: submitInput.trim() });
+            const isUpdate = updateFireStoreData(currentData.id, { link: submitInput.trim() }, "playList");
             // 업데이트 성공, 실패 처리
             if (isUpdate) setIsShow(false);
             toastStore.addToast(isUpdate ? "링크가 수정되었습니다." : "링크 수정에 실패하였습니다.");

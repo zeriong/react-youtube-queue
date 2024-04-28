@@ -6,7 +6,7 @@ import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import {add, format} from "date-fns";
 import {useTokenStore} from "../../App";
-import {getUsers} from "../../utils/firebase";
+import {getFireStoreData} from "../../utils/firebase";
 import usePreventSpam from "../../hooks/usePreventSpam";
 
 const Enter = () => {
@@ -59,8 +59,8 @@ const Enter = () => {
                 let userData = { nickName: trimNickName, expire, role };
 
                 // 이미 등록된 닉네임의 경우
-                const users = await getUsers();
-                if (users.some(user => user === trimNickName)) return toastStore.addToast("이미 접속중인 닉네임입니다, 다른 닉네임으로 접속해주세요!")
+                const users = await getFireStoreData("users");
+                if (users.some(user => user.nickName === trimNickName)) return toastStore.addToast("이미 접속중인 닉네임입니다, 다른 닉네임으로 접속해주세요!")
 
                 // fireStore db에 users에 nickName 저장
                 await addDoc(collection(initFireStore, "users"), {nickName: trimNickName})

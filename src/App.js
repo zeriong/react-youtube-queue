@@ -4,7 +4,7 @@ import Toasts from "./modules/common/components/Toasts";
 import {TOKEN_NAME} from "./constants";
 import {create} from "zustand";
 import {getAuthStorage} from "./utils/common";
-import {deleteUser, getUsers} from "./utils/firebase";
+import {deleteUser} from "./utils/firebase";
 
 /** Token store */
 export const useTokenStore = create((setState) => ({

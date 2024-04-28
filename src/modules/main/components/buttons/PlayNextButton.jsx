@@ -1,4 +1,4 @@
-const PlayNext = ({onClick, classNames}) => {
+const PlayNextButton = ({onClick, classNames}) => {
     return (
         <button
             type="button"
@@ -12,4 +12,4 @@ const PlayNext = ({onClick, classNames}) => {
     )
 }
 
-export default PlayNext;
+export default PlayNextButton;

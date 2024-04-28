@@ -1,5 +1,5 @@
 import {CloseIcon, EditIcon} from "../../../svgComponents/svgComponents";
-import {deletePlayList} from "../../../../utils/firebase";
+import {deleteFireStore} from "../../../../utils/firebase";
 import {useToastsStore} from "../../../common/components/Toasts";
 import {useTokenStore} from "../../../../App";
 
@@ -20,7 +20,7 @@ const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setI
     const onDelete = () => {
         const isConfirmed = window.confirm("해당 리스트를 삭제하시겠습니까?");
         let isDeleted;
-        if (isConfirmed) isDeleted = deletePlayList(item.id);
+        if (isConfirmed) isDeleted = deleteFireStore(item.id, "playList");
         // 실패, 성공에 따른 토스트
         toastStore.addToast(isDeleted ? "해당 플레이리스트가 삭제되었습니다." : "플레이리스트 삭제에 실패하였습니다.");
     }

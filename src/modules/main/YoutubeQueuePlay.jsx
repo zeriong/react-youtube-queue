@@ -3,7 +3,7 @@ import {useEffect, useRef, useState} from "react";
 import {collection, onSnapshot, query, orderBy} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import PreViewModal from "./components/modal/PreView.modal";
-import {deletePlayList, deleteUser} from "../../utils/firebase";
+import {deleteFireStore, deleteUser} from "../../utils/firebase";
 import {useTokenStore} from "../../App";
 import {SavedPlayList} from "../svgComponents/svgComponents";
 import EditModal from "./components/modal/Edit.modal";
@@ -11,13 +11,14 @@ import SavedListModal from "./components/modal/SavedList.modal";
 import PlayerAside from "./components/section/PlayerAside";
 import PlayerSection from "./components/section/PlayerSection";
 import {defaultPlayer} from "../../utils/common";
+import SavedMusicListButton from "./components/buttons/SavedMusicListButton";
 
 const YoutubeQueuePlay = () => {
     const shuffleRef = useRef([]);
     const isSubmitPlayingRef = useRef(false);
     const submitMaxRef= useRef(20);
 
-    const [currentURL, setCurrentURL] = useState("");
+    const [currentListItem, setCurrentListItem] = useState({});
     const [submitList, setSubmitList] = useState([]);
 
     const [currentData, setCurrentData] = useState(null);
@@ -27,6 +28,7 @@ const YoutubeQueuePlay = () => {
     const [isStart, setIsStart] = useState(false);
     const [isPlay, setIsPlay] = useState(false);
     const [isReady, setIsReady] = useState(false);
+    const [savedMusicList, setSavedMusicList] = useState([]);
     // todo: 이전 버튼 구현 시 사용할 disabled state
     const [prevDisabled, setPrevDisabled] = useState(true);
 
@@ -59,15 +61,15 @@ const YoutubeQueuePlay = () => {
         isSubmitPlayingRef.current = !!submitList.length;
         // 신청곡이 없다면 기본 곡 에서 랜덤재생
         if (!isSubmitPlayingRef.current) {
-            return defaultPlayer(shuffleRef, setCurrentURL);
+            return defaultPlayer(shuffleRef, setCurrentListItem);
         }
         // 신청곡이 있다면 차례로 재생
         const firstItem = submitList[0];
         // 리스트에서 삭제
-        const isDeleted = deletePlayList(firstItem.id);
+        const isDeleted = deleteFireStore(firstItem.id, "playList");
         if (!isDeleted) return alert("삭제에 실패하였습니다, 서버를 점검해주세요.");
-        // currentURL state를 변경하여 즉시 플레이어 실행
-        setCurrentURL(firstItem.link);
+        // currentListItem -> link state를 변경하여 즉시 플레이어 실행
+        setCurrentListItem(firstItem);
     }
 
     // 이전곡을 재생할 함수
@@ -126,23 +128,22 @@ const YoutubeQueuePlay = () => {
             <div className="flex flex-col pc:flex-row w-full h-full cursor-default relative">
 
                 {/* 저장된 플레이리스트 버튼 */}
-                <button
-                     type="button"
-                     className="fixed left-[20px] top-[20px] border-4 border-gray-800 rounded-lg"
-                     onClick={() => setIsShowSavedListModal(true)}
-                >
-                    <SavedPlayList width={50} height={50}/>
-                </button>
+                <SavedMusicListButton
+                    setIsShowSavedListModal={setIsShowSavedListModal}
+                    setSavedMusicList={setSavedMusicList}
+                    savedMusicList={savedMusicList}
+                />
 
                 {/* 플레이어 컨텐츠 섹션 */}
                 <PlayerSection
-                    currentURL={currentURL}
+                    currentListItem={currentListItem}
                     playPrevMusic={playPrevMusic}
                     playYoutubeMusic={playYoutubeMusic}
                     isPlay={isPlay}
                     isStart={isStart}
                     prevDisabled={prevDisabled}
                     setIsReady={setIsReady}
+                    isSubmitPlayingRef={isSubmitPlayingRef.current}
                 />
 
                 {/* 어사이드 바 */}
@@ -177,6 +178,7 @@ const YoutubeQueuePlay = () => {
             <SavedListModal
                 isShow={isShowSavedListModal}
                 setIsShow={setIsShowSavedListModal}
+                savedMusicList={savedMusicList}
             />
         </>
     )

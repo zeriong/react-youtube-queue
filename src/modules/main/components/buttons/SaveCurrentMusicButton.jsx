@@ -1,21 +1,17 @@
 import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../../../libs/firebase";
 import {useToastsStore} from "../../../common/components/Toasts";
-import {useTokenStore} from "../../../../App";
 
-const SaveCurrentMusic = ({ currentURL }) => {
+const SaveCurrentMusicButton = ({ currentListItem, isSubmitPlayingRef }) => {
     const toastStore = useToastsStore();
-    const tokenStore = useTokenStore();
 
     const saveCurrentPlayMusic = () => {
         (async () => {
+            if (!isSubmitPlayingRef) return toastStore.addToast("기본 음악은 저장할 수 없습니다.");
             // confirm을 체크 후 fireStore에 저장
             const confirmSubmit = window.confirm("재생중인 플레이리스트를 저장하시겠습니까?");
             if (confirmSubmit) {
-                await addDoc(collection(initFireStore, "savedList"), {
-                    nickName: tokenStore.token.nickName,
-                    link: currentURL,
-                })
+                await addDoc(collection(initFireStore, "savedList"), currentListItem)
                     .then(() => {
                         toastStore.addToast("저장된 플레이리스트에 추가되었습니다.");
                     })
@@ -28,6 +24,7 @@ const SaveCurrentMusic = ({ currentURL }) => {
             }
         })()
     }
+
     return (
         <button
             type="button"
@@ -39,4 +36,4 @@ const SaveCurrentMusic = ({ currentURL }) => {
     )
 }
 
-export default SaveCurrentMusic;
+export default SaveCurrentMusicButton;
