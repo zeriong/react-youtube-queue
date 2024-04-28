@@ -2,8 +2,10 @@ import {CloseIcon} from "../../../svgComponents/svgComponents";
 import ReactPlayer from "react-player";
 import React from "react";
 import SubmitListItem from "../lists/SubmitListItem";
+import {useSavedMusicStore} from "../buttons/SavedMusicListButton";
 
-const SavedListModal = ({ isShow, setIsShow, savedMusicList }) => {
+const SavedListModal = ({ isShow, setIsShow }) => {
+    const { savedMusic } = useSavedMusicStore();
     return isShow &&
         <div onClick={() => setIsShow(false)}
              className="fixed top-0 left-0 z-50 w-full h-full bg-black/50 flex justify-center items-center">
@@ -24,8 +26,8 @@ const SavedListModal = ({ isShow, setIsShow, savedMusicList }) => {
                     {/* 저장된 플레이리스트 영역 */}
                     <section className="grow px-2 pb-2">
                         <ul className="p-2 bg-gray-100 rounded-md overflow-hidden h-full min-h-[200px]">
-                            {!!savedMusicList.length ?
-                                savedMusicList.map((item, idx) =>
+                            {!!savedMusic.length ?
+                                savedMusic.map((item, idx) =>
                                     <SubmitListItem item={item} idx={idx}
                                     />
                                 )
