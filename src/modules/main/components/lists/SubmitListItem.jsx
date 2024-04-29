@@ -26,7 +26,7 @@ const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setI
     }
 
     return (
-        <li key={idx} className="flex justify-between border-2 border-gray-400 px-2 py-1 rounded-md bg-white">
+        <li key={idx} className="flex justify-between border-2 border-gray-400 px-2 py-1 rounded-md bg-white w-full">
             <div className="flex gap-3">
                 <p>{`${idx + 1}. ${item?.nickName}님의 신청곡`}</p>
                 <button

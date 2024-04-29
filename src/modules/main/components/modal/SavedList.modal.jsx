@@ -28,8 +28,10 @@ const SavedListModal = ({ isShow, setIsShow }) => {
                         <ul className="p-2 bg-gray-100 rounded-md overflow-hidden h-full min-h-[200px]">
                             {!!savedMusic.length ?
                                 savedMusic.map((item, idx) =>
-                                    <SubmitListItem item={item} idx={idx}
-                                    />
+                                    <div className="flex w-full gap-2">
+                                        {/*<input type="checkbox"/>*/}
+                                        <SubmitListItem item={item} idx={idx}/>
+                                    </div>
                                 )
                                 :
                                 <div className="flex h-full justify-center items-center text-gray-400 text-2xl">
