@@ -4,7 +4,6 @@ import {useToastsStore} from "../../../common/components/Toasts";
 import {useTokenStore} from "../../../../App";
 import {CloseIcon} from "../../../svgComponents/svgComponents";
 import {YOUTUBE_BASE_URL} from "../../../../constants";
-import {vibrate} from "../../../../utils/common";
 import {initFireStore} from "../../../../libs/firebase";
 import {addDoc, collection} from "firebase/firestore";
 import {updateFireStoreData} from "../../../../utils/firebase";
@@ -45,7 +44,6 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
         if (submitInput.trim() === "") return toastStore.addToast("신청하실 유튜브 음악 링크를 입력해주세요.");
         // 유튜브 링크인지 체크 후 아니라면 toast 알림을 띄움
         if (!submitInput.includes(YOUTUBE_BASE_URL)) {
-            vibrate(submitInputAreaRef);
             return toastStore.addToast("유튜브 링크를 입력해주세요.");
         }
         // 정상적인 비디오 링크인지 검증
