@@ -12,8 +12,7 @@ import SubmitListItem from "../lists/SubmitListItem";
  *  */
 const PlayerAside = ({logout, submitMusic, submitList, submitMax, setIsShowPreViewModal, setCurrentData, setIsShowEditModal,  }) => {
     return (
-        <aside
-            className="flex flex-col relative right-0 pt-4 px-6 pb-6 border-dashed max-pc:border-t-[5px] pc:border-l-[5px] pc:border-gray-700">
+        <aside className="flex flex-col relative right-0 pt-4 px-6 pb-6 border-dashed max-pc:border-t-[5px] pc:border-l-[5px] pc:border-gray-700">
 
             {/* 헤더 */}
             <header className="flex flex-col gap-6 mb-4">

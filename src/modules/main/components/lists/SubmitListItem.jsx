@@ -3,7 +3,7 @@ import {deleteFireStore} from "../../../../utils/firebase";
 import {useToastsStore} from "../../../common/components/Toasts";
 import {useTokenStore} from "../../../../App";
 
-const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setIsShowEditModal }) => {
+const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setIsShowEditModal, isSavedList }) => {
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
     // 미리보기 모달 함수
@@ -42,7 +42,7 @@ const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setI
                 {((item?.nickName === tokenStore.token?.nickName) || (tokenStore.token?.role === 1)) &&
                     <div className="flex gap-2">
                         {/* 에디트 아이콘은 반드시 본인에게만 나타남 */}
-                        {(item?.nickName === tokenStore.token?.nickName) &&
+                        {(!isSavedList && item?.nickName === tokenStore.token?.nickName) &&
                             <button type="button" onClick={onEditModal}>
                                 <EditIcon/>
                             </button>

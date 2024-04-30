@@ -29,6 +29,7 @@ const YoutubeQueuePlay = () => {
     const [isPlay, setIsPlay] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [savedMusicList, setSavedMusicList] = useState([]);
+
     // todo: 이전 버튼 구현 시 사용할 disabled state
     const [prevDisabled, setPrevDisabled] = useState(true);
 

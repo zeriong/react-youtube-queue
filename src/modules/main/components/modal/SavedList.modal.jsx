@@ -30,7 +30,7 @@ const SavedListModal = ({ isShow, setIsShow }) => {
                                 savedMusic.map((item, idx) =>
                                     <div className="flex w-full gap-2">
                                         {/*<input type="checkbox"/>*/}
-                                        <SubmitListItem item={item} idx={idx}/>
+                                        <SubmitListItem item={item} idx={idx} isSavedList={true}/>
                                     </div>
                                 )
                                 :
