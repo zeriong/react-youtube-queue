@@ -128,7 +128,7 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
                     </header>
                     {/* 신청 폼 */}
                     <form className="flex gap-2 px-2 mb-3" onSubmit={submitURL}>
-                    <div ref={submitInputAreaRef} className="relative w-full">
+                        <div ref={submitInputAreaRef} className="relative w-full">
                             <input
                                 ref={submitInputRef}
                                 type="text"
