@@ -33,8 +33,10 @@ const SaveCurrentMusicButton = ({ currentListItem, isSubmitPlayingRef }) => {
                 
                 // 링크가 다르다면 fireStore에 저장 
                 await addDoc(collection(initFireStore, "savedList"), currentListItem)
-                    .then(() => {
+                    .then((res) => {
+                        console.log("리스폰스다.", res.id);
                         toastStore.addToast("저장된 플레이리스트에 추가되었습니다.");
+                        currentListItem.id = res.id;
                         savedMusicStore.saveMusic(currentListItem);
                     })
                     .catch((e) => {

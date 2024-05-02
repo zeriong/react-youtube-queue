@@ -5,7 +5,6 @@ import {initFireStore} from "../../libs/firebase";
 import PreViewModal from "./components/modal/PreView.modal";
 import {deleteFireStore, deleteUser} from "../../utils/firebase";
 import {useTokenStore} from "../../App";
-import {SavedPlayList} from "../svgComponents/svgComponents";
 import EditModal from "./components/modal/Edit.modal";
 import SavedListModal from "./components/modal/SavedList.modal";
 import PlayerAside from "./components/section/PlayerAside";

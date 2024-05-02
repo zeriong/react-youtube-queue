@@ -14,9 +14,9 @@ export const useSavedMusicStore = create((setState) => ({
     }),
     deleteMusic: (payloadId) => setState((store) => {
         const leftSavedList = store.savedMusic.filter((list) => payloadId !== list.id);
-        return { token: leftSavedList };
+        return { savedMusic: leftSavedList };
     }),
-}))
+}));
 
 const SavedMusicListButton = ({ setIsShowSavedListModal }) => {
     const savedMusicStore = useSavedMusicStore();
