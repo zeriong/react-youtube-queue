@@ -1,4 +1,4 @@
-import {CloseIcon, EditIcon} from "../../../svgComponents/svgComponents";
+import {AddIcon, addIcon, CloseIcon, EditIcon} from "../../../svgComponents/svgComponents";
 import {deleteFireStore} from "../../../../utils/firebase";
 import {useToastsStore} from "../../../common/components/Toasts";
 import {useTokenStore} from "../../../../App";
@@ -47,8 +47,11 @@ const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setI
                         {/* 에디트 아이콘은 반드시 본인에게만 나타남 */}
                         {(!isSavedList && item?.nickName === tokenStore.token?.nickName) &&
                             <button type="button" onClick={onEditModal}>
-                                <EditIcon/>
+                                <EditIcon className="cursor-pointer" />
                             </button>
+                        }
+                        {isSavedList &&
+                            <AddIcon style={{ cursor: "pointer" }}/>
                         }
                         <button type="button" onClick={onDelete}>
                             <CloseIcon/>
