@@ -1,8 +1,8 @@
-import {AddIcon, addIcon, CloseIcon, EditIcon} from "../../../svgComponents/svgComponents";
+import {AddIcon, CloseIcon, EditIcon} from "../../../svgComponents/svgComponents";
 import {deleteFireStore} from "../../../../utils/firebase";
 import {useToastsStore} from "../../../common/components/Toasts";
-import {useTokenStore} from "../../../../App";
-import {useSavedMusicStore} from "../buttons/SavedMusicListButton";
+import {useSavedMusicStore} from "../../../../store/playerStore";
+import {useTokenStore} from "../../../../store/commonStore";
 
 const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setIsShowEditModal, isSavedList }) => {
     const toastStore = useToastsStore();
@@ -15,7 +15,7 @@ const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setI
     }
     // 에디트 모달 함수
     const onEditModal = () => {
-        setCurrentData(item)
+        setCurrentData(item);
         setIsShowEditModal(true);
     }
     // 플레이리스트 삭제 함수
@@ -31,7 +31,7 @@ const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setI
     return (
         <li key={idx} className="flex justify-between border-2 border-gray-400 px-2 py-1 rounded-md bg-white w-full">
             <div className="flex gap-3">
-                <p>{isSavedList ? item.title : `${idx + 1}. ${item?.nickName}님의 신청곡`}</p>
+                <p>{(isSavedList) ? (item.title) : (`${idx + 1}. ${item?.nickName}님의 신청곡`)}</p>
                 <button
                     className="text-[12px] border border-gray-600 px-2 rounded-md"
                     type="button"

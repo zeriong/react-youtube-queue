@@ -1,10 +1,10 @@
-import {useTokenStore} from "../../../../App";
 import PlayPrevButton from "../buttons/PlayPrevButton";
 import ReactPlayer from "react-player";
 import PlayNextButton from "../buttons/PlayNextButton";
 import {PlayIcon} from "../../../svgComponents/svgComponents";
 import Cursor from "../../../common/components/Cursor";
 import SaveCurrentMusicButton from "../buttons/SaveCurrentMusicButton";
+import {useTokenStore} from "../../../../store/commonStore";
 
 const PlayerSection = ({ isStart, prevDisabled, currentListItem, isPlay, playYoutubeMusic, setIsReady, playPrevMusic, isSubmitPlayingRef }) => {
     const tokenStore = useTokenStore();

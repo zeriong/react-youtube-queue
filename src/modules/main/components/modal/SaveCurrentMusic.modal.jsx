@@ -1,6 +1,4 @@
-import {useSavedMusicStore} from "../buttons/SavedMusicListButton";
 import {CloseIcon} from "../../../svgComponents/svgComponents";
-import SubmitListItem from "../lists/SubmitListItem";
 import React from "react";
 
 const SaveCurrentMusicModal = ({ isShow, setIsShow, submit, titleInputRef }) => {

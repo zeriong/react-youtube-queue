@@ -4,13 +4,13 @@ import {collection, onSnapshot, query, orderBy} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import PreViewModal from "./components/modal/PreView.modal";
 import {deleteFireStore, deleteUser} from "../../utils/firebase";
-import {useTokenStore} from "../../App";
 import EditModal from "./components/modal/Edit.modal";
 import SavedListModal from "./components/modal/SavedList.modal";
 import PlayerAside from "./components/section/PlayerAside";
 import PlayerSection from "./components/section/PlayerSection";
 import {defaultPlayer} from "../../utils/common";
 import SavedMusicListButton from "./components/buttons/SavedMusicListButton";
+import {useTokenStore} from "../../store/commonStore";
 
 const YoutubeQueuePlay = () => {
     const shuffleRef = useRef([]);

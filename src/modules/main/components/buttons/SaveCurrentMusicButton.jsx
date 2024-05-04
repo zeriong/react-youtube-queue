@@ -4,7 +4,7 @@ import {useToastsStore} from "../../../common/components/Toasts";
 import {getFireStoreData} from "../../../../utils/firebase";
 import {useRef, useState} from "react";
 import SaveCurrentMusicModal from "../modal/SaveCurrentMusic.modal";
-import {useSavedMusicStore} from "./SavedMusicListButton";
+import {useSavedMusicStore} from "../../../../store/playerStore";
 
 const SaveCurrentMusicButton = ({ currentListItem, isSubmitPlayingRef }) => {
     const titleInputRef = useRef();

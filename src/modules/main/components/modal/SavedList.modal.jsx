@@ -1,8 +1,7 @@
 import {CloseIcon} from "../../../svgComponents/svgComponents";
-import ReactPlayer from "react-player";
 import React from "react";
 import SubmitListItem from "../lists/SubmitListItem";
-import {useSavedMusicStore} from "../buttons/SavedMusicListButton";
+import {useSavedMusicStore} from "../../../../store/playerStore";
 
 const SavedListModal = ({ isShow, setIsShow }) => {
     const { savedMusic } = useSavedMusicStore();

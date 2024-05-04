@@ -1,12 +1,12 @@
 import ReactPlayer from "react-player";
 import React, {useEffect, useRef, useState} from "react";
 import {useToastsStore} from "../../../common/components/Toasts";
-import {useTokenStore} from "../../../../App";
 import {CloseIcon} from "../../../svgComponents/svgComponents";
 import {YOUTUBE_BASE_URL} from "../../../../constants";
 import {initFireStore} from "../../../../libs/firebase";
 import {addDoc, collection} from "firebase/firestore";
 import {updateFireStoreData} from "../../../../utils/firebase";
+import {useTokenStore} from "../../../../store/commonStore";
 
 const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength, listMax }) => {
     const timeoutRef = useRef(null);

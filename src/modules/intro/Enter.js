@@ -5,9 +5,9 @@ import {useToastsStore} from "../common/components/Toasts";
 import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import {add, format} from "date-fns";
-import {useTokenStore} from "../../App";
 import {getFireStoreData} from "../../utils/firebase";
 import usePreventSpam from "../../hooks/usePreventSpam";
+import {useTokenStore} from "../../store/commonStore";
 
 const Enter = () => {
     const nickNameInputRef = useRef(null);

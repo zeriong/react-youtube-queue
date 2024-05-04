@@ -5,18 +5,7 @@ import {TOKEN_NAME} from "./constants";
 import {create} from "zustand";
 import {getAuthStorage} from "./utils/common";
 import {deleteUser} from "./utils/firebase";
-
-/** Token store */
-export const useTokenStore = create((setState) => ({
-    token: null,
-    setToken: (getToken) => setState(() => {
-        return { token: getToken };
-    }),
-    deleteToken: () => setState(() => {
-        localStorage.removeItem(TOKEN_NAME);
-        return { token: null };
-    })
-}));
+import {useTokenStore} from "./store/commonStore";
 
 function App() {
     const tokenRef = useRef(null);
