@@ -1,13 +1,13 @@
 import {AddIcon, CloseIcon, EditIcon} from "../../../svgComponents/svgComponents";
 import {deleteFireStore} from "../../../../utils/firebase";
 import {useToastsStore} from "../../../common/components/Toasts";
-import {useSavedMusicStore} from "../../../../store/playerStore";
+import {usePlayerStore} from "../../../../store/playerStore";
 import {useTokenStore} from "../../../../store/commonStore";
 
 const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setIsShowEditModal, isSavedList }) => {
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
-    const savedMusicStore = useSavedMusicStore()
+    const savedMusicStore = usePlayerStore()
     // 미리보기 모달 함수
     const onPreViewModal = () => {
         setCurrentData(item);

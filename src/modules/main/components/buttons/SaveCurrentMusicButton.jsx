@@ -4,13 +4,13 @@ import {useToastsStore} from "../../../common/components/Toasts";
 import {getFireStoreData} from "../../../../utils/firebase";
 import {useRef, useState} from "react";
 import SaveCurrentMusicModal from "../modal/SaveCurrentMusic.modal";
-import {useSavedMusicStore} from "../../../../store/playerStore";
+import {usePlayerStore} from "../../../../store/playerStore";
 
 const SaveCurrentMusicButton = ({ currentListItem, isSubmitPlayingRef }) => {
     const titleInputRef = useRef();
     const toastStore = useToastsStore();
     const [isShowModal, setIsShowModal] = useState(false);
-    const savedMusicStore = useSavedMusicStore();
+    const savedMusicStore = usePlayerStore();
 
     const saveCurrentPlayMusic = (e) => {
         (async () => {

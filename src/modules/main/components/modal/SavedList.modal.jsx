@@ -1,10 +1,10 @@
 import {CloseIcon} from "../../../svgComponents/svgComponents";
 import React from "react";
 import SubmitListItem from "../lists/SubmitListItem";
-import {useSavedMusicStore} from "../../../../store/playerStore";
+import {usePlayerStore} from "../../../../store/playerStore";
 
 const SavedListModal = ({ isShow, setIsShow }) => {
-    const { savedMusic } = useSavedMusicStore();
+    const { savedMusic } = usePlayerStore();
     return isShow &&
         <div onClick={() => setIsShow(false)}
              className="fixed top-0 left-0 z-50 w-full h-full bg-black/50 flex justify-center items-center">

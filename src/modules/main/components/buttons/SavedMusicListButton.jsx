@@ -1,10 +1,10 @@
 import {SavedPlayList} from "../../../svgComponents/svgComponents";
 import {useEffect} from "react";
 import {getFireStoreData} from "../../../../utils/firebase";
-import {useSavedMusicStore} from "../../../../store/playerStore";
+import {usePlayerStore} from "../../../../store/playerStore";
 
 const SavedMusicListButton = ({ setIsShowSavedListModal }) => {
-    const savedMusicStore = useSavedMusicStore();
+    const savedMusicStore = usePlayerStore();
 
     // 저장된 리스트 on 모달 함수
     const showList = async () => {

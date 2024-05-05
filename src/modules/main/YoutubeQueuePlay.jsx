@@ -11,6 +11,7 @@ import PlayerSection from "./components/section/PlayerSection";
 import {defaultPlayer} from "../../utils/common";
 import SavedMusicListButton from "./components/buttons/SavedMusicListButton";
 import {useTokenStore} from "../../store/commonStore";
+import {usePlayerStore} from "../../store/playerStore";
 
 const YoutubeQueuePlay = () => {
     const shuffleRef = useRef([]);
@@ -18,7 +19,6 @@ const YoutubeQueuePlay = () => {
     const submitMaxRef= useRef(20);
 
     const [currentListItem, setCurrentListItem] = useState({});
-    const [submitList, setSubmitList] = useState([]);
 
     const [currentData, setCurrentData] = useState(null);
     const [isShowPreViewModal, setIsShowPreViewModal] = useState(false);
@@ -34,6 +34,7 @@ const YoutubeQueuePlay = () => {
 
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
+    const playerStore = usePlayerStore();
     
     // 접속 종료
     const logout = async () => {
@@ -44,7 +45,7 @@ const YoutubeQueuePlay = () => {
 
     // 신청하기 버튼 함수
     const submitMusic = () => {
-        if (submitMaxRef.current <= submitList.length) {
+        if (submitMaxRef.current <= playerStore.submitMusic.length) {
             return toastStore.addToast(`신청 가능한 플레이리스트는 최대 ${submitMaxRef.current}개입니다.`)
         }
         setIsShowEditModal(true);
@@ -58,13 +59,13 @@ const YoutubeQueuePlay = () => {
         // 첫 재생을 위한 컴포넌트 변경
         if (!isStart) setIsStart(true);
         // 기본 플리 재생중인지 아닌지 체크할 수 있도록
-        isSubmitPlayingRef.current = !!submitList.length;
+        isSubmitPlayingRef.current = !!playerStore.submitMusic.length;
         // 신청곡이 없다면 기본 곡 에서 랜덤재생
         if (!isSubmitPlayingRef.current) {
             return defaultPlayer(shuffleRef, setCurrentListItem);
         }
         // 신청곡이 있다면 차례로 재생
-        const firstItem = submitList[0];
+        const firstItem = playerStore.submitMusic[0];
         // 리스트에서 삭제
         const isDeleted = deleteFireStore(firstItem.id, "playList");
         if (!isDeleted) return alert("삭제에 실패하였습니다, 서버를 점검해주세요.");
@@ -96,7 +97,7 @@ const YoutubeQueuePlay = () => {
     // 신청곡을 감지하여 기본 플리 재생중일 땐 즉시 신청곡을 재생하도록 구성
     useEffect(() => {
         if (isStart && !isSubmitPlayingRef.current) playYoutubeMusic();
-    }, [submitList]);
+    }, [playerStore.submitMusic]);
 
     // init effect
     useEffect(() => {
@@ -111,7 +112,7 @@ const YoutubeQueuePlay = () => {
                 id: doc.id,
                 ...doc.data(),
             }))
-           setSubmitList(contentArr);
+            playerStore.setSubmitMusic(contentArr);
         });
 
         window.addEventListener("online", onFunc);
@@ -151,7 +152,7 @@ const YoutubeQueuePlay = () => {
                     setCurrentData={setCurrentData}
                     setIsShowEditModal={setIsShowEditModal}
                     setIsShowPreViewModal={setIsShowPreViewModal}
-                    submitList={submitList}
+                    submitList={playerStore.submitMusic}
                     submitMax={submitMaxRef.current}
                     logout={logout}
                     submitMusic={submitMusic}
@@ -164,7 +165,7 @@ const YoutubeQueuePlay = () => {
                 isShow={isShowEditModal}
                 setCurrentData={setCurrentData}
                 currentData={currentData}
-                listLength={submitList.length}
+                listLength={playerStore.submitMusic.length}
                 listMax={submitMaxRef.current}
             />
             {/* 미리보기 모달 */}
