@@ -4,18 +4,18 @@ import {useToastsStore} from "../../../common/components/Toasts";
 import {usePlayerStore} from "../../../../store/playerStore";
 import {useTokenStore} from "../../../../store/commonStore";
 
-const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setIsShowEditModal, isSavedList }) => {
+const SubmitListItem = ({ item, idx, setIsShowPreViewModal, setIsShowEditModal, isSavedList }) => {
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
-    const savedMusicStore = usePlayerStore()
+    const { setSelectedCurrentMusic, deleteMusic } = usePlayerStore();
     // 미리보기 모달 함수
     const onPreViewModal = () => {
-        setCurrentData(item);
+        setSelectedCurrentMusic(item);
         setIsShowPreViewModal(true);
     }
     // 에디트 모달 함수
     const onEditModal = () => {
-        setCurrentData(item);
+        setSelectedCurrentMusic(item);
         setIsShowEditModal(true);
     }
     // 플레이리스트 삭제 함수
@@ -23,7 +23,7 @@ const SubmitListItem = ({ item, idx, setCurrentData, setIsShowPreViewModal, setI
         const isConfirmed = window.confirm("해당 리스트를 삭제하시겠습니까?");
         let isDeleted;
         if (isConfirmed) isDeleted = deleteFireStore(item.id, isSavedList ? "savedList" : "playList");
-        if (isSavedList && isDeleted) savedMusicStore.deleteMusic(item.id);
+        if (isSavedList && isDeleted) deleteMusic(item.id);
         // 실패, 성공에 따른 토스트
         toastStore.addToast(isDeleted ? "해당 플레이리스트가 삭제되었습니다." : "플레이리스트 삭제가 취소되었습니다.");
     }

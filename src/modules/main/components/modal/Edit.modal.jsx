@@ -7,8 +7,9 @@ import {initFireStore} from "../../../../libs/firebase";
 import {addDoc, collection} from "firebase/firestore";
 import {updateFireStoreData} from "../../../../utils/firebase";
 import {useTokenStore} from "../../../../store/commonStore";
+import {usePlayerStore} from "../../../../store/playerStore";
 
-const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength, listMax }) => {
+const EditModal = ({ setIsShow, isShow, listLength, listMax }) => {
     const timeoutRef = useRef(null);
     const submitInputRef = useRef(null);
     const submitInputAreaRef = useRef(null);
@@ -18,6 +19,7 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
 
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
+    const { selectedCurrentMusic, setSelectedCurrentMusic } = usePlayerStore();
 
     const handleOnChange = ({ target: { value } }) => {
         setCanSubmit(false);
@@ -52,7 +54,7 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
         }
 
         // 새로 추가인 경우
-        if (!currentData) {
+        if (!selectedCurrentMusic) {
             // 신청곡 최대 개수 이상인 경우
             if (listMax <= listLength) {
                 setIsShow(false);
@@ -81,12 +83,12 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
             // 수정하는 경우
         } else {
             // 이전 링크와 같다면 취소
-            if (currentData.link === submitInput.trim()) {
+            if (selectedCurrentMusic.link === submitInput.trim()) {
                 toastStore.addToast("이전 URL과 동일하여 수정을 취소합니다.");
                 return setIsShow(false);
             }
             // 업데이트 요청
-            const isUpdate = updateFireStoreData(currentData.id, { link: submitInput.trim() }, "playList");
+            const isUpdate = updateFireStoreData(selectedCurrentMusic.id, { link: submitInput.trim() }, "playList");
             // 업데이트 성공, 실패 처리
             if (isUpdate) setIsShow(false);
             toastStore.addToast(isUpdate ? "링크가 수정되었습니다." : "링크 수정에 실패하였습니다.");
@@ -96,18 +98,18 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
     // 모달 창이 닫히면 state 초기화
     useEffect(() => {
         if (!isShow) {
-            setCurrentData(null);
+            setSelectedCurrentMusic(null);
             setSubmitInput("");
         }
     }, [isShow]);
 
     // 수정인 경우 setState
     useEffect(() => {
-        if (currentData && submitInputRef.current) {
-            submitInputRef.current.value = currentData.link;
-            setSubmitInput(currentData.link);
+        if (selectedCurrentMusic && submitInputRef.current) {
+            submitInputRef.current.value = selectedCurrentMusic.link;
+            setSubmitInput(selectedCurrentMusic.link);
         }
-    }, [currentData]);
+    }, [selectedCurrentMusic]);
 
     return isShow &&
         <div onClick={() => setIsShow(false)}
@@ -121,7 +123,7 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
                 >
                     {/* 모달 헤더 */}
                     <header className="py-2 px-2 flex justify-between">
-                        {currentData ? "신청곡 수정하기" : "유튜브 음악 신청하기"}
+                        {selectedCurrentMusic ? "신청곡 수정하기" : "유튜브 음악 신청하기"}
                         <button type="button" onClick={() => setIsShow(false)}>
                             <CloseIcon/>
                         </button>
@@ -134,7 +136,7 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
                                 type="text"
                                 className="w-full border-2 border-gray-500 pl-2 pr-6 py-1 rounded-md relative text-[15px] items-center"
                                 onChange={handleOnChange}
-                                placeholder={currentData ? "수정할 유튜브 음악 URL을 입력해주세요!" : "유튜브 음악 URL을 입력하여 신청해주세요!"}
+                                placeholder={selectedCurrentMusic ? "수정할 유튜브 음악 URL을 입력해주세요!" : "유튜브 음악 URL을 입력하여 신청해주세요!"}
                             />
                             <button
                                 type="button"
@@ -149,7 +151,7 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
                             </button>
                         </div>
                         <button className={`border px-2 rounded-md ${canSubmit ? "bg-gray-300 font-bold hover:scale-105" : "bg-gray-100 text-gray-400"}`} type="submit">
-                            {currentData ? "수정하기" : "신청하기"}
+                            {selectedCurrentMusic ? "수정하기" : "신청하기"}
                         </button>
                     </form>
                     {/* 플레이어 영역 */}
@@ -168,7 +170,7 @@ const EditModal = ({ setIsShow, isShow, currentData, setCurrentData, listLength,
                                 :
                                 <div className="bg-black/80 h-full w-full text-3xl text-white flex justify-center items-center">
                                     <div className="flex flex-col justify-center items-center gap-4">
-                                        <p>{currentData ? "유튜브음악을 수정하기 전에" : "유튜브음악을 신청하기 전에"}</p>
+                                        <p>{selectedCurrentMusic ? "유튜브음악을 수정하기 전에" : "유튜브음악을 신청하기 전에"}</p>
                                         <p>신청곡을 확인해보세요</p>
                                     </div>
                                 </div>

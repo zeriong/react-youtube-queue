@@ -10,7 +10,7 @@ import SubmitListItem from "../lists/SubmitListItem";
  * @param {any} setCurrentData 미리보기 시 선택된 데이터
  * @param {any} setIsShowEditModal 로그아웃
  *  */
-const PlayerAside = ({logout, submitMusic, submitList, submitMax, setIsShowPreViewModal, setCurrentData, setIsShowEditModal,  }) => {
+const PlayerAside = ({logout, submitMusic, submitList, submitMax, setIsShowPreViewModal, setIsShowEditModal,  }) => {
     return (
         <aside className="flex flex-col relative right-0 pt-4 px-6 pb-6 border-dashed max-pc:border-t-[5px] pc:border-l-[5px] pc:border-gray-700">
 
@@ -54,8 +54,6 @@ const PlayerAside = ({logout, submitMusic, submitList, submitMax, setIsShowPreVi
                                 key={idx}
                                 // 미리보기 모달을 띄울 setState
                                 setIsShowPreViewModal={setIsShowPreViewModal}
-                                // 클릭한 데이터를 전달 하는 setState
-                                setCurrentData={setCurrentData}
                                 // 에디트 모달을 띄울 setState
                                 setIsShowEditModal={setIsShowEditModal}
                                 item={list}

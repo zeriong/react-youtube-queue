@@ -19,8 +19,6 @@ const YoutubeQueuePlay = () => {
     const submitMaxRef= useRef(20);
 
     const [currentListItem, setCurrentListItem] = useState({});
-
-    const [currentData, setCurrentData] = useState(null);
     const [isShowPreViewModal, setIsShowPreViewModal] = useState(false);
     const [isShowEditModal, setIsShowEditModal] = useState(false);
     const [isShowSavedListModal, setIsShowSavedListModal] = useState(false);
@@ -149,7 +147,6 @@ const YoutubeQueuePlay = () => {
 
                 {/* 어사이드 바 */}
                 <PlayerAside
-                    setCurrentData={setCurrentData}
                     setIsShowEditModal={setIsShowEditModal}
                     setIsShowPreViewModal={setIsShowPreViewModal}
                     submitList={playerStore.submitMusic}
@@ -163,8 +160,6 @@ const YoutubeQueuePlay = () => {
             <EditModal
                 setIsShow={setIsShowEditModal}
                 isShow={isShowEditModal}
-                setCurrentData={setCurrentData}
-                currentData={currentData}
                 listLength={playerStore.submitMusic.length}
                 listMax={submitMaxRef.current}
             />
@@ -172,8 +167,6 @@ const YoutubeQueuePlay = () => {
             <PreViewModal
                 setIsShow={setIsShowPreViewModal}
                 isShow={isShowPreViewModal}
-                preViewData={currentData}
-                setPreviewData={setCurrentData}
             />
             {/* 저장된 리스트 모달 */}
             <SavedListModal
