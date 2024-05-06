@@ -6,38 +6,39 @@ import {useRef, useState} from "react";
 import SaveCurrentMusicModal from "../modal/SaveCurrentMusic.modal";
 import {usePlayerStore} from "../../../../store/playerStore";
 
-const SaveCurrentMusicButton = ({ currentListItem, isSubmitPlayingRef }) => {
+const SaveCurrentMusicButton = () => {
     const titleInputRef = useRef();
     const toastStore = useToastsStore();
     const [isShowModal, setIsShowModal] = useState(false);
     const savedMusicStore = usePlayerStore();
+    const { currentMusic, isSubmitPlaying } = usePlayerStore();
 
     const saveCurrentPlayMusic = (e) => {
         (async () => {
             e.preventDefault();
             if (!titleInputRef.current?.value) return toastStore.addToast("타이틀을 입력해주세요!");
-            if (!isSubmitPlayingRef) return toastStore.addToast("기본 음악은 저장할 수 없습니다.");
+            if (!isSubmitPlaying) return toastStore.addToast("기본 음악은 저장할 수 없습니다.");
             // confirm을 체크 후 fireStore에 저장
             const confirmSubmit = window.confirm("재생중인 플레이리스트를 저장하시겠습니까?");
             if (!confirmSubmit) return toastStore.addToast("플레이리스트 저장이 취소되었습니다.");
 
             // 링크가 같다면 추가하지 않음
             const getSavedLists = await getFireStoreData("savedList");
-            if (getSavedLists.some(list => list.link === currentListItem.link)) {
+            if (getSavedLists.some(list => list.link === currentMusic.link)) {
                 return toastStore.addToast("이미 저장된 플레이리스트입니다.");
             }
 
             try {
                 // 타이틀 추가 지정
-                currentListItem.title = titleInputRef.current?.value;
+                currentMusic.title = titleInputRef.current?.value;
                 
                 // 링크가 다르다면 fireStore에 저장 
-                await addDoc(collection(initFireStore, "savedList"), currentListItem)
+                await addDoc(collection(initFireStore, "savedList"), currentMusic)
                     .then((res) => {
                         console.log("리스폰스다.", res.id);
                         toastStore.addToast("저장된 플레이리스트에 추가되었습니다.");
-                        currentListItem.id = res.id;
-                        savedMusicStore.saveMusic(currentListItem);
+                        currentMusic.id = res.id;
+                        savedMusicStore.saveMusic(currentMusic);
                     })
                     .catch((e) => {
                         alert("플레이리스트 저장에 실패하였습니다.");
@@ -56,7 +57,7 @@ const SaveCurrentMusicButton = ({ currentListItem, isSubmitPlayingRef }) => {
             <button
                 type="button"
                 onClick={() => {
-                    if (!isSubmitPlayingRef) return toastStore.addToast("기본 음악은 저장할 수 없습니다.");
+                    if (!isSubmitPlaying) return toastStore.addToast("기본 음악은 저장할 수 없습니다.");
                     setIsShowModal(true);
                 }}
                 className="border-4 border-gray-600 px-4 py-2 rounded-lg text-2xl hover:scale-105"

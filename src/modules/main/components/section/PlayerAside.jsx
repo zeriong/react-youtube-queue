@@ -1,16 +1,26 @@
 import {LogoutIcon} from "../../../svgComponents/svgComponents";
 import SubmitListItem from "../lists/SubmitListItem";
+import {usePlayerStore} from "../../../../store/playerStore";
+import {useToastsStore} from "../../../common/components/Toasts";
 
 /**@desc 유튜브 음악 플레이어 화면 Aside
  * @param {any} logout 로그아웃
  * @param {any} submitMusic 유튜브음악 제출
- * @param {any} submitList 신청곡 리스트
- * @param {any} submitMax 신청곡 제한 수
  * @param {any} setIsShowPreViewModal 미리보기 모달 setState
- * @param {any} setCurrentData 미리보기 시 선택된 데이터
  * @param {any} setIsShowEditModal 로그아웃
  *  */
-const PlayerAside = ({logout, submitMusic, submitList, submitMax, setIsShowPreViewModal, setIsShowEditModal,  }) => {
+const PlayerAside = ({ logout, setIsShowPreViewModal, setIsShowEditModal }) => {
+    const { submitMusic, submitMaxLength } = usePlayerStore();
+    const { addToast } = useToastsStore();
+
+    // 신청하기 버튼 함수
+    const handleEditMusicModal = () => {
+        if (submitMaxLength <= submitMusic.length) {
+            return addToast(`신청 가능한 플레이리스트는 최대 ${submitMaxLength}개입니다.`);
+        }
+        setIsShowEditModal(true);
+    }
+
     return (
         <aside className="flex flex-col relative right-0 pt-4 px-6 pb-6 border-dashed max-pc:border-t-[5px] pc:border-l-[5px] pc:border-gray-700">
 
@@ -31,7 +41,7 @@ const PlayerAside = ({logout, submitMusic, submitList, submitMax, setIsShowPreVi
                 </div>
 
                 {/* 신청 버튼 */}
-                <button type="button" onClick={submitMusic}
+                <button type="button" onClick={handleEditMusicModal}
                         className="rounded-[12px] p-[3px] border-2 border-gray-500 bg-gray-300">
                     <p className="font-bold text-white bg-red-500/85 py-3 text-[20px] rounded-[9px] text-line border-2 border-gray-500">
                         유튜브음악 신청하기
@@ -44,12 +54,12 @@ const PlayerAside = ({logout, submitMusic, submitList, submitMax, setIsShowPreVi
                 <div className="flex justify-between text-[20px] font-bold text-white text-line mb-2 mt-3">
                     <p>유튜브 음악 리스트</p>
                     <p>
-                        {`${submitList.length + '/' + submitMax}`}
+                        {`${submitMusic.length + '/' + submitMaxLength}`}
                     </p>
                 </div>
                 <div className="p-2 bg-gray-100 rounded-md grow overflow-hidden h-full min-h-[200px]">
                     <ul className="flex flex-col gap-1 h-full overflow-auto customScroll-vertical">
-                        {submitList?.map((list, idx) =>
+                        {submitMusic?.map((list, idx) =>
                             <SubmitListItem
                                 key={idx}
                                 // 미리보기 모달을 띄울 setState

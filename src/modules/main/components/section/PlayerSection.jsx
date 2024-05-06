@@ -5,9 +5,11 @@ import {PlayIcon} from "../../../svgComponents/svgComponents";
 import Cursor from "../../../common/components/Cursor";
 import SaveCurrentMusicButton from "../buttons/SaveCurrentMusicButton";
 import {useTokenStore} from "../../../../store/commonStore";
+import {usePlayerStore} from "../../../../store/playerStore";
 
-const PlayerSection = ({ isStart, prevDisabled, currentListItem, isPlay, playYoutubeMusic, setIsReady, playPrevMusic, isSubmitPlayingRef }) => {
+const PlayerSection = ({ isStart, prevDisabled, isPlay, playYoutubeMusic, setIsReady, playPrevMusic }) => {
     const tokenStore = useTokenStore();
+    const { currentMusic } = usePlayerStore();
 
     return (
         <section className="w-full flex flex-col items-center mt-[100px] gap-6 p-10">
@@ -29,7 +31,7 @@ const PlayerSection = ({ isStart, prevDisabled, currentListItem, isPlay, playYou
                                     {/* 플레이어 */}
                                     <div className="w-full max-w-[580px] h-[330px]">
                                         <ReactPlayer
-                                            url={currentListItem.link}
+                                            url={currentMusic.link}
                                             width='100%'
                                             height='100%'
                                             controls={true}
@@ -56,10 +58,7 @@ const PlayerSection = ({ isStart, prevDisabled, currentListItem, isPlay, playYou
                                         </div>
 
                                         {/* 현재 재생중인 음악 저장버튼 */}
-                                        <SaveCurrentMusicButton
-                                            currentListItem={currentListItem}
-                                            isSubmitPlayingRef={isSubmitPlayingRef}
-                                        />
+                                        <SaveCurrentMusicButton/>
 
                                         {/* 모바일버전 다음 곡 버튼 */}
                                         <div className="block pc:hidden">
