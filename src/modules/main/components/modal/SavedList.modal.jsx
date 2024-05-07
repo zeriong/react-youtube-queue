@@ -3,10 +3,10 @@ import React from "react";
 import SubmitListItem from "../lists/SubmitListItem";
 import {usePlayerStore} from "../../../../store/playerStore";
 
-const SavedListModal = ({ isShow, setIsShow }) => {
-    const { savedMusic } = usePlayerStore();
-    return isShow &&
-        <div onClick={() => setIsShow(false)}
+const SavedListModal = () => {
+    const { savedMusic, isShowSavedListModal, setIsShowSavedListModal } = usePlayerStore();
+    return isShowSavedListModal &&
+        <div onClick={() => setIsShowSavedListModal(false)}
              className="fixed top-0 left-0 z-50 w-full h-full bg-black/50 flex justify-center items-center">
             {/* 미리보기 영역 */}
             <section className="p-3 max-w-[500px] max-h-[500px] w-full h-full">
@@ -18,7 +18,7 @@ const SavedListModal = ({ isShow, setIsShow }) => {
                     {/* 모달 헤더 */}
                     <header className="py-2 px-2 flex justify-between">
                         <p>저장된 플레이리스트</p>
-                        <button type="button" onClick={() => setIsShow(false)}>
+                        <button type="button" onClick={() => setIsShowSavedListModal(false)}>
                             <CloseIcon/>
                         </button>
                     </header>

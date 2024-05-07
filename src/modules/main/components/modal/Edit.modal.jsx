@@ -9,7 +9,7 @@ import {updateFireStoreData} from "../../../../utils/firebase";
 import {useTokenStore} from "../../../../store/commonStore";
 import {usePlayerStore} from "../../../../store/playerStore";
 
-const EditModal = ({ setIsShow, isShow }) => {
+const EditModal = () => {
     const timeoutRef = useRef(null);
     const submitInputRef = useRef(null);
     const submitInputAreaRef = useRef(null);
@@ -19,7 +19,7 @@ const EditModal = ({ setIsShow, isShow }) => {
 
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
-    const { submitMaxLength, submitMusic, selectedCurrentMusic, setSelectedCurrentMusic } = usePlayerStore();
+    const { submitMaxLength, submitMusic, selectedCurrentMusic, setSelectedCurrentMusic, isShowEditModal, setIsShowEditModal } = usePlayerStore();
 
     const handleOnChange = ({ target: { value } }) => {
         setCanSubmit(false);
@@ -57,7 +57,7 @@ const EditModal = ({ setIsShow, isShow }) => {
         if (!selectedCurrentMusic) {
             // 신청곡 최대 개수 이상인 경우
             if (submitMaxLength <= submitMusic.length) {
-                setIsShow(false);
+                setIsShowEditModal(false);
                 return toastStore.addToast(`신청 가능한 플레이리스트는 최대 ${submitMaxLength}개입니다.`);
             }
             // confirm을 체크 후 fireStore에 저장
@@ -70,7 +70,7 @@ const EditModal = ({ setIsShow, isShow }) => {
                 })
                     .then(() => {
                         toastStore.addToast("플레이리스트에 추가되었습니다.");
-                        setIsShow(false);
+                        setIsShowEditModal(false);
                     })
                     .catch((e) => {
                         alert("플레이리스트 추가에 실패하였습니다.");
@@ -85,23 +85,23 @@ const EditModal = ({ setIsShow, isShow }) => {
             // 이전 링크와 같다면 취소
             if (selectedCurrentMusic.link === submitInput.trim()) {
                 toastStore.addToast("이전 URL과 동일하여 수정을 취소합니다.");
-                return setIsShow(false);
+                return setIsShowEditModal(false);
             }
             // 업데이트 요청
             const isUpdate = updateFireStoreData(selectedCurrentMusic.id, { link: submitInput.trim() }, "playList");
             // 업데이트 성공, 실패 처리
-            if (isUpdate) setIsShow(false);
+            if (isUpdate) setIsShowEditModal(false);
             toastStore.addToast(isUpdate ? "링크가 수정되었습니다." : "링크 수정에 실패하였습니다.");
         }
     }
 
     // 모달 창이 닫히면 state 초기화
     useEffect(() => {
-        if (!isShow) {
+        if (!isShowEditModal) {
             setSelectedCurrentMusic(null);
             setSubmitInput("");
         }
-    }, [isShow]);
+    }, [isShowEditModal]);
 
     // 수정인 경우 setState
     useEffect(() => {
@@ -111,8 +111,8 @@ const EditModal = ({ setIsShow, isShow }) => {
         }
     }, [selectedCurrentMusic]);
 
-    return isShow &&
-        <div onClick={() => setIsShow(false)}
+    return isShowEditModal &&
+        <div onClick={() => setIsShowEditModal(false)}
              className="fixed top-0 left-0 z-50 w-full h-full bg-black/50 flex justify-center items-center">
             {/* 미리보기 영역 */}
             <section className="p-3 max-w-[500px] max-h-[500px] w-full h-full">
@@ -124,7 +124,7 @@ const EditModal = ({ setIsShow, isShow }) => {
                     {/* 모달 헤더 */}
                     <header className="py-2 px-2 flex justify-between">
                         {selectedCurrentMusic ? "신청곡 수정하기" : "유튜브 음악 신청하기"}
-                        <button type="button" onClick={() => setIsShow(false)}>
+                        <button type="button" onClick={() => setIsShowEditModal(false)}>
                             <CloseIcon/>
                         </button>
                     </header>

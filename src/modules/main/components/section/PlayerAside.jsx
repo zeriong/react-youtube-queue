@@ -2,6 +2,8 @@ import {LogoutIcon} from "../../../svgComponents/svgComponents";
 import SubmitListItem from "../lists/SubmitListItem";
 import {usePlayerStore} from "../../../../store/playerStore";
 import {useToastsStore} from "../../../common/components/Toasts";
+import {useTokenStore} from "../../../../store/commonStore";
+import {deleteUser} from "../../../../utils/firebase";
 
 /**@desc 유튜브 음악 플레이어 화면 Aside
  * @param {any} logout 로그아웃
@@ -9,9 +11,17 @@ import {useToastsStore} from "../../../common/components/Toasts";
  * @param {any} setIsShowPreViewModal 미리보기 모달 setState
  * @param {any} setIsShowEditModal 로그아웃
  *  */
-const PlayerAside = ({ logout, setIsShowPreViewModal, setIsShowEditModal }) => {
-    const { submitMusic, submitMaxLength } = usePlayerStore();
+const PlayerAside = () => {
+    const { submitMusic, submitMaxLength, setIsShowEditModal, setIsShowPreViewModal } = usePlayerStore();
+    const { token, deleteToken } = useTokenStore();
     const { addToast } = useToastsStore();
+
+    // 접속 종료
+    const logout = async () => {
+        await deleteUser(token.id);
+        deleteToken();
+        addToast("로그아웃 되었습니다.");
+    }
 
     // 신청하기 버튼 함수
     const handleEditMusicModal = () => {

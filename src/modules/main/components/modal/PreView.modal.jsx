@@ -3,16 +3,19 @@ import ReactPlayer from "react-player";
 import {CloseIcon} from "../../../svgComponents/svgComponents";
 import {usePlayerStore} from "../../../../store/playerStore";
 
-const PreViewModal = ({ isShow, setIsShow }) => {
-    const { setSelectedCurrentMusic, selectedCurrentMusic } = usePlayerStore();
+const PreViewModal = () => {
+    const {
+        setSelectedCurrentMusic, selectedCurrentMusic,
+        isShowPreViewModal, setIsShowPreViewModal
+    } = usePlayerStore();
 
     // 모달이 사라지면 state 초기화
     useEffect(() => {
-        if (!isShow) setSelectedCurrentMusic(null);
-    }, [isShow]);
+        if (!isShowPreViewModal) setSelectedCurrentMusic(null);
+    }, [isShowPreViewModal]);
 
-    return isShow &&
-        <div onClick={() => setIsShow(false)} className="fixed top-0 left-0 z-50 w-full h-full bg-black/50 flex justify-center items-center">
+    return isShowPreViewModal &&
+        <div onClick={() => setIsShowPreViewModal(false)} className="fixed top-0 left-0 z-50 w-full h-full bg-black/50 flex justify-center items-center">
             {/* 미리보기 영역 */}
             <section className="p-3 max-w-[500px] max-h-[500px] w-full h-full">
 
@@ -23,7 +26,7 @@ const PreViewModal = ({ isShow, setIsShow }) => {
                     {/* 모달 헤더 */}
                     <header className="py-2 px-2 flex justify-between">
                         <p>{ `${selectedCurrentMusic.nickName}님의 신청곡` }</p>
-                        <button type="button" onClick={() => setIsShow(false)}>
+                        <button type="button" onClick={() => setIsShowPreViewModal(false)}>
                             <CloseIcon/>
                         </button>
                     </header>

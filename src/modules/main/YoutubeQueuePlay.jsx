@@ -1,23 +1,18 @@
-import {useToastsStore} from "../common/components/Toasts";
 import {useEffect, useRef, useState} from "react";
 import {collection, onSnapshot, query, orderBy} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import PreViewModal from "./components/modal/PreView.modal";
-import {deleteFireStore, deleteUser} from "../../utils/firebase";
+import {deleteFireStore} from "../../utils/firebase";
 import EditModal from "./components/modal/Edit.modal";
 import SavedListModal from "./components/modal/SavedList.modal";
 import PlayerAside from "./components/section/PlayerAside";
 import PlayerSection from "./components/section/PlayerSection";
 import {defaultPlayer} from "../../utils/common";
 import SavedMusicListButton from "./components/buttons/SavedMusicListButton";
-import {useTokenStore} from "../../store/commonStore";
 import {usePlayerStore} from "../../store/playerStore";
 
 const YoutubeQueuePlay = () => {
     const shuffleRef = useRef([]);
-    const [isShowPreViewModal, setIsShowPreViewModal] = useState(false);
-    const [isShowEditModal, setIsShowEditModal] = useState(false);
-    const [isShowSavedListModal, setIsShowSavedListModal] = useState(false);
     const [isStart, setIsStart] = useState(false);
     const [isPlay, setIsPlay] = useState(false);
     const [isReady, setIsReady] = useState(false);
@@ -25,19 +20,12 @@ const YoutubeQueuePlay = () => {
     // todo: 이전 버튼 구현 시 사용할 disabled state
     const [prevDisabled, setPrevDisabled] = useState(true);
 
-    const toastStore = useToastsStore();
-    const tokenStore = useTokenStore();
     const {
-        submitMusic, submitMaxLength, isSubmitPlaying,
+        submitMusic, isSubmitPlaying,
         setSubmitMusic, setCurrentMusic, setIsSubmitPlaying,
     } = usePlayerStore();
 
-    // 접속 종료
-    const logout = async () => {
-        await deleteUser(tokenStore.token.id);
-        tokenStore.deleteToken();
-        toastStore.addToast("로그아웃 되었습니다.");
-    }
+
 
     // 기본 Lofi음악 리스트 랜덤 재생
 
@@ -119,7 +107,7 @@ const YoutubeQueuePlay = () => {
             <div className="flex flex-col pc:flex-row w-full h-full cursor-default relative">
 
                 {/* 저장된 플레이리스트 버튼 */}
-                <SavedMusicListButton setIsShowSavedListModal={setIsShowSavedListModal}/>
+                <SavedMusicListButton/>
 
                 {/* 플레이어 컨텐츠 섹션 */}
                 <PlayerSection
@@ -132,28 +120,17 @@ const YoutubeQueuePlay = () => {
                 />
 
                 {/* 어사이드 바 */}
-                <PlayerAside
-                    setIsShowEditModal={setIsShowEditModal}
-                    setIsShowPreViewModal={setIsShowPreViewModal}
-                    logout={logout}
-                />
+                <PlayerAside/>
             </div>
 
             {/* 신청/수정 모달 */}
-            <EditModal
-                setIsShow={setIsShowEditModal}
-                isShow={isShowEditModal}
-            />
+            <EditModal/>
+
             {/* 미리보기 모달 */}
-            <PreViewModal
-                setIsShow={setIsShowPreViewModal}
-                isShow={isShowPreViewModal}
-            />
+            <PreViewModal/>
+
             {/* 저장된 리스트 모달 */}
-            <SavedListModal
-                isShow={isShowSavedListModal}
-                setIsShow={setIsShowSavedListModal}
-            />
+            <SavedListModal/>
         </>
     )
 }

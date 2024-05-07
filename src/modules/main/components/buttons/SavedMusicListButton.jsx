@@ -1,10 +1,9 @@
 import {SavedPlayList} from "../../../svgComponents/svgComponents";
-import {useEffect} from "react";
 import {getFireStoreData} from "../../../../utils/firebase";
 import {usePlayerStore} from "../../../../store/playerStore";
 
-const SavedMusicListButton = ({ setIsShowSavedListModal }) => {
-    const savedMusicStore = usePlayerStore();
+const SavedMusicListButton = () => {
+    const { savedMusic, setSavedMusic, setIsShowSavedListModal } = usePlayerStore();
 
     // 저장된 리스트 on 모달 함수
     const showList = async () => {
@@ -12,19 +11,15 @@ const SavedMusicListButton = ({ setIsShowSavedListModal }) => {
         setIsShowSavedListModal(true);
 
         // 저장된 리스트를 한번이라도 불러오면 이후 불러오지 않음
-        if (!savedMusicStore.savedMusic.length) {
+        if (!savedMusic.length) {
             try {
                 const res = await getFireStoreData("savedList");
-                savedMusicStore.setSavedMusic(res);
+                setSavedMusic(res);
             } catch (e) {
                 console.log("저장된 플리 불러오기 에러: ",e);
             }
         }
     }
-
-    useEffect(() => {
-        console.log("저장된 음악리스트다~",savedMusicStore.savedMusic);
-    }, [savedMusicStore.savedMusic]);
 
     return (
         <button
