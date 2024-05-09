@@ -4,10 +4,15 @@ import {useToastsStore} from "../../../common/components/Toasts";
 import {usePlayerStore} from "../../../../store/playerStore";
 import {useTokenStore} from "../../../../store/commonStore";
 
-const SubmitListItem = ({ item, idx, setIsShowPreViewModal, setIsShowEditModal, isSavedList }) => {
+const SubmitListItem = ({ item, idx, isSavedList }) => {
     const toastStore = useToastsStore();
     const tokenStore = useTokenStore();
-    const { setSelectedCurrentMusic, deleteMusic } = usePlayerStore();
+    const {
+        setSelectedCurrentMusic,
+        setIsShowPreViewModal,
+        setIsShowEditModal,
+        deleteMusic,
+    } = usePlayerStore();
     // 미리보기 모달 함수
     const onPreViewModal = () => {
         setSelectedCurrentMusic(item);

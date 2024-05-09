@@ -12,7 +12,7 @@ import {deleteUser} from "../../../../utils/firebase";
  * @param {any} setIsShowEditModal 로그아웃
  *  */
 const PlayerAside = () => {
-    const { submitMusic, submitMaxLength, setIsShowEditModal, setIsShowPreViewModal } = usePlayerStore();
+    const { submitMusic, submitMaxLength, setIsShowEditModal,  } = usePlayerStore();
     const { token, deleteToken } = useTokenStore();
     const { addToast } = useToastsStore();
 
@@ -72,10 +72,6 @@ const PlayerAside = () => {
                         {submitMusic?.map((list, idx) =>
                             <SubmitListItem
                                 key={idx}
-                                // 미리보기 모달을 띄울 setState
-                                setIsShowPreViewModal={setIsShowPreViewModal}
-                                // 에디트 모달을 띄울 setState
-                                setIsShowEditModal={setIsShowEditModal}
                                 item={list}
                                 idx={idx}
                             />
