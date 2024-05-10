@@ -4,6 +4,7 @@ import {create} from "zustand";
 export const usePlayerStore = create((setState) => ({
     // constants
     submitMaxLength: 20, // 신청 가능한 음악 최대 개수
+    saveMusicMaxLength: 50, // 저장 가능한 음악 최대 개수
 
     // boolean types
     isSubmitPlaying: true, // 신청곡 재생 여부

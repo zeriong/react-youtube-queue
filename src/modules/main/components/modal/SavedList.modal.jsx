@@ -1,10 +1,15 @@
 import {CloseIcon} from "../../../svgComponents/svgComponents";
-import React from "react";
+import React, {useEffect} from "react";
 import SubmitListItem from "../lists/SubmitListItem";
 import {usePlayerStore} from "../../../../store/playerStore";
 
 const SavedListModal = () => {
-    const { savedMusic, isShowSavedListModal, setIsShowSavedListModal } = usePlayerStore();
+    const { saveMusicMaxLength, savedMusic, isShowSavedListModal, setIsShowSavedListModal } = usePlayerStore();
+
+    useEffect(() => {
+        console.log(savedMusic.length)
+    }, [savedMusic]);
+
     return isShowSavedListModal &&
         <div onClick={() => setIsShowSavedListModal(false)}
              className="fixed top-0 left-0 z-50 w-full h-full bg-black/50 flex justify-center items-center">
@@ -17,7 +22,7 @@ const SavedListModal = () => {
                 >
                     {/* 모달 헤더 */}
                     <header className="py-2 px-2 flex justify-between">
-                        <p>저장된 플레이리스트</p>
+                        <p>저장된 플레이리스트<span>{`${savedMusic.length + "/" + saveMusicMaxLength}`}</span></p>
                         <button type="button" onClick={() => setIsShowSavedListModal(false)}>
                             <CloseIcon/>
                         </button>
@@ -27,7 +32,7 @@ const SavedListModal = () => {
                         <ul className="p-2 bg-gray-100 rounded-md overflow-hidden h-full min-h-[200px]">
                             {!!savedMusic.length ?
                                 savedMusic.map((item, idx) =>
-                                    <div className="flex w-full gap-2">
+                                    <div key={idx} className="flex w-full gap-2">
                                         {/*<input type="checkbox"/>*/}
                                         <SubmitListItem item={item} idx={idx} isSavedList={true}/>
                                     </div>
