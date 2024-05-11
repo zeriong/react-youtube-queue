@@ -94,7 +94,7 @@ const PlayerSection = () => {
             const contentArr = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
-            }))
+            }));
             setSubmitMusic(contentArr);
         });
 
@@ -118,6 +118,7 @@ const PlayerSection = () => {
                     <div className="w-full  flex flex-col">
                         {isStart ?
                             <>
+                                {/* Player area */}
                                 <div className="relative flex items-center h-full justify-center gap-4">
                                     {/* todo: 이전 곡 버튼 구현예정 */}
                                     <div className="hidden pc:block">
@@ -146,6 +147,8 @@ const PlayerSection = () => {
                                         <PlayNextButton onClick={playYoutubeMusic}/>
                                     </div>
                                 </div>
+
+                                {/* Buttons ([mobile: prev/next] + [default save current music]) */}
                                 <div className="flex justify-center mt-[12px]">
                                     <div className="flex items-center gap-4">
                                         {/* 모바일버전 이전 곡 버튼 */}

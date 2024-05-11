@@ -7,33 +7,36 @@ import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../../../libs/firebase";
 
 const SubmitListItem = ({ item, idx, isSavedList }) => {
-    const toastStore = useToastsStore();
-    const tokenStore = useTokenStore();
+    const { addToast } = useToastsStore();
+    const { token } = useTokenStore();
     const {
         setSelectedCurrentMusic,
         setIsShowPreViewModal,
         setIsShowEditModal,
-        deleteMusic,
     } = usePlayerStore();
+
     // 미리보기 모달 함수
     const onPreViewModal = () => {
         setSelectedCurrentMusic(item);
         setIsShowPreViewModal(true);
     }
+
     // 에디트 모달 함수
     const onEditModal = () => {
         setSelectedCurrentMusic(item);
         setIsShowEditModal(true);
     }
+
     // 플레이리스트 삭제 함수
     const onDelete = () => {
         const isConfirmed = window.confirm("해당 리스트를 삭제하시겠습니까?");
         let isDeleted;
+        console.log("아이템의 아이디다~",item.id);
         if (isConfirmed) isDeleted = deleteFireStore(item.id, isSavedList ? "savedList" : "playList");
-        if (isSavedList && isDeleted) deleteMusic(item.id);
         // 실패, 성공에 따른 토스트
-        toastStore.addToast(isDeleted ? "해당 플레이리스트가 삭제되었습니다." : "플레이리스트 삭제가 취소되었습니다.");
+        if (isDeleted) addToast(isDeleted ? "해당 플레이리스트가 삭제되었습니다." : "플레이리스트 삭제가 취소되었습니다.");
     }
+
     // 저장된 플레이리스트를 현재 플레이리스트에 추가
     const submitCurrentSavedMusic = () => {
         (async () => {
@@ -41,12 +44,12 @@ const SubmitListItem = ({ item, idx, isSavedList }) => {
             const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
             if (confirmSubmit) {
                 await addDoc(collection(initFireStore, "playList"), {
-                    nickName: tokenStore.token.nickName,
+                    nickName: token.nickName,
                     createAt: Date.now(),
                     link: item.link,
                 })
                     .then(() => {
-                        toastStore.addToast("플레이리스트에 추가되었습니다.");
+                        addToast("플레이리스트에 추가되었습니다.");
                         setIsShowEditModal(false);
                     })
                     .catch((e) => {
@@ -54,7 +57,7 @@ const SubmitListItem = ({ item, idx, isSavedList }) => {
                         console.log(e);
                     });
             } else {
-                toastStore.addToast("플레이리스트 신청이 취소되었습니다.");
+                addToast("플레이리스트 신청이 취소되었습니다.");
             }
         })()
     }
@@ -73,10 +76,10 @@ const SubmitListItem = ({ item, idx, isSavedList }) => {
             </div>
 
             <div className="flex">
-                {((item?.nickName === tokenStore.token?.nickName) || (tokenStore.token?.role === 1)) &&
+                {((item?.nickName === token?.nickName) || (token?.role === 1)) &&
                     <div className="flex gap-2">
                         {/* 에디트 아이콘은 반드시 본인에게만 나타남 */}
-                        {(!isSavedList && item?.nickName === tokenStore.token?.nickName) &&
+                        {(!isSavedList && item?.nickName === token?.nickName) &&
                             <button type="button" onClick={onEditModal}>
                                 <EditIcon className="cursor-pointer" />
                             </button>

@@ -12,6 +12,7 @@ export const usePlayerStore = create((setState) => ({
     isShowEditModal: false,
     isShowPreViewModal: false,
     isShowSavedListModal: false,
+    isShowSaveCurrentMusicModal: false,
 
     // literals
     currentMusic: {}, // 실행 음악 info
@@ -29,14 +30,11 @@ export const usePlayerStore = create((setState) => ({
     setIsShowEditModal: (payload) => setState(() => ({ isShowEditModal: payload })),
     setIsShowPreViewModal: (payload) => setState(() => ({ isShowPreViewModal: payload })),
     setIsShowSavedListModal: (payload) => setState(() => ({ isShowSavedListModal: payload })),
+    setIsShowSaveCurrentMusicModal: (payload) => setState(() => ({ isShowSaveCurrentMusicModal: payload })),
 
     // 저장된 음악 setState
     setSavedMusic: (payload) => setState(() => ({ savedMusic: payload })),
     saveMusic: (payload) => setState((store) => ({ savedMusic: [...store.savedMusic, payload] })),
-    deleteMusic: (payloadId) => setState((store) => {
-        const leftSavedList = store.savedMusic.filter((list) => payloadId !== list.id);
-        return { savedMusic: leftSavedList };
-    }),
 
     // 신청곡 setState
     setSubmitMusic: (payload) => setState(() => ({ submitMusic: payload })),

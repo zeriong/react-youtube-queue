@@ -2,13 +2,37 @@ import {CloseIcon} from "../../../svgComponents/svgComponents";
 import React, {useEffect} from "react";
 import SubmitListItem from "../lists/SubmitListItem";
 import {usePlayerStore} from "../../../../store/playerStore";
+import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
+import {initFireStore} from "../../../../libs/firebase";
 
 const SavedListModal = () => {
-    const { saveMusicMaxLength, savedMusic, isShowSavedListModal, setIsShowSavedListModal } = usePlayerStore();
+    const {
+        saveMusicMaxLength,
+        savedMusic,
+        isShowSavedListModal,
+        setIsShowSavedListModal,
+        setSavedMusic,
+    } = usePlayerStore();
 
+    // init effect
     useEffect(() => {
-        console.log(savedMusic.length)
-    }, [savedMusic]);
+        // 데이터 쿼리를 생성 날짜 오름차순으로 정렬 (queue 형태를 구현하기 위함)
+        const setFireStoreQuery = query(
+            collection(initFireStore, "savedList"),
+            orderBy("createAt", "asc")
+        );
+
+        // onSnapshot을 활용하여 실시간 데이터를 받음
+        onSnapshot(setFireStoreQuery, (snapshot) => {
+            const contentArr = snapshot.docs.map((doc) => {
+                // 기존에 저장되어있던 id가 아닌 새로운 문서 id를 재할당하여 사용
+                const data = { ...doc.data() };
+                data.id = doc.id;
+                return data
+            });
+            setSavedMusic(contentArr);
+        });
+    }, []);
 
     return isShowSavedListModal &&
         <div onClick={() => setIsShowSavedListModal(false)}
