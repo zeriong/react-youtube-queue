@@ -3,6 +3,8 @@ import {deleteFireStore} from "../../../../utils/firebase";
 import {useToastsStore} from "../../../common/components/Toasts";
 import {usePlayerStore} from "../../../../store/playerStore";
 import {useTokenStore} from "../../../../store/commonStore";
+import {addDoc, collection} from "firebase/firestore";
+import {initFireStore} from "../../../../libs/firebase";
 
 const SubmitListItem = ({ item, idx, isSavedList }) => {
     const toastStore = useToastsStore();
@@ -32,6 +34,30 @@ const SubmitListItem = ({ item, idx, isSavedList }) => {
         // 실패, 성공에 따른 토스트
         toastStore.addToast(isDeleted ? "해당 플레이리스트가 삭제되었습니다." : "플레이리스트 삭제가 취소되었습니다.");
     }
+    // 저장된 플레이리스트를 현재 플레이리스트에 추가
+    const submitCurrentSavedMusic = () => {
+        (async () => {
+            // confirm을 체크 후 fireStore에 저장
+            const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
+            if (confirmSubmit) {
+                await addDoc(collection(initFireStore, "playList"), {
+                    nickName: tokenStore.token.nickName,
+                    createAt: Date.now(),
+                    link: item.link,
+                })
+                    .then(() => {
+                        toastStore.addToast("플레이리스트에 추가되었습니다.");
+                        setIsShowEditModal(false);
+                    })
+                    .catch((e) => {
+                        alert("플레이리스트 추가에 실패하였습니다.");
+                        console.log(e);
+                    });
+            } else {
+                toastStore.addToast("플레이리스트 신청이 취소되었습니다.");
+            }
+        })()
+    }
 
     return (
         <li key={idx} className="flex justify-between border-2 border-gray-400 px-2 py-1 rounded-md bg-white w-full">
@@ -56,7 +82,9 @@ const SubmitListItem = ({ item, idx, isSavedList }) => {
                             </button>
                         }
                         {isSavedList &&
-                            <AddIcon style={{ cursor: "pointer" }}/>
+                            <button type="button" onClick={submitCurrentSavedMusic}>
+                                <AddIcon style={{ cursor: "pointer" }}/>
+                            </button>
                         }
                         <button type="button" onClick={onDelete}>
                             <CloseIcon/>
