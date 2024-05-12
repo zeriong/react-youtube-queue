@@ -16,8 +16,9 @@ const EditModal = () => {
 
     const [submitInput, setSubmitInput] = useState("");
     const [canSubmit, setCanSubmit] = useState(false);
+    const [isOnce, setIsOnce] = useState(false);
 
-    const toastStore = useToastsStore();
+    const { addToast } = useToastsStore();
     const tokenStore = useTokenStore();
     const { submitMaxLength, submitMusic, selectedCurrentMusic, setSelectedCurrentMusic, isShowEditModal, setIsShowEditModal } = usePlayerStore();
 
@@ -43,14 +44,14 @@ const EditModal = () => {
         e.preventDefault();
         // 서브밋이 불가능한 경우 막음
         if (!canSubmit) return;
-        if (submitInput.trim() === "") return toastStore.addToast("신청하실 유튜브 음악 링크를 입력해주세요.");
+        if (submitInput.trim() === "") return addToast("신청하실 유튜브 음악 링크를 입력해주세요.");
         // 유튜브 링크인지 체크 후 아니라면 toast 알림을 띄움
         if (!submitInput.includes(YOUTUBE_BASE_URL)) {
-            return toastStore.addToast("유튜브 링크를 입력해주세요.");
+            return addToast("유튜브 링크를 입력해주세요.");
         }
         // 정상적인 비디오 링크인지 검증
         if (!ReactPlayer.canPlay(submitInput)) {
-            return toastStore.addToast("재생가능한 동영상 링크가 아닙니다!");
+            return addToast("재생가능한 동영상 링크가 아닙니다!");
         }
 
         // 새로 추가인 경우
@@ -58,7 +59,7 @@ const EditModal = () => {
             // 신청곡 최대 개수 이상인 경우
             if (submitMaxLength <= submitMusic.length) {
                 setIsShowEditModal(false);
-                return toastStore.addToast(`신청 가능한 플레이리스트는 최대 ${submitMaxLength}개입니다.`);
+                return addToast(`신청 가능한 플레이리스트는 최대 ${submitMaxLength}개입니다.`);
             }
             // confirm을 체크 후 fireStore에 저장
             const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
@@ -69,7 +70,7 @@ const EditModal = () => {
                     link: submitInput,
                 })
                     .then(() => {
-                        toastStore.addToast("플레이리스트에 추가되었습니다.");
+                        addToast("플레이리스트에 추가되었습니다.");
                         setIsShowEditModal(false);
                     })
                     .catch((e) => {
@@ -77,21 +78,21 @@ const EditModal = () => {
                         console.log(e);
                     });
             } else {
-                toastStore.addToast("플레이리스트 신청이 취소되었습니다.");
+                addToast("플레이리스트 신청이 취소되었습니다.");
             }
 
             // 수정하는 경우
         } else {
             // 이전 링크와 같다면 취소
             if (selectedCurrentMusic.link === submitInput.trim()) {
-                toastStore.addToast("이전 URL과 동일하여 수정을 취소합니다.");
+                addToast("이전 URL과 동일하여 수정을 취소합니다.");
                 return setIsShowEditModal(false);
             }
             // 업데이트 요청
             const isUpdate = updateFireStoreData(selectedCurrentMusic.id, { link: submitInput.trim() }, "playList");
             // 업데이트 성공, 실패 처리
             if (isUpdate) setIsShowEditModal(false);
-            toastStore.addToast(isUpdate ? "링크가 수정되었습니다." : "링크 수정에 실패하였습니다.");
+            addToast(isUpdate ? "링크가 수정되었습니다." : "링크 수정에 실패하였습니다.");
         }
     }
 
@@ -100,6 +101,9 @@ const EditModal = () => {
         if (!isShowEditModal) {
             setSelectedCurrentMusic(null);
             setSubmitInput("");
+        } else if (!isOnce) {
+            setIsOnce(true);
+            addToast("제목은 필수 입력이 아닙니다.<br/> 미입력 시 (닉네임 + 신청곡)으로 표기됩니다.")
         }
     }, [isShowEditModal]);
 
@@ -130,27 +134,44 @@ const EditModal = () => {
                     </header>
                     {/* 신청 폼 */}
                     <form className="flex gap-2 px-2 mb-3" onSubmit={submitURL}>
-                        <div ref={submitInputAreaRef} className="relative w-full">
-                            <input
-                                ref={submitInputRef}
-                                type="text"
-                                className="w-full border-2 border-gray-500 pl-2 pr-6 py-1 rounded-md relative text-[15px] items-center"
-                                onChange={handleOnChange}
-                                placeholder={selectedCurrentMusic ? "수정할 유튜브 음악 URL을 입력해주세요!" : "유튜브 음악 URL을 입력하여 신청해주세요!"}
-                            />
-                            <button
-                                type="button"
-                                className="bg-black absolute right-[7px] top-1/2 -translate-y-1/2 rounded-full p-[2px] opacity-80"
-                                onClick={() => {
-                                    submitInputRef.current.value = "";
-                                    setSubmitInput("");
-                                    submitInputRef.current.focus();
-                                }}
-                            >
-                                <CloseIcon fill="#fff" width={12} height={12}/>
-                            </button>
+                        <div ref={submitInputAreaRef} className="relative w-full flex flex-col gap-2">
+
+                            {/* 신청곡 제목 input */}
+                            <div className="flex items-center">
+                                <p>신청곡 제목</p>
+                                <input
+                                    type="text"
+                                    className="w-full border-2 border-gray-500 pl-2 pr-6 py-1 rounded-md relative text-[15px] items-center"
+                                    onChange={handleOnChange}
+                                    placeholder={selectedCurrentMusic ? "수정할 제목을 입력해주세요." : "신청곡의 제목을 입력해주세요."}
+                                />
+                            </div>
+
+                            {/* 신청곡 url input */}
+                            <div className="relative">
+                                <input
+                                    ref={submitInputRef}
+                                    type="text"
+                                    className="w-full border-2 border-gray-500 pl-2 pr-6 py-1 rounded-md relative text-[15px] items-center"
+                                    onChange={handleOnChange}
+                                    placeholder={selectedCurrentMusic ? "수정할 유튜브 음악 URL을 입력해주세요!" : "유튜브 음악 URL을 입력하여 신청해주세요!"}
+                                />
+                                <button
+                                    type="button"
+                                    className="bg-black absolute right-[7px] top-1/2 -translate-y-1/2 rounded-full p-[2px] opacity-80"
+                                    onClick={() => {
+                                        submitInputRef.current.value = "";
+                                        setSubmitInput("");
+                                        submitInputRef.current.focus();
+                                    }}
+                                >
+                                    <CloseIcon fill="#fff" width={12} height={12}/>
+                                </button>
+                            </div>
                         </div>
-                        <button className={`border px-2 rounded-md ${canSubmit ? "bg-gray-300 font-bold hover:scale-105" : "bg-gray-100 text-gray-400"}`} type="submit">
+                        <button
+                            className={`border px-2 rounded-md ${canSubmit ? "bg-gray-300 font-bold hover:scale-105" : "bg-gray-100 text-gray-400"}`}
+                            type="submit">
                             {selectedCurrentMusic ? "수정하기" : "신청하기"}
                         </button>
                     </form>
