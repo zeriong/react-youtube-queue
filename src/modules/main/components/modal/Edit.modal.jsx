@@ -11,8 +11,10 @@ import {usePlayerStore} from "../../../../store/playerStore";
 
 const EditModal = () => {
     const timeoutRef = useRef(null);
-    const submitInputRef = useRef(null);
     const submitInputAreaRef = useRef(null);
+
+    // input target ref
+    const submitInputRef = useRef(null);
     const titleInputRef = useRef(null);
 
     const [submitURLInput, setSubmitURLInput] = useState("");
@@ -70,6 +72,7 @@ const EditModal = () => {
                     nickName: tokenStore.token.nickName,
                     createAt: Date.now(),
                     link: submitURLInput,
+                    title: titleInputRef.current.value,
                 })
                     .then(() => {
                         addToast("플레이리스트에 추가되었습니다.");
@@ -123,7 +126,6 @@ const EditModal = () => {
              className="fixed top-0 left-0 z-50 w-full h-full bg-black/50 flex justify-center items-center">
             {/* 미리보기 영역 */}
             <section className="p-3 max-w-[500px] max-h-[500px] w-full h-full">
-
                 <div
                     onClick={(e) => e.stopPropagation()}
                     className="bg-white w-full h-full flex flex-col rounded-2xl"
