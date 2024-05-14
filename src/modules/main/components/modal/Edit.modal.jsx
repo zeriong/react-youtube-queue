@@ -171,9 +171,10 @@ const EditModal = () => {
 
                             {/* 신청곡 제목 input */}
                             <div className="flex items-center gap-2">
-                                <p onClick={() => titleInputRef.current.focus()}>
-                                    신청곡 제목:
-                                </p>
+                                <div className="relative top-[-5px]" onClick={() => titleInputRef.current.focus()}>
+                                    <p>신청곡 제목:</p>
+                                    <p className="absolute text-[12px] left-1/2 -translate-x-1/2 bottom-[-12px] font-bold text-gray-400/85">( 선택 사항 )</p>
+                                </div>
                                 <div className="relative w-full">
                                     <input
                                         ref={titleInputRef}

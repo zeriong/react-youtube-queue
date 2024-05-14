@@ -65,7 +65,7 @@ const SubmitListItem = ({ item, idx, isSavedList }) => {
     return (
         <li key={idx} className="flex justify-between border-2 border-gray-400 px-2 py-1 rounded-md bg-white w-full">
             <div className="flex gap-3">
-                <p>{(isSavedList) ? (item.title) : (`${idx + 1}. ${item?.nickName}님의 신청곡`)}</p>
+                <p>{`${idx + 1}. ${item.title || item?.nickName + "님의 신청곡"}`}</p>
                 <button
                     className="text-[12px] border border-gray-600 px-2 rounded-md"
                     type="button"
