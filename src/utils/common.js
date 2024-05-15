@@ -3,6 +3,7 @@ import {TOKEN_NAME} from "../constants";
 import {deleteUser, getFireStoreData} from "./firebase";
 import CryptoJS from "crypto-js";
 import {DEFAULT_PLAYLIST} from "../constants/defaultPlaylist";
+import {useToastsStore} from "../modules/common/components/Toasts";
 
 /** 암호화 유틸 */
 // 대칭형 키
@@ -110,6 +111,7 @@ export function validateByteFormLength(text, maxByte = 40, minByte) {
     return {isValidate, byte};
 }
 
+// 기본음악 랜덤재생
 export const defaultPlayer = (shuffleRef, setCurrentListItem) => {
     // 난수 생성
     const randomNum = Math.floor(Math.random() * DEFAULT_PLAYLIST.length);
@@ -121,4 +123,9 @@ export const defaultPlayer = (shuffleRef, setCurrentListItem) => {
     setCurrentListItem({link: DEFAULT_PLAYLIST[randomNum]});
     // 셔플ref가 가득 차면 초기화
     if (shuffleRef.current.length === DEFAULT_PLAYLIST.length) shuffleRef.current = [];
+}
+
+// 준비중인 기능입니다 토스트
+export const onNotYetToast = () => {
+    return useToastsStore.getState().addToast("준비중인 기능입니다!");
 }

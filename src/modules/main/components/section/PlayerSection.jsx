@@ -7,7 +7,7 @@ import SaveCurrentMusicButton from "../buttons/SaveCurrentMusicButton";
 import {useTokenStore} from "../../../../store/commonStore";
 import {usePlayerStore} from "../../../../store/playerStore";
 import {useEffect, useRef, useState} from "react";
-import {defaultPlayer} from "../../../../utils/common";
+import {defaultPlayer, onNotYetToast} from "../../../../utils/common";
 import {deleteFireStore} from "../../../../utils/firebase";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../libs/firebase";
@@ -192,6 +192,26 @@ const PlayerSection = () => {
                                 일반 인증 유저는 원하는 유튜브 음악을<br/>
                                 신청, 삭제, 수정할 수 있습니다.
                             </p>
+                            <section className="border border-dashed p-4 rounded-lg flex flex-col gap-4">
+                                <p>아래 버튼을 통해 관리자에게 요청할 수 있습니다</p>
+                                <section className="flex justify-center">
+                                    <div className="flex gap-4">
+                                        <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black" type="button">
+                                            볼륨 변경
+                                        </button>
+                                        <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black" type="button">
+                                            일시정지
+                                        </button>
+                                        <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black" type="button">
+                                            재생
+                                        </button>
+                                        <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black" type="button">
+                                            다음 음악 재생
+                                        </button>
+                                    </div>
+                                </section>
+                            </section>
+
                         </div>
                     </div>
                 )
