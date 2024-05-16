@@ -1,10 +1,10 @@
-import {CloseIcon} from "../../../svgComponents/svgComponents";
+import {CloseIcon} from "../../../../svgComponents/svgComponents";
 import React, {useRef} from "react";
-import {getFireStoreData} from "../../../../utils/firebase";
+import {getFireStoreData} from "../../../../../utils/firebase";
 import {addDoc, collection} from "firebase/firestore";
-import {initFireStore} from "../../../../libs/firebase";
-import {usePlayerStore} from "../../../../store/playerStore";
-import {useToastsStore} from "../../../common/components/Toasts";
+import {initFireStore} from "../../../../../libs/firebase";
+import {usePlayerStore} from "../../../../../store/playerStore";
+import {useToastsStore} from "../../../../common/components/Toasts";
 
 const SaveCurrentMusicModal = () => {
     const titleInputRef = useRef();

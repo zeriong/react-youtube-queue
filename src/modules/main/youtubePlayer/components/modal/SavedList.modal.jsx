@@ -1,9 +1,9 @@
-import {CloseIcon} from "../../../svgComponents/svgComponents";
+import {CloseIcon} from "../../../../svgComponents/svgComponents";
 import React, {useEffect} from "react";
 import SubmitListItem from "../lists/SubmitListItem";
-import {usePlayerStore} from "../../../../store/playerStore";
+import {usePlayerStore} from "../../../../../store/playerStore";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
-import {initFireStore} from "../../../../libs/firebase";
+import {initFireStore} from "../../../../../libs/firebase";
 
 const SavedListModal = () => {
     const {

@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import ReactPlayer from "react-player";
-import {CloseIcon} from "../../../svgComponents/svgComponents";
-import {usePlayerStore} from "../../../../store/playerStore";
+import {CloseIcon} from "../../../../svgComponents/svgComponents";
+import {usePlayerStore} from "../../../../../store/playerStore";
 
 const PreViewModal = () => {
     const {

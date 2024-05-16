@@ -5,8 +5,8 @@ import PlayerAside from "./components/section/PlayerAside";
 import PlayerSection from "./components/section/PlayerSection";
 import SavedMusicListButton from "./components/buttons/SavedMusicListButton";
 import {useEffect} from "react";
-import {usePlayerStore} from "../../store/playerStore";
-import {getFireStoreData} from "../../utils/firebase";
+import {usePlayerStore} from "../../../store/playerStore";
+import {getFireStoreData} from "../../../utils/firebase";
 
 const YoutubeQueuePlay = () => {
     return (

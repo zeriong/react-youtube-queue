@@ -1,16 +1,16 @@
 import PlayPrevButton from "../buttons/PlayPrevButton";
 import ReactPlayer from "react-player";
 import PlayNextButton from "../buttons/PlayNextButton";
-import {PlayIcon} from "../../../svgComponents/svgComponents";
-import Cursor from "../../../common/components/Cursor";
+import {PlayIcon} from "../../../../svgComponents/svgComponents";
+import Cursor from "../../../../common/components/Cursor";
 import SaveCurrentMusicButton from "../buttons/SaveCurrentMusicButton";
-import {useTokenStore} from "../../../../store/commonStore";
-import {usePlayerStore} from "../../../../store/playerStore";
+import {useTokenStore} from "../../../../../store/commonStore";
+import {usePlayerStore} from "../../../../../store/playerStore";
 import {useEffect, useRef, useState} from "react";
-import {defaultPlayer, onNotYetToast} from "../../../../utils/common";
-import {deleteFireStore} from "../../../../utils/firebase";
+import {defaultPlayer, onNotYetToast} from "../../../../../utils/common";
+import {deleteFireStore} from "../../../../../utils/firebase";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
-import {initFireStore} from "../../../../libs/firebase";
+import {initFireStore} from "../../../../../libs/firebase";
 
 const PlayerSection = () => {
     const tokenStore = useTokenStore();
@@ -61,6 +61,15 @@ const PlayerSection = () => {
         console.log("아직은 미구현!")
     }
 
+    // 네트워크 온라인 함수
+    const onFunc = () => {
+        if (isStart && !isReady) setIsReady(true);
+    }
+    // 네트워크 오프라인 함수
+    const offFunc = () => {
+        if (isStart && isReady) setIsReady(false);
+    }
+
     // 동영상이 준비된 상태를 체크하여 실행
     useEffect(() => {
         if (isReady) setIsPlay(true);
@@ -74,15 +83,6 @@ const PlayerSection = () => {
 
     // init effect
     useEffect(() => {
-        // 온라인 함수
-        const onFunc = () => {
-            if (isStart && !isReady) setIsReady(true);
-        }
-        // 오프라인 함수
-        const offFunc = () => {
-            if (isStart && isReady) setIsReady(false);
-        }
-
         // 데이터 쿼리를 생성 날짜 오름차순으로 정렬 (queue 형태를 구현하기 위함)
         const setFireStoreQuery = query(
             collection(initFireStore, "playList"),

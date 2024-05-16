@@ -1,10 +1,10 @@
-import {AddIcon, CloseIcon, EditIcon} from "../../../svgComponents/svgComponents";
-import {deleteFireStore} from "../../../../utils/firebase";
-import {useToastsStore} from "../../../common/components/Toasts";
-import {usePlayerStore} from "../../../../store/playerStore";
-import {useTokenStore} from "../../../../store/commonStore";
+import {AddIcon, CloseIcon, EditIcon} from "../../../../svgComponents/svgComponents";
+import {deleteFireStore} from "../../../../../utils/firebase";
+import {useToastsStore} from "../../../../common/components/Toasts";
+import {usePlayerStore} from "../../../../../store/playerStore";
+import {useTokenStore} from "../../../../../store/commonStore";
 import {addDoc, collection} from "firebase/firestore";
-import {initFireStore} from "../../../../libs/firebase";
+import {initFireStore} from "../../../../../libs/firebase";
 
 const SubmitListItem = ({ item, idx, isSavedList }) => {
     const { addToast } = useToastsStore();

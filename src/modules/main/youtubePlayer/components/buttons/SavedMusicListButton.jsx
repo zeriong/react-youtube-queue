@@ -1,5 +1,5 @@
-import {SavedPlayList} from "../../../svgComponents/svgComponents";
-import {usePlayerStore} from "../../../../store/playerStore";
+import {SavedPlayList} from "../../../../svgComponents/svgComponents";
+import {usePlayerStore} from "../../../../../store/playerStore";
 
 const SavedMusicListButton = () => {
     const { setIsShowSavedListModal } = usePlayerStore();

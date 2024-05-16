@@ -1,9 +1,9 @@
-import {LogoutIcon} from "../../../svgComponents/svgComponents";
+import {LogoutIcon} from "../../../../svgComponents/svgComponents";
 import SubmitListItem from "../lists/SubmitListItem";
-import {usePlayerStore} from "../../../../store/playerStore";
-import {useToastsStore} from "../../../common/components/Toasts";
-import {useTokenStore} from "../../../../store/commonStore";
-import {deleteUser} from "../../../../utils/firebase";
+import {usePlayerStore} from "../../../../../store/playerStore";
+import {useToastsStore} from "../../../../common/components/Toasts";
+import {useTokenStore} from "../../../../../store/commonStore";
+import {deleteUser} from "../../../../../utils/firebase";
 
 /**@desc 유튜브 음악 플레이어 화면 Aside
  * @param {any} logout 로그아웃
