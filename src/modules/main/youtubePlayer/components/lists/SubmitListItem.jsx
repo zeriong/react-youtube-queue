@@ -1,6 +1,6 @@
 import {AddIcon, CloseIcon, EditIcon} from "../../../../svgComponents/svgComponents";
 import {deleteFireStore} from "../../../../../utils/firebase";
-import {useToastsStore} from "../../../../common/components/Toasts";
+import {useToastsStore} from "../../../../common/Toasts";
 import {usePlayerStore} from "../../../../../store/playerStore";
 import {useTokenStore} from "../../../../../store/commonStore";
 import {addDoc, collection} from "firebase/firestore";

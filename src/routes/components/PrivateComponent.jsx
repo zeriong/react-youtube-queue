@@ -1,6 +1,6 @@
 import React from "react";
 import {Navigate, Outlet} from "react-router-dom";
-import {useToastsStore} from "../../modules/common/components/Toasts";
+import {useToastsStore} from "../../modules/common/Toasts";
 import {useTokenStore} from "../../store/commonStore";
 
 /**@param { boolean } isOnlyNonCertificate 비인증 접속자만 연결 가능한 경우 추가 */

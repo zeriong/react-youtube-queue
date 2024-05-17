@@ -1,6 +1,6 @@
 import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
-import {useToastsStore} from "../../../../common/components/Toasts";
+import {useToastsStore} from "../../../../common/Toasts";
 import {getFireStoreData} from "../../../../../utils/firebase";
 import {useRef, useState} from "react";
 import SaveCurrentMusicModal from "../modal/SaveCurrentMusic.modal";

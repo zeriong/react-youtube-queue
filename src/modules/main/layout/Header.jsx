@@ -2,7 +2,7 @@ import {Link, useLocation} from "react-router-dom";
 import {LogoutIcon} from "../../svgComponents/svgComponents";
 import {deleteUser} from "../../../utils/firebase";
 import {useTokenStore} from "../../../store/commonStore";
-import {useToastsStore} from "../../common/components/Toasts";
+import {useToastsStore} from "../../common/Toasts";
 import {HEADER_LIST} from "../../../constants/headerList";
 import {useEffect, useState} from "react";
 

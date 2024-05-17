@@ -1,6 +1,6 @@
 import SubmitListItem from "../lists/SubmitListItem";
 import {usePlayerStore} from "../../../../../store/playerStore";
-import {useToastsStore} from "../../../../common/components/Toasts";
+import {useToastsStore} from "../../../../common/Toasts";
 
 /**@desc 유튜브 음악 플레이어 화면 Aside
  * @param {any} logout 로그아웃

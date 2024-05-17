@@ -1,7 +1,7 @@
 import {useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {setAuthStorage, validateByteFormLength} from "../../utils/common";
-import {useToastsStore} from "../common/components/Toasts";
+import {useToastsStore} from "../common/Toasts";
 import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../libs/firebase";
 import {add, format} from "date-fns";

@@ -3,7 +3,7 @@ import {lazy, Suspense} from "react";
 
 // init import
 import PrivateComponent from "./components/PrivateComponent";
-import NotFound from "../modules/common/notFound/NotFound";
+import NotFound from "../modules/common/NotFound";
 
 // Lazy Import
 const Enter = lazy(() => import("../modules/intro/Enter"));

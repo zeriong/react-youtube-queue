@@ -3,7 +3,7 @@ import {TOKEN_NAME} from "../constants";
 import {deleteUser, getFireStoreData} from "./firebase";
 import CryptoJS from "crypto-js";
 import {DEFAULT_PLAYLIST} from "../constants/defaultPlaylist";
-import {useToastsStore} from "../modules/common/components/Toasts";
+import {useToastsStore} from "../modules/common/Toasts";
 
 /** 암호화 유틸 */
 // 대칭형 키

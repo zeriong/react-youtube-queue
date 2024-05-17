@@ -1,6 +1,6 @@
 import ReactPlayer from "react-player";
 import React, {useEffect, useRef, useState} from "react";
-import {useToastsStore} from "../../../../common/components/Toasts";
+import {useToastsStore} from "../../../../common/Toasts";
 import {CloseIcon} from "../../../../svgComponents/svgComponents";
 import {YOUTUBE_BASE_URL} from "../../../../../constants";
 import {initFireStore} from "../../../../../libs/firebase";

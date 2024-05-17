@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import Router from "./routes/Router";
-import Toasts from "./modules/common/components/Toasts";
+import Toasts from "./modules/common/Toasts";
 import {TOKEN_NAME} from "./constants";
 import {create} from "zustand";
 import {getAuthStorage} from "./utils/common";

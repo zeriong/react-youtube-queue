@@ -2,7 +2,7 @@ import PlayPrevButton from "../buttons/PlayPrevButton";
 import ReactPlayer from "react-player";
 import PlayNextButton from "../buttons/PlayNextButton";
 import {PlayIcon} from "../../../../svgComponents/svgComponents";
-import Cursor from "../../../../common/components/Cursor";
+import Cursor from "../../../../common/Cursor";
 import SaveCurrentMusicButton from "../buttons/SaveCurrentMusicButton";
 import {useTokenStore} from "../../../../../store/commonStore";
 import {usePlayerStore} from "../../../../../store/playerStore";
