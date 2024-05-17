@@ -4,14 +4,12 @@ import SavedListModal from "./components/modal/SavedList.modal";
 import PlayerAside from "./components/section/PlayerAside";
 import PlayerSection from "./components/section/PlayerSection";
 import SavedMusicListButton from "./components/buttons/SavedMusicListButton";
-import {useEffect} from "react";
-import {usePlayerStore} from "../../../store/playerStore";
-import {getFireStoreData} from "../../../utils/firebase";
 
 const YoutubeQueuePlay = () => {
     return (
         <>
-            <div className="flex flex-col pc:flex-row w-full h-full cursor-default relative">
+            {/* transform을 설정하여 내부 컨텐츠 fixed 의 기준을 지정 */}
+            <div className="transform flex flex-col pc:flex-row w-full h-full cursor-default relative">
 
                 {/* 저장된 플레이리스트 버튼 */}
                 <SavedMusicListButton/>
