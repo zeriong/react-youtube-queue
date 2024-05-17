@@ -1,8 +1,17 @@
+import {isDev} from "../../../App";
+import Prepare from "../../common/Prepare";
+
 const DashBoard = () => {
     return (
-         <div>
-             대쉬보드 입니다.`
-         </div>
+        <>
+            {(isDev) ? (
+                <div>
+                    대쉬보드 입니다.`
+                </div>
+            ) : (
+                <Prepare/>
+            )}
+        </>
     )
 }
 

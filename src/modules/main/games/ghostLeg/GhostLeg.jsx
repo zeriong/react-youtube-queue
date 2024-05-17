@@ -1,7 +1,15 @@
+import Prepare from "../../../common/Prepare";
+import {isDev} from "../../../../App";
+
 const GhostLeg = () => {
+    console.log()
     return (
         <>
-            <div>사다리타기 게임~~ ^^</div>
+            {(isDev) ? (
+                <div>사다리타기 게임~~ ^^</div>
+            ) : (
+                <Prepare/>
+            )}
         </>
     )
 }

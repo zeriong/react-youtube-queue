@@ -1,11 +1,12 @@
 import React, {useEffect, useRef, useState} from "react";
 import Router from "./routes/Router";
 import Toasts from "./modules/common/Toasts";
-import {TOKEN_NAME} from "./constants";
-import {create} from "zustand";
 import {getAuthStorage} from "./utils/common";
 import {deleteUser} from "./utils/firebase";
 import {useTokenStore} from "./store/commonStore";
+
+// 빌드 모드 검증 변수
+export const isDev = process.env.NODE_ENV === "development";
 
 function App() {
     const tokenRef = useRef(null);
