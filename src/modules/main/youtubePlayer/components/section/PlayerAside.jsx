@@ -1,9 +1,6 @@
-import {LogoutIcon} from "../../../../svgComponents/svgComponents";
 import SubmitListItem from "../lists/SubmitListItem";
 import {usePlayerStore} from "../../../../../store/playerStore";
 import {useToastsStore} from "../../../../common/components/Toasts";
-import {useTokenStore} from "../../../../../store/commonStore";
-import {deleteUser} from "../../../../../utils/firebase";
 
 /**@desc 유튜브 음악 플레이어 화면 Aside
  * @param {any} logout 로그아웃
@@ -13,15 +10,9 @@ import {deleteUser} from "../../../../../utils/firebase";
  *  */
 const PlayerAside = () => {
     const { submitMusic, submitMaxLength, setIsShowEditModal,  } = usePlayerStore();
-    const { token, deleteToken } = useTokenStore();
     const { addToast } = useToastsStore();
 
-    // 접속 종료
-    const logout = async () => {
-        await deleteUser(token.id);
-        deleteToken();
-        addToast("로그아웃 되었습니다.");
-    }
+
 
     // 신청하기 버튼 함수
     const handleEditMusicModal = () => {
@@ -41,13 +32,6 @@ const PlayerAside = () => {
                     <p className="font-bold text-4xl">
                         Youtube Queue Player!
                     </p>
-                    <button
-                        type="button"
-                        className="bg-gray-300 px-3 py-2 rounded-md text-[20px] hover:scale-110"
-                        onClick={logout}
-                    >
-                        <LogoutIcon/>
-                    </button>
                 </div>
 
                 {/* 신청 버튼 */}
