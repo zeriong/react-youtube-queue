@@ -31,13 +31,10 @@ const Router = () => {
                             <Route path="" element={<DashBoard/>}/>
 
                             {/* contents */}
-                            <Route path="queuePlayer" element={<YoutubeQueuePlay/>}/>
+                            <Route path="player" element={<YoutubeQueuePlay/>}/>
 
                             {/* games */}
-                            <Route path="games">
-                                <Route index element={<NotFound/>} />
-                                <Route path="ghostLeg" element={<GhostLeg/>}/>
-                            </Route>
+                            <Route path="ghostLeg" element={<GhostLeg/>}/>
 
                         </Route>
                     </Route>

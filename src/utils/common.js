@@ -129,3 +129,6 @@ export const defaultPlayer = (shuffleRef, setCurrentListItem) => {
 export const onNotYetToast = () => {
     return useToastsStore.getState().addToast("준비중인 기능입니다!");
 }
+
+// pathName 마지막 경로
+export const lastPathName = () => window.location.pathname.split("/").pop();

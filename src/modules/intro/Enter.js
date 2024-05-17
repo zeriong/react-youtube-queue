@@ -78,7 +78,7 @@ const Enter = () => {
                 // 이후 스토어에도 저장
                 tokenStore.setToken(userData);
 
-                return navigate("/queuePlayer");
+                return navigate("/player");
             }
 
             return toastStore.addToast("인증번호가 일치하지 않습니다.");
