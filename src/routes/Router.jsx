@@ -1,33 +1,48 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Enter from "../modules/intro/Enter";
-import PrivateComponent from "./components/PrivateComponent";
-import YoutubeQueuePlay from "../modules/main/youtubePlayer/YoutubeQueuePlay";
 import {lazy, Suspense} from "react";
+
+// init import
+import PrivateComponent from "./components/PrivateComponent";
 import NotFound from "../modules/common/notFound/NotFound";
 
-const GhostLeg = lazy(import("../modules/main/games/ghostLeg/GhostLeg"))
+// Lazy Import
+const Enter = lazy(() => import("../modules/intro/Enter"));
+const GhostLeg = lazy(() => import("../modules/main/games/ghostLeg/GhostLeg"));
+const DashBoard = lazy(() => import("../modules/main/dashBoard/DashBoard"));
+const Layout = lazy(() => import("../modules/main/layout/Layout"));
+const YoutubeQueuePlay = lazy(() => import("../modules/main/youtubePlayer/YoutubeQueuePlay"));
 
 const Router = () => {
     return (
         <BrowserRouter>
             <Suspense>
                 <Routes>
+                    {/* 초기 접속 페이지 */}
                     <Route element={<PrivateComponent isOnlyNonCertificate={true}/>}>
                         <Route path="/" element={<Enter/>}/>
                     </Route>
 
-                    {/* contents */}
-                    <Route element={<PrivateComponent/>}>
-                        <Route path="/queuePlayer" element={<YoutubeQueuePlay/>}/>
+                    {/* 인증 컨텐츠 모두 비공개 */}
+                    <Route path="main" element={<PrivateComponent/>}>
+                        {/* Layout Style */}
+                        <Route element={<Layout/>}>
+
+                            {/* Default: DashBoard */}
+                            <Route path="" element={<DashBoard/>}/>
+
+                            {/* contents */}
+                            <Route path="queuePlayer" element={<YoutubeQueuePlay/>}/>
+
+                            {/* games */}
+                            <Route path="games">
+                                <Route index element={<NotFound/>} />
+                                <Route path="ghostLeg" element={<GhostLeg/>}/>
+                            </Route>
+
+                        </Route>
                     </Route>
 
-                    {/* games */}
-                    <Route path="games">
-                        <Route index element={<NotFound/>} />
-                        <Route path="ghostLeg" element={<GhostLeg/>}/>
-                    </Route>
-
-                    {/* NotFound */}
+                    {/* Not Found */}
                     <Route path="*" element={<NotFound/>}/>
                 </Routes>
             </Suspense>
