@@ -1,5 +1,6 @@
 import {Outlet} from "react-router-dom";
 import Header from "./Header";
+import React, {Suspense} from "react";
 
 const Layout = () => {
     return (
@@ -7,11 +8,13 @@ const Layout = () => {
          <Header/>
          <main className="overflow-hidden w-full grow">
              <div className="w-full h-full">
-                 <Outlet/>
+                 <Suspense>
+                     <Outlet/>
+                 </Suspense>
              </div>
          </main>
      </div>
     )
 }
 
-export default Layout;
+export default React.memo(Layout);
