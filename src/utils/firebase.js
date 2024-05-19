@@ -1,14 +1,22 @@
 import {collection, deleteDoc, doc, getDoc, getDocs, updateDoc} from "firebase/firestore";
 import {initFireStore} from "../libs/firebase";
 
-/** 매개변수에 타겟 데이터 path를 입력하면 fireStore 저장된 해당 path를 가진 모든 데이터를 배열로 반환 */
-export const getFireStoreData = async (dataPath) => {
-    const getUsersData = await getDocs(collection(initFireStore, dataPath));
-    const users = [];
+/** 매개변수에 타겟 데이터 path를 입력하면 fireStore 저장된 해당 path를 가진 모든 데이터를 배열로 반환하고 별도의 query를 넣어주고 싶은 경우 두번째 매개변수에 query를 추가한다. */
+export const getFireStoreData = async (dataPath, query) => {
+    let setQuery;
+
+    // 조건에 따른 get 데이터
+    if (dataPath && !query) setQuery = collection(initFireStore, dataPath);
+    if (query) setQuery =  query;
+
+    const getUsersData = await getDocs(setQuery);
+    const data = [];
     getUsersData.forEach((doc) => {
-        users.push(doc.data());
+        const dataParse = doc.data();
+        dataParse.id = doc.id;
+        data.push(dataParse);
     });
-    return users;
+    return data;
 }
 
 /**@desc fireStore 에 저장 된 특정 데이터 업데이트

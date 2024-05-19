@@ -12,8 +12,6 @@ const PlayerAside = () => {
     const { submitMusic, submitMaxLength, setIsShowEditModal,  } = usePlayerStore();
     const { addToast } = useToastsStore();
 
-
-
     // 신청하기 버튼 함수
     const handleEditMusicModal = () => {
         if (submitMaxLength <= submitMusic.length) {

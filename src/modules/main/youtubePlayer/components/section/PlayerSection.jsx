@@ -8,7 +8,7 @@ import {useTokenStore} from "../../../../../store/commonStore";
 import {usePlayerStore} from "../../../../../store/playerStore";
 import {useEffect, useRef, useState} from "react";
 import {defaultPlayer, onNotYetToast} from "../../../../../utils/common";
-import {deleteFireStore} from "../../../../../utils/firebase";
+import {deleteFireStore, getFireStoreData} from "../../../../../utils/firebase";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
 
@@ -78,19 +78,21 @@ const PlayerSection = () => {
 
     // 신청곡을 감지하여 기본 플리 재생중일 땐 즉시 신청곡을 재생하도록 구성
     useEffect(() => {
+        console.log("이것은 서브밋 뮤직~!!!", submitMusic)
         if (isStart && !isSubmitPlaying) playYoutubeMusic();
     }, [submitMusic]);
 
     // init effect
     useEffect(() => {
+
         // 데이터 쿼리를 생성 날짜 오름차순으로 정렬 (queue 형태를 구현하기 위함)
-        const setFireStoreQuery = query(
+        const playListQuery = query(
             collection(initFireStore, "playList"),
             orderBy("createAt", "asc")
         );
 
         // onSnapshot을 활용하여 실시간 데이터를 받음
-        onSnapshot(setFireStoreQuery, (snapshot) => {
+        onSnapshot(playListQuery, (snapshot) => {
             const contentArr = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
@@ -98,6 +100,7 @@ const PlayerSection = () => {
             setSubmitMusic(contentArr);
         });
 
+        // 네트워크 상태 이벤트
         window.addEventListener("online", onFunc);
         window.addEventListener("offline", offFunc);
 

@@ -24,11 +24,11 @@ const YoutubeQueuePlay = () => {
             {/* 신청/수정 모달 */}
             <EditModal/>
 
-            {/* 미리보기 모달 */}
-            <PreViewModal/>
-
             {/* 저장된 리스트 모달 */}
             <SavedListModal/>
+
+            {/* 미리보기 모달 */}
+            <PreViewModal/>
         </>
     )
 }
