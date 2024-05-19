@@ -6,7 +6,7 @@ const GhostLeg = () => {
     return (
         <>
             {(isDev) ? (
-                <div>사다리타기 게임~~ ^^</div>
+                <div className="">사다리타기 게임~~ ^^</div>
             ) : (
                 <Prepare/>
             )}

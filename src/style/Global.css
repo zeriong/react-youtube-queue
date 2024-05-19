@@ -23,6 +23,10 @@ html, body, #root {
 .customScroll-vertical::-webkit-scrollbar {
     width: 9px;
 }
+/* 메인 컨테이너 스크롤 별도 지정 */
+.customScroll-vertical.main::-webkit-scrollbar {
+    width: 14px;
+}
 .customScroll-vertical::-webkit-scrollbar-thumb {
     background-color: #fff;
     border: solid 2px #afafaf;
