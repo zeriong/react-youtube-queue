@@ -7,4 +7,8 @@ export const HEADER_LIST = [
         title: "사타리 타기",
         to: "/main/ghostLeg",
     },
+    {
+        title: "투표",
+        to: "/main/poll",
+    },
 ]

@@ -11,6 +11,7 @@ const Enter = lazy(() => import("../modules/intro/Enter"));
 const GhostLeg = lazy(() => import("../modules/main/games/ghostLeg/GhostLeg"));
 const DashBoard = lazy(() => import("../modules/main/dashBoard/DashBoard"));
 const YoutubeQueuePlay = lazy(() => import("../modules/main/youtubePlayer/YoutubeQueuePlay"));
+const Poll = lazy(() => import("../modules/main/games/poll/Poll"));
 
 const Router = () => {
     return (
@@ -35,6 +36,8 @@ const Router = () => {
                         {/* games */}
                         <Route path="ghostLeg" element={<GhostLeg/>}/>
 
+                        {/* poll */}
+                        <Route path="poll" element={<Poll/>}/>
                     </Route>
                 </Route>
 
