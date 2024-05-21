@@ -4,6 +4,7 @@ import SavedListModal from "./components/modal/SavedList.modal";
 import PlayerAside from "./components/section/PlayerAside";
 import PlayerSection from "./components/section/PlayerSection";
 import SavedMusicListButton from "./components/buttons/SavedMusicListButton";
+import RequestSection from "./components/section/RequestSection";
 
 const YoutubeQueuePlay = () => {
     return (
@@ -19,6 +20,9 @@ const YoutubeQueuePlay = () => {
 
                 {/* 어사이드 바 */}
                 <PlayerAside/>
+
+                {/* 일반유저 요청 nav */}
+                <RequestSection/>
             </div>
 
             {/* 신청/수정 모달 */}

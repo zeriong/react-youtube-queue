@@ -11,4 +11,4 @@ export const HEADER_LIST = [
         title: "투표",
         to: "/main/poll",
     },
-]
+];
