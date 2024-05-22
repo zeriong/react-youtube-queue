@@ -10,7 +10,7 @@ const YoutubeQueuePlay = () => {
     return (
         <>
             {/* transform을 설정하여 내부 컨텐츠 fixed 의 기준을 지정 */}
-            <div className="transform flex flex-col pc:flex-row w-full h-full cursor-default relative">
+            <div className="transform flex flex-col pc:flex-row w-full h-full cursor-default relative overflow-hidden">
 
                 {/* 저장된 플레이리스트 버튼 */}
                 <SavedMusicListButton/>
@@ -20,9 +20,6 @@ const YoutubeQueuePlay = () => {
 
                 {/* 어사이드 바 */}
                 <PlayerAside/>
-
-                {/* 일반유저 요청 nav */}
-                <RequestSection/>
             </div>
 
             {/* 신청/수정 모달 */}

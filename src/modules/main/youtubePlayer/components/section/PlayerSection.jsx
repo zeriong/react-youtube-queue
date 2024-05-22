@@ -11,6 +11,7 @@ import {defaultPlayer, onNotYetToast} from "../../../../../utils/common";
 import {deleteFireStore, getFireStoreData} from "../../../../../utils/firebase";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
+import RequestSection from "./RequestSection";
 
 const PlayerSection = () => {
     const tokenStore = useTokenStore();
@@ -111,7 +112,7 @@ const PlayerSection = () => {
     }, []);
 
     return (
-        <section className="w-full flex flex-col items-center mt-[100px] gap-6 p-10">
+        <section className="w-full flex flex-col items-center mt-[100px] gap-6 p-10 overflow-hidden">
 
             {/* 플레이어 섹션 */}
             {
@@ -229,6 +230,9 @@ const PlayerSection = () => {
                     </div>
                 </div>
             </div>
+
+            {/* 일반유저 요청 nav */}
+            <RequestSection/>
         </section>
     )
 }
