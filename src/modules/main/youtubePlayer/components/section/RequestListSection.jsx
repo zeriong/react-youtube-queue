@@ -3,7 +3,7 @@ import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
 import {isDev} from "../../../../../App";
 
-const RequestSection = () => {
+const RequestListSection = () => {
     const onSectionRef = useRef(false);
     const [userRequestList, setUserRequestList] = useState([]);
 
@@ -60,4 +60,4 @@ const RequestSection = () => {
     )
 }
 
-export default RequestSection;
+export default RequestListSection;

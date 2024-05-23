@@ -11,7 +11,8 @@ import {defaultPlayer, onNotYetToast} from "../../../../../utils/common";
 import {deleteFireStore, getFireStoreData} from "../../../../../utils/firebase";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
-import RequestSection from "./RequestSection";
+import RequestListSection from "./RequestListSection";
+import UserRequestSection from "./UserRequestSection";
 
 const PlayerSection = () => {
     const tokenStore = useTokenStore();
@@ -185,39 +186,8 @@ const PlayerSection = () => {
                         }
                     </div>
                 ) : (
-                    // 일반 인증자인 경우 블랙보드 렌더링
-                    <div className="border-2 border-gray-500 rounded-lg p-5">
-                        <div
-                            className="flex flex-col justify-center items-center w-[600px] h-[330px] bg-black text-white text-center gap-4 rounded-lg">
-                            <p className="text-[24px]">
-                                음악 재생은 어드민 유저에게 맡겨주세요!
-                            </p>
-                            <p>
-                                일반 인증 유저는 원하는 유튜브 음악을<br/>
-                                신청, 삭제, 수정할 수 있습니다.
-                            </p>
-                            <section className="border border-dashed p-4 rounded-lg flex flex-col gap-4">
-                                <p>아래 버튼을 통해 관리자에게 요청할 수 있습니다</p>
-                                <section className="flex justify-center">
-                                    <div className="flex gap-4">
-                                        <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black" type="button">
-                                            볼륨 변경
-                                        </button>
-                                        <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black" type="button">
-                                            일시정지
-                                        </button>
-                                        <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black" type="button">
-                                            재생
-                                        </button>
-                                        <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black" type="button">
-                                            다음 음악 재생
-                                        </button>
-                                    </div>
-                                </section>
-                            </section>
-
-                        </div>
-                    </div>
+                    // 일반 인증자인 경우 요청기능이 있는 블랙보드 렌더링
+                    <UserRequestSection/>
                 )
             }
 
@@ -232,7 +202,7 @@ const PlayerSection = () => {
             </div>
 
             {/* 일반유저 요청 nav */}
-            <RequestSection/>
+            <RequestListSection/>
         </section>
     )
 }
