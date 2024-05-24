@@ -54,7 +54,13 @@ const RequestListSection = () => {
 
             <p className="text-[18px] font-bold text-line text-white">{"< 요청 리스트 >"}</p>
             <ul>
-                <li>1. 리스트</li>
+                {userRequestList?.map((req, idx) => {
+                    let reqMsg = "";
+                    if (req.request === "pause") reqMsg = "일시 정지";
+                    return (
+                        <li key={idx}>1. {`${req.nickName} => ${reqMsg}`}</li>
+                    )
+                })}
             </ul>
         </nav>
     )
