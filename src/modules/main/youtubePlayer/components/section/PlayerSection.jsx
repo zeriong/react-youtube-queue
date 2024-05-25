@@ -7,15 +7,15 @@ import SaveCurrentMusicButton from "../buttons/SaveCurrentMusicButton";
 import {useTokenStore} from "../../../../../store/commonStore";
 import {usePlayerStore} from "../../../../../store/playerStore";
 import {useEffect, useRef, useState} from "react";
-import {defaultPlayer, onNotYetToast} from "../../../../../utils/common";
-import {deleteFireStore, getFireStoreData} from "../../../../../utils/firebase";
+import {defaultPlayer} from "../../../../../utils/common";
+import {deleteFireStore} from "../../../../../utils/firebase";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
 import RequestListSection from "./RequestListSection";
 import UserRequestSection from "./UserRequestSection";
 
 const PlayerSection = () => {
-    const tokenStore = useTokenStore();
+    const { token } = useTokenStore();
     const { currentMusic } = usePlayerStore();
 
     const shuffleRef = useRef([]);
@@ -118,7 +118,7 @@ const PlayerSection = () => {
             {/* 플레이어 섹션 */}
             {
                 // 어드민인 경우 플레이어 렌더링
-                (tokenStore.token?.role === 1
+                (token?.role === 1
                 ) ? (
                     <div className="w-full  flex flex-col">
                         {isStart ?
@@ -202,7 +202,7 @@ const PlayerSection = () => {
             </div>
 
             {/* 일반유저 요청 nav */}
-            <RequestListSection/>
+            {token.role === 1 && <RequestListSection/>}
         </section>
     )
 }
