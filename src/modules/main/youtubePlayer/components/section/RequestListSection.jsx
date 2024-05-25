@@ -84,18 +84,39 @@ const RequestListSection = () => {
                     {'< 요청 리스트 >'}
                 </p>
             </div>
-            <p className="font-bold text-[18px]">
-                자동 승인 {`${userRequestList.length && count}초`}
-            </p>
+            <div className="flex font-bold text-[18px]">
+                <p>자동 승인 {`${userRequestList.length && count}초`}</p>
+                <div>
+                    <button></button>
+                    <button></button>
+                </div>
+            </div>
             <ul className="overflow-x-hidden flex flex-col gap-4 customScroll-vertical">
                 {userRequestList?.map((req, idx) => {
                     let reqMsg = "";
                     if (req.request === "pause") reqMsg = "일시 정지";
-
                     return (
-                        <li key={idx} className="whitespace-break-spaces rounded border-2 border-gray-500 px-[8px]">
+                        <li key={idx} className="whitespace-break-spaces rounded border-2 border-gray-500 p-[8px]">
                             <p className="border-b-2 border-gray-400">{`${idx + 1}. ${req.nickName}`}</p>
-                            <p className="text-center my-[4px]">{`${reqMsg}`}</p>
+                            <p className="text-center my-[4px]">{reqMsg}</p>
+                            <div className="flex w-full gap-[4px]">
+                                <button
+                                    type="button"
+                                    className="w-full py-[4px] hover:bg-gray-200"
+                                    onClick={() => console.log("버튼~")}
+                                >
+                                    허용
+                                </button>
+                                |
+                                <button
+                                    type="button"
+                                    className="w-full py-[4px] hover:bg-gray-200"
+                                    onClick={() => console.log("버튼~")}
+
+                                >
+                                    취소
+                                </button>
+                            </div>
                         </li>
                     )
                 })}
