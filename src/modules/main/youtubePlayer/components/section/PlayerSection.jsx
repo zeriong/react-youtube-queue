@@ -8,8 +8,8 @@ import {useTokenStore} from "../../../../../store/commonStore";
 import {usePlayerStore} from "../../../../../store/playerStore";
 import {useEffect, useRef, useState} from "react";
 import {defaultPlayer} from "../../../../../utils/common";
-import {deleteFireStore} from "../../../../../utils/firebase";
-import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
+import {deleteFireStore, getFireStoreData, updateFireStoreData} from "../../../../../utils/firebase";
+import {addDoc, collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
 import RequestListSection from "./RequestListSection";
 import UserRequestSection from "./UserRequestSection";
@@ -77,15 +77,22 @@ const PlayerSection = () => {
         if (isStart && isReady) setIsReady(false);
     }
 
-    // 요청사항 처리 effect
-    useEffect(() => {
+    const handleUserRequest = () => {
         if (accessedUserReq.id) {
             if (!playerRef.current) return addToast("플레이어가 없는 상태입니다.");
             // 유저 요청 초기화
             setAccessedUserReq({});
             const {request} = accessedUserReq;
             if (request === "pause") playerRef.current?.getInternalPlayer().pauseVideo();
+            else if (request === "play") playerRef.current?.getInternalPlayer().playVideo();
+            else if (request === "next") playYoutubeMusic();
+            else if (request === "volume") console.log("볼륨조절 찾아보자고",playerRef.current?.getInternalPlayer().getVolume());
         }
+    }
+
+    // 요청사항 처리 effect
+    useEffect(() => {
+        handleUserRequest();
     }, [accessedUserReq])
 
     // 동영상이 준비된 상태를 체크하여 실행
@@ -98,6 +105,30 @@ const PlayerSection = () => {
     useEffect(() => {
         if (isStart && !isSubmitPlaying) playYoutubeMusic();
     }, [submitMusic]);
+
+    // 영상이 존재했을 때 현재 볼륨 저장
+    useEffect(() => {
+        if (isStart && playerRef.current && isReady) {
+            (async () => {
+                const getVolume = await getFireStoreData("currentVolume");
+                const playerVolume = playerRef.current?.getInternalPlayer().getVolume();
+                // 볼륨데이터가 있다면 업데이트
+                if (getVolume.length) {
+                    console.log("뿌엥?")
+                    updateFireStoreData(getVolume[0].id, {volume: playerVolume}, "currentVolume")
+                        .then(res => console.log(res))
+                        .catch(e => console.log(e));
+                } else {
+                    // 볼륨데이터가 없다면 새로 저장
+                    addDoc(collection(initFireStore, "currentVolume"), {
+                        volume: playerVolume,
+                    })
+                        .then(res => console.log(res))
+                        .catch(e => console.log(e));
+                }
+            })()
+        }
+    }, [isStart, isReady]);
 
     // init effect
     useEffect(() => {

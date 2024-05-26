@@ -1,14 +1,20 @@
 import {onNotYetToast} from "../../../../../utils/common";
 import {useToastsStore} from "../../../../common/Toasts";
-import {addDoc, collection} from "firebase/firestore";
+import {addDoc, collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
 import {CANCEL_USER_REQ} from "../../../../../constants/message";
 import {useTokenStore} from "../../../../../store/commonStore";
 import {USER_REQUEST_LIST} from "../../../../../constants/userRequestList";
+import {useEffect, useState} from "react";
+import RequestEditVolumeModal from "../modal/RequestEditVolume.modal";
+import {usePlayerStore} from "../../../../../store/playerStore";
 
 const UserRequestSection = () => {
+    const [currentVolume, setCurrentVolume] = useState([]);
     const {addToast} = useToastsStore();
     const {token} = useTokenStore();
+    const {setIsShowEditVolumeModal} = usePlayerStore();
+
 
     // 일시정지 요청
     const handleRequest = (item) => {
@@ -54,7 +60,10 @@ const UserRequestSection = () => {
                                 return (
                                     <button
                                         key={idx}
-                                        onClick={() => handleRequest(item)}
+                                        onClick={() => {
+                                            if (item.request === "volume") setIsShowEditVolumeModal(true);
+                                            else handleRequest(item)
+                                        }}
                                         className="px-4 py-2 bg-white rounded-md text-black"
                                         type="button"
                                     >
@@ -65,8 +74,10 @@ const UserRequestSection = () => {
                         </div>
                     </section>
                 </section>
-
             </div>
+
+            {/* 볼륨변경 요청 모달 */}
+            <RequestEditVolumeModal/>
         </div>
     )
 }
