@@ -25,17 +25,19 @@ const RequestEditVolumeModal = () => {
         }
     }
 
-    const handleVolumeChange = (size) => {
+    // 볼륨 변경 버튼 함수
+    const handleVolumeChangeButton = (size) => {
         let calc = eval(submitVolume + size);
         if (calc < 0) calc = 0;
         if (calc > 100) calc = 100;
         setSubmitVolume(calc);
     }
 
-    // 일시정지 요청
+    // 볼륨 변경 요청 서브밋 함수
     const requestEditVolume = (e) => {
         e.preventDefault();
         (async () => {
+            if (submitVolume === currentVolume) return addToast("현재 볼륨과 동일합니다.");
             const isConfirm = window.confirm("볼륨 변경을 요청하시겠습니까?");
             if (!isConfirm) return addToast(CANCEL_USER_REQ);
 
@@ -51,6 +53,9 @@ const RequestEditVolumeModal = () => {
                 .catch((e) => {
                     alert("요청에 실패하였습니다.");
                     console.log("유저 요청실패 error:",e);
+                })
+                .finally(() => {
+                    setIsShowEditVolumeModal(false);
                 });
         })();
     }
@@ -94,48 +99,50 @@ const RequestEditVolumeModal = () => {
                             <div className="flex gap-4 items-center">
                                 <button
                                     type="button"
-                                    className="p-1 rounded-md bg-gray-200 h-fit"
-                                    onClick={() => handleVolumeChange("-10")}
+                                    className="p-1 rounded-md bg-gray-200 h-fit w-[32px]"
+                                    onClick={() => handleVolumeChangeButton("-10")}
                                 >
                                     -10
                                 </button>
                                 <button
                                     type="button"
-                                    className="p-1 rounded-md bg-gray-200 h-fit"
-                                    onClick={() => handleVolumeChange("-5")}
+                                    className="p-1 rounded-md bg-gray-200 h-fit w-[32px]"
+                                    onClick={() => handleVolumeChangeButton("-5")}
                                 >
                                     -5
                                 </button>
                                 <button
                                     type="button"
-                                    className="px-2 py-1 rounded-md bg-gray-200 h-fit"
-                                    onClick={() => handleVolumeChange("-1")}
+                                    className="px-2 py-1 rounded-md bg-gray-200 h-fit w-[32px]"
+                                    onClick={() => handleVolumeChangeButton("-1")}
                                 >
                                     -
                                 </button>
                             </div>
 
                             {/* 요청할 볼륨 */}
-                            <p className="font-bold text-[20px] mx-[20px]">{submitVolume}</p>
+                            <p className="font-bold text-center w-[60px] text-[20px]">
+                                {submitVolume}
+                            </p>
 
                             {/* 플러스 */}
                             <div className="flex gap-4 items-center">
                                 <button
                                     type="button"
-                                    className="px-2 py-1 rounded-md bg-gray-200 h-fit"
-                                    onClick={() => handleVolumeChange("+1")}>
+                                    className="px-2 py-1 rounded-md bg-gray-200 h-fit w-[32px]"
+                                    onClick={() => handleVolumeChangeButton("+1")}>
                                     +
                                 </button>
                                 <button
                                     type="button"
-                                    className="p-1 rounded-md bg-gray-200 h-fit"
-                                    onClick={() => handleVolumeChange("+5")}>
+                                    className="p-1 rounded-md bg-gray-200 h-fit w-[32px]"
+                                    onClick={() => handleVolumeChangeButton("+5")}>
                                     +5
                                 </button>
                                 <button
                                     type="button"
-                                    className="p-1 rounded-md bg-gray-200 h-fit"
-                                    onClick={() => handleVolumeChange("+10")}>
+                                    className="p-1 rounded-md bg-gray-200 h-fit w-[32px]"
+                                    onClick={() => handleVolumeChangeButton("+10")}>
                                     +10
                                 </button>
                             </div>

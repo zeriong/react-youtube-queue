@@ -54,6 +54,8 @@ const RequestListSection = () => {
         // 카운트가 0 이하일 때 재귀에서 벗어남
         if (countRef.current <= 0) {
             countTimeoutRef.current = setTimeout(() => {
+                // 가장 상단부터 자동 승인
+                accessReq(userRequestList[0]);
                 resetCount();
             }, 1000);
             return;
