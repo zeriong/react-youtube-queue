@@ -16,8 +16,20 @@ const RequestListSection = () => {
     const {addToast} = useToastsStore();
     const {setAccessedUserReq} = usePlayerStore();
 
+    // 카운팅 리세팅 함수
+    const resetCount = () => {
+        // 타임아웃 해제
+        clearTimeout(countTimeoutRef.current);
+        countTimeoutRef.current = null;
+        // 카운트 세팅
+        countRef.current = 5;
+        setCount(countRef.current);
+    }
+
     // 요청 승인 함수
     const accessReq = (reqItem) => {
+        resetCount();
+        // 삭제 후 전역상태로 요청내용 전달
         const isDel = deleteFireStore(reqItem.id, "userRequest");
         if (isDel) {
             setAccessedUserReq(reqItem);
@@ -29,9 +41,7 @@ const RequestListSection = () => {
 
     // 요청 취소 함수
     const cancelReq = (id) => {
-        // 타임아웃 해제
-        clearTimeout(countTimeoutRef.current);
-        countTimeoutRef.current = null;
+        resetCount();
         // 데이터 삭제 (컨펌창 띄우지 않고 즉시 실행 = 제한시간이 5초밖에 되지않기 때문임)
         const isDel = deleteFireStore(id, "userRequest");
         if (isDel) addToast("해당 요청이 삭제되었습니다.");
@@ -43,12 +53,7 @@ const RequestListSection = () => {
         // 카운트가 0 이하일 때 재귀에서 벗어남
         if (countRef.current <= 0) {
             countTimeoutRef.current = setTimeout(() => {
-                countRef.current = 5;
-                setCount(countRef.current);
-
-                // 타임아웃 해제(중복 가능성을 염두)
-                clearTimeout(countTimeoutRef.current);
-                countTimeoutRef.current = null;
+                resetCount();
             }, 1000);
             return;
         }
@@ -79,6 +84,7 @@ const RequestListSection = () => {
                 id: doc.id,
                 ...doc.data(),
             }));
+            resetCount();
             setUserRequestList(contentArr);
         });
 

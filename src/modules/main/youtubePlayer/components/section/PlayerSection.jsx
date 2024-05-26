@@ -75,6 +75,7 @@ const PlayerSection = () => {
 
     useEffect(() => {
         if (accessedUserReq.id) {
+            setAccessedUserReq({});
             console.log("승인된 것 ㅎㅎ", accessedUserReq)
         }
     }, [accessedUserReq])
