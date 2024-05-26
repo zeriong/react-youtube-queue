@@ -55,6 +55,7 @@ const SaveCurrentMusicModal = () => {
             setIsShow={setIsShowSaveCurrentMusicModal}
             isShow={isShowSaveCurrentMusicModal}
             headerTitle={"재생중인 음악 저장"}
+            isFit={true}
             contentArea={
                 <form className="flex gap-2 px-2 mb-3" onSubmit={saveCurrentPlayMusic}>
                     <div className="relative w-full">

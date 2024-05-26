@@ -2,6 +2,9 @@ import {useEffect, useRef, useState} from "react";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
 import {isDev} from "../../../../../App";
+import {deleteFireStore} from "../../../../../utils/firebase";
+import {useTokenStore} from "../../../../../store/commonStore";
+import {useToastsStore} from "../../../../common/Toasts";
 
 const RequestListSection = () => {
     const countTimeoutRef = useRef(null);
@@ -9,13 +12,16 @@ const RequestListSection = () => {
     const countRef = useRef(5);
     const [count, setCount] = useState(5);
     const [userRequestList, setUserRequestList] = useState([]);
+    const {addToast} = useToastsStore();
 
-    const accessReq = () => {
+    const accessReq = (id) => {
 
     }
 
-    const cancelReq = () => {
-
+    const cancelReq = (id) => {
+        const isDel = deleteFireStore(id, "userRequest");
+        if (isDel) addToast("해당 요청이 삭제되었습니다.");
+        else addToast("해당 요청 삭제에 실패하였습니다.");
     }
 
     // 카운트 + 자동 승인 함수

@@ -8,6 +8,7 @@ export const usePlayerStore = create((setState) => ({
 
     // boolean types
     isSubmitPlaying: true, // 신청곡 재생 여부
+
     // modals
     isShowEditModal: false,
     isShowPreViewModal: false,

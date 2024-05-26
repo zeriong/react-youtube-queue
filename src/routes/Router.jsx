@@ -1,17 +1,15 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {lazy, Suspense} from "react";
 
 // init import
 import PrivateComponent from "./components/PrivateComponent";
 import NotFound from "../modules/common/NotFound";
 import Layout from "../modules/main/layout/Layout";
-
-// Lazy Import
-const Enter = lazy(() => import("../modules/intro/Enter"));
-const GhostLeg = lazy(() => import("../modules/main/games/ghostLeg/GhostLeg"));
-const DashBoard = lazy(() => import("../modules/main/dashBoard/DashBoard"));
-const YoutubeQueuePlay = lazy(() => import("../modules/main/youtubePlayer/YoutubeQueuePlay"));
-const Poll = lazy(() => import("../modules/main/games/poll/Poll"));
+import Enter from "../modules/intro/Enter";
+import Poll from "../modules/main/games/poll/Poll";
+import GhostLeg from "../modules/main/games/ghostLeg/GhostLeg";
+import YoutubeQueuePlay from "../modules/main/youtubePlayer/YoutubeQueuePlay";
+import DashBoard from "../modules/main/dashBoard/DashBoard";
+import Main from "../modules/main";
 
 const Router = () => {
     return (
@@ -23,21 +21,10 @@ const Router = () => {
                 </Route>
 
                 {/* 인증 컨텐츠 모두 비공개 */}
-                <Route path="main" element={<PrivateComponent/>}>
+                <Route path="main/*" element={<PrivateComponent/>}>
                     {/* Layout Style */}
                     <Route element={<Layout/>}>
-
-                        {/* Default: DashBoard */}
-                        <Route path="" element={<DashBoard/>}/>
-
-                        {/* contents */}
-                        <Route path="player" element={<YoutubeQueuePlay/>}/>
-
-                        {/* games */}
-                        <Route path="ghostLeg" element={<GhostLeg/>}/>
-
-                        {/* poll */}
-                        <Route path="poll" element={<Poll/>}/>
+                        <Route path="*" element={<Main/>}/>
                     </Route>
                 </Route>
 
