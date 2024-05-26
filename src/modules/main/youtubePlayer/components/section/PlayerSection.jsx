@@ -79,8 +79,8 @@ const PlayerSection = () => {
 
     // 요청사항 처리 effect
     useEffect(() => {
-        if (!playerRef.current) return addToast("플레이어가 없는 상태입니다.");
-        if (playerRef.current && accessedUserReq.id) {
+        if (accessedUserReq.id) {
+            if (!playerRef.current) return addToast("플레이어가 없는 상태입니다.");
             // 유저 요청 초기화
             setAccessedUserReq({});
             const {request} = accessedUserReq;

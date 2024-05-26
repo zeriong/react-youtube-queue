@@ -6,6 +6,7 @@ import {deleteFireStore} from "../../../../../utils/firebase";
 import {useTokenStore} from "../../../../../store/commonStore";
 import {useToastsStore} from "../../../../common/Toasts";
 import {usePlayerStore} from "../../../../../store/playerStore";
+import {USER_REQUEST_LIST} from "../../../../../constants/userRequestList";
 
 const RequestListSection = () => {
     const countTimeoutRef = useRef(null);
@@ -119,8 +120,7 @@ const RequestListSection = () => {
             </div>
             <ul className="overflow-x-hidden flex flex-col gap-4 customScroll-vertical">
                 {userRequestList?.map((req, idx) => {
-                    let reqMsg = "";
-                    if (req.request === "pause") reqMsg = "일시 정지";
+                    let reqMsg = USER_REQUEST_LIST.find(val => val.request === req.request).name;
                     return (
                         <li key={idx} className="whitespace-break-spaces rounded border-2 border-gray-500 p-[8px]">
                             <p className="border-b-2 border-gray-400">{`${idx + 1}. ${req.nickName}`}</p>

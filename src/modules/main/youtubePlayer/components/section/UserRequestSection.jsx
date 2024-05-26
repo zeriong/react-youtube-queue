@@ -4,24 +4,29 @@ import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
 import {CANCEL_USER_REQ} from "../../../../../constants/message";
 import {useTokenStore} from "../../../../../store/commonStore";
+import {USER_REQUEST_LIST} from "../../../../../constants/userRequestList";
 
 const UserRequestSection = () => {
     const {addToast} = useToastsStore();
     const {token} = useTokenStore();
 
     // 일시정지 요청
-    const requestPause = () => {
+    const handleRequest = (item) => {
         (async () => {
-            const isConfirm = window.confirm("일시정지를 요청하시겠습니까?");
+            // 리스트 내부 item의 한글이름(name), 영문구분(request)을 활용
+            const {name, request} = item;
+            const headMsg = `${name}${name === "일시정지" ? "를" : "을"}`;
+
+            const isConfirm = window.confirm(`${headMsg} 요청하시겠습니까?`);
             if (!isConfirm) return addToast(CANCEL_USER_REQ);
 
             await addDoc(collection(initFireStore, "userRequest"), {
                 nickName: token.nickName,
                 createAt: Date.now(),
-                request: "pause",
+                request,
             })
                 .then(() => {
-                    addToast("일시정지를 요청하였습니다.");
+                    addToast(`${headMsg} 요청하였습니다.`);
                 })
                 .catch((e) => {
                     alert("요청에 실패하였습니다.");
@@ -45,22 +50,18 @@ const UserRequestSection = () => {
                     <p>아래 버튼을 통해 관리자에게 요청할 수 있습니다</p>
                     <section className="flex justify-center">
                         <div className="flex gap-4">
-                            <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black"
-                                    type="button">
-                                볼륨 변경
-                            </button>
-                            <button onClick={requestPause} className="px-4 py-2 bg-white rounded-md text-black"
-                                    type="button">
-                                일시정지
-                            </button>
-                            <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black"
-                                    type="button">
-                                재생
-                            </button>
-                            <button onClick={onNotYetToast} className="px-4 py-2 bg-white rounded-md text-black"
-                                    type="button">
-                                다음 음악 재생
-                            </button>
+                            {USER_REQUEST_LIST.map((item, idx) => {
+                                return (
+                                    <button
+                                        key={idx}
+                                        onClick={() => handleRequest(item)}
+                                        className="px-4 py-2 bg-white rounded-md text-black"
+                                        type="button"
+                                    >
+                                        {item.name}
+                                    </button>
+                                )
+                            })}
                         </div>
                     </section>
                 </section>
