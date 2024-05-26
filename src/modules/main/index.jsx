@@ -3,7 +3,7 @@ import DashBoard from "./dashBoard/DashBoard";
 import YoutubeQueuePlay from "./youtubePlayer/YoutubeQueuePlay";
 import GhostLeg from "./games/ghostLeg/GhostLeg";
 import Poll from "./games/poll/Poll";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef} from "react";
 import {HEADER_LIST} from "../../constants/headerList";
 
 const Main = () => {

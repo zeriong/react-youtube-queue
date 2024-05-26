@@ -5,6 +5,7 @@ import {isDev} from "../../../../../App";
 import {deleteFireStore} from "../../../../../utils/firebase";
 import {useTokenStore} from "../../../../../store/commonStore";
 import {useToastsStore} from "../../../../common/Toasts";
+import {usePlayerStore} from "../../../../../store/playerStore";
 
 const RequestListSection = () => {
     const countTimeoutRef = useRef(null);
@@ -13,12 +14,25 @@ const RequestListSection = () => {
     const [count, setCount] = useState(5);
     const [userRequestList, setUserRequestList] = useState([]);
     const {addToast} = useToastsStore();
+    const {setAccessedUserReq} = usePlayerStore();
 
-    const accessReq = (id) => {
-
+    // 요청 승인 함수
+    const accessReq = (reqItem) => {
+        const isDel = deleteFireStore(reqItem.id, "userRequest");
+        if (isDel) {
+            setAccessedUserReq(reqItem);
+            addToast("해당 요청이 승인되었습니다.");
+        } else {
+            addToast("요청 승인에 실패하였습니다.");
+        }
     }
 
+    // 요청 취소 함수
     const cancelReq = (id) => {
+        // 타임아웃 해제
+        clearTimeout(countTimeoutRef.current);
+        countTimeoutRef.current = null;
+        // 데이터 삭제 (컨펌창 띄우지 않고 즉시 실행 = 제한시간이 5초밖에 되지않기 때문임)
         const isDel = deleteFireStore(id, "userRequest");
         if (isDel) addToast("해당 요청이 삭제되었습니다.");
         else addToast("해당 요청 삭제에 실패하였습니다.");
@@ -49,7 +63,6 @@ const RequestListSection = () => {
     // 요청이 있는 경우 카운팅
     useEffect(() => {
         if (userRequestList.length > 0) secCounting();
-
     }, [userRequestList.length]);
 
     // init state
@@ -79,7 +92,9 @@ const RequestListSection = () => {
     return (
         <nav
             className={
-                `fixed left-[20px] -bottom-[400px] w-[250px] h-[400px] border-4 border-gray-500 rounded-lg z-[200] bg-white p-3 flex flex-col gap-3 overflow-auto
+                `fixed left-[20px] -bottom-[400px] w-[250px] h-[400px] border-4 border-gray-500
+                rounded-lg z-[200] bg-white p-3 flex flex-col gap-3 overflow-auto shadow-2xl
+                
                 ease-in-out duration-500
                 ${userRequestList.length && "bottom-[20px]"}`
             }
@@ -96,7 +111,6 @@ const RequestListSection = () => {
                              setUserRequestList([1]);
                              onSectionRef.current = true;
                          }
-
                      }}
                 >
                     테스트
@@ -128,7 +142,7 @@ const RequestListSection = () => {
                                 <button
                                     type="button"
                                     className="w-full py-[4px] hover:bg-gray-200"
-                                    onClick={() => console.log("버튼~")}
+                                    onClick={() => accessReq(req)}
                                 >
                                     허용
                                 </button>
@@ -136,7 +150,7 @@ const RequestListSection = () => {
                                 <button
                                     type="button"
                                     className="w-full py-[4px] hover:bg-gray-200"
-                                    onClick={() => console.log("버튼~")}
+                                    onClick={() => cancelReq(req.id)}
 
                                 >
                                     취소

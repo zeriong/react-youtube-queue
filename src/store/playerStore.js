@@ -20,6 +20,7 @@ export const usePlayerStore = create((setState) => ({
     savedMusic: [], // 저장된 음악
     submitMusic: [], // 신청곡 리스트
     selectedCurrentMusic: {}, // 선택된 현재 음악정보
+    accessedUserReq: {}, // 승인된 유저 요청 data
 
     // 실행 참고 값 setState
     setIsSubmitPlaying: (payload) => setState(() => ({ isSubmitPlaying: payload })),
@@ -41,5 +42,8 @@ export const usePlayerStore = create((setState) => ({
     setSubmitMusic: (payload) => setState(() => ({ submitMusic: payload })),
 
     // 선택된 현재 음악정보 setState
-    setSelectedCurrentMusic: (payload) => setState(() => ({ selectedCurrentMusic: payload }))
+    setSelectedCurrentMusic: (payload) => setState(() => ({ selectedCurrentMusic: payload })),
+
+    // 승인된 data setState
+    setAccessedUserReq: (payload) => setState(() => ({ accessedUserReq: payload })),
 }));

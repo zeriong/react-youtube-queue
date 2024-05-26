@@ -27,8 +27,9 @@ const PlayerSection = () => {
     const [prevDisabled, setPrevDisabled] = useState(true);
 
     const {
-        submitMusic, isSubmitPlaying,
+        submitMusic, isSubmitPlaying, accessedUserReq,
         setSubmitMusic, setCurrentMusic, setIsSubmitPlaying,
+        setAccessedUserReq,
     } = usePlayerStore();
 
 
@@ -72,6 +73,12 @@ const PlayerSection = () => {
         if (isStart && isReady) setIsReady(false);
     }
 
+    useEffect(() => {
+        if (accessedUserReq.id) {
+            console.log("승인된 것 ㅎㅎ", accessedUserReq)
+        }
+    }, [accessedUserReq])
+
     // 동영상이 준비된 상태를 체크하여 실행
     useEffect(() => {
         if (isReady) setIsPlay(true);
@@ -80,7 +87,6 @@ const PlayerSection = () => {
 
     // 신청곡을 감지하여 기본 플리 재생중일 땐 즉시 신청곡을 재생하도록 구성
     useEffect(() => {
-        console.log("이것은 서브밋 뮤직~!!!", submitMusic)
         if (isStart && !isSubmitPlaying) playYoutubeMusic();
     }, [submitMusic]);
 
