@@ -10,12 +10,31 @@ import {useToastsStore} from "../../../../common/Toasts";
 
 const RequestEditVolumeModal = () => {
     const [currentVolume, setCurrentVolume] = useState(100);
+    const [submitVolume, setSubmitVolume] = useState(100);
     const {token} = useTokenStore();
     const {addToast} = useToastsStore();
     const {setIsShowEditVolumeModal, isShowEditVolumeModal} = usePlayerStore();
 
+    // 직접입력 시 onChange 함수
+    const handleOnChange = (e) => {
+        const reg = /^[0-9]*$/;
+        if (!e.target.value) setSubmitVolume(0);
+        else if (reg.test(e.target.value)) {
+            if (Number(e.target.value) > 100) setSubmitVolume(100);
+            else setSubmitVolume(Number(e.target.value));
+        }
+    }
+
+    const handleVolumeChange = (size) => {
+        let calc = eval(submitVolume + size);
+        if (calc < 0) calc = 0;
+        if (calc > 100) calc = 100;
+        setSubmitVolume(calc);
+    }
+
     // 일시정지 요청
-    const requestEditVolume = (item) => {
+    const requestEditVolume = (e) => {
+        e.preventDefault();
         (async () => {
             const isConfirm = window.confirm("볼륨 변경을 요청하시겠습니까?");
             if (!isConfirm) return addToast(CANCEL_USER_REQ);
@@ -24,7 +43,7 @@ const RequestEditVolumeModal = () => {
                 nickName: token.nickName,
                 createAt: Date.now(),
                 request: "volume",
-                volume: currentVolume,
+                volume: submitVolume,
             })
                 .then(() => {
                     addToast("볼륨 변경을 요청하였습니다.");
@@ -36,6 +55,12 @@ const RequestEditVolumeModal = () => {
         })();
     }
 
+    // isModal effect
+    useEffect(() => {
+        if (isShowEditVolumeModal) setSubmitVolume(currentVolume);
+    }, [isShowEditVolumeModal]);
+
+    // init effect
     useEffect(() => {
         // 볼륨정보 받아옴
         const volumeQuery = query(collection(initFireStore, "currentVolume"));
@@ -47,9 +72,10 @@ const RequestEditVolumeModal = () => {
                 ...doc.data(),
             }));
             // 언제나 볼륨은 1개 item만 존재
-            setCurrentVolume(contentArr[0]);
+            setCurrentVolume(contentArr[0].volume);
         });
     }, []);
+
     return (
         <ModalStandard
             setIsShow={setIsShowEditVolumeModal}
@@ -58,9 +84,80 @@ const RequestEditVolumeModal = () => {
             headerTitle={"볼륨 변경 요청"}
             contentArea={
                 <section className="grow px-2 pb-2">
-                    <div className="rounded-xl overflow-hidden h-full w-full">
-                        {currentVolume}
-                    </div>
+                    <form
+                        className="rounded-xl overflow-hidden h-full w-full flex flex-col justify-center items-center gap-4"
+                        onSubmit={requestEditVolume}
+                    >
+                        <div className="flex items-center gap-4">
+
+                            {/* 마이너스 */}
+                            <div className="flex gap-4 items-center">
+                                <button
+                                    type="button"
+                                    className="p-1 rounded-md bg-gray-200 h-fit"
+                                    onClick={() => handleVolumeChange("-10")}
+                                >
+                                    -10
+                                </button>
+                                <button
+                                    type="button"
+                                    className="p-1 rounded-md bg-gray-200 h-fit"
+                                    onClick={() => handleVolumeChange("-5")}
+                                >
+                                    -5
+                                </button>
+                                <button
+                                    type="button"
+                                    className="px-2 py-1 rounded-md bg-gray-200 h-fit"
+                                    onClick={() => handleVolumeChange("-1")}
+                                >
+                                    -
+                                </button>
+                            </div>
+
+                            {/* 요청할 볼륨 */}
+                            <p className="font-bold text-[20px] mx-[20px]">{submitVolume}</p>
+
+                            {/* 플러스 */}
+                            <div className="flex gap-4 items-center">
+                                <button
+                                    type="button"
+                                    className="px-2 py-1 rounded-md bg-gray-200 h-fit"
+                                    onClick={() => handleVolumeChange("+1")}>
+                                    +
+                                </button>
+                                <button
+                                    type="button"
+                                    className="p-1 rounded-md bg-gray-200 h-fit"
+                                    onClick={() => handleVolumeChange("+5")}>
+                                    +5
+                                </button>
+                                <button
+                                    type="button"
+                                    className="p-1 rounded-md bg-gray-200 h-fit"
+                                    onClick={() => handleVolumeChange("+10")}>
+                                    +10
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <div className="flex items-center gap-2 px-2">
+                            <p>직접 입력: </p>
+                            <input
+                                className="bg-gray-100 rounded-md px-4 py-1 text-[18px] w-full"
+                                type="text"
+                                value={submitVolume}
+                                onChange={handleOnChange}
+                            />
+                            <button
+                                type="submit"
+                                className="border-2 rounded-md p-1"
+                            >
+                                요청하기
+                            </button>
+                        </div>
+                    </form>
                 </section>
             }
         />
