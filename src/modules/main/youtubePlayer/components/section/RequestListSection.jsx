@@ -6,24 +6,43 @@ import {isDev} from "../../../../../App";
 const RequestListSection = () => {
     const countTimeoutRef = useRef(null);
     const onSectionRef = useRef(false);
+    const countRef = useRef(5);
     const [count, setCount] = useState(5);
     const [userRequestList, setUserRequestList] = useState([]);
 
+    const accessReq = () => {
+
+    }
+
+    const cancelReq = () => {
+
+    }
+
     // 카운트 + 자동 승인 함수
     const secCounting = () => {
-        //
-        if (count === 0) {
+        // 카운트가 0 이하일 때 재귀에서 벗어남
+        if (countRef.current <= 0) {
             countTimeoutRef.current = setTimeout(() => {
-                setCount(5);
-            }, 1000);
-        }
-        countTimeoutRef.current = setTimeout(() => {
+                countRef.current = 5;
+                setCount(countRef.current);
 
+                // 타임아웃 해제(중복 가능성을 염두)
+                clearTimeout(countTimeoutRef.current);
+                countTimeoutRef.current = null;
+            }, 1000);
+            return;
+        }
+        // 1초마다 카운트를 감소시키면서 count setState
+        countTimeoutRef.current = setTimeout(() => {
+            countRef.current -= 1;
+            setCount(countRef.current);
+            secCounting();
         }, 1000);
     }
 
     // 요청이 있는 경우 카운팅
     useEffect(() => {
+        if (userRequestList.length > 0) secCounting();
 
     }, [userRequestList.length]);
 
