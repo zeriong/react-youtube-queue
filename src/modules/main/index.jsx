@@ -1,24 +1,30 @@
-import {Route, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import DashBoard from "./dashBoard/DashBoard";
 import YoutubeQueuePlay from "./youtubePlayer/YoutubeQueuePlay";
 import GhostLeg from "./games/ghostLeg/GhostLeg";
 import Poll from "./games/poll/Poll";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {HEADER_LIST} from "../../constants/headerList";
 
 const Main = () => {
-    const [sectionMove, setSectionMove] = useState(0)
+    const containerRef = useRef();
     const param = useParams()["*"];
 
+    // 섹션이동 이동을 위한 param effect
     useEffect(() => {
-        const find = HEADER_LIST.findIndex(item => item.path === param);
-        if (find === undefined) setSectionMove(0);
-        else setSectionMove((find + 1) * 100);
-        console.log("이게 되려나?",param);
+        if (containerRef.current) {
+            const find = HEADER_LIST.findIndex(item => item.path === param);
+            if (find === undefined)  containerRef.current.style.left = "0";
+            else containerRef.current.style.left = `-${(find + 1) * 100}%`;
+        }
     }, [param]);
 
     return (
-        <div className={`flex absolute w-full h-full ease-in-out left-[${sectionMove}%]`}>
+        <div
+            ref={containerRef}
+            style={{ transition: "ease-in-out 500ms" }}
+            className="flex absolute w-full h-full"
+        >
             {/* Default: DashBoard */}
             <DashBoard/>
 
