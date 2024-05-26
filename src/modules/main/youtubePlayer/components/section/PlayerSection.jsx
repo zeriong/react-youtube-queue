@@ -13,10 +13,14 @@ import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
 import RequestListSection from "./RequestListSection";
 import UserRequestSection from "./UserRequestSection";
+import {useToastsStore} from "../../../../common/Toasts";
 
 const PlayerSection = () => {
+    const playerRef = useRef();
+
     const { token } = useTokenStore();
     const { currentMusic } = usePlayerStore();
+    const { addToast } = useToastsStore();
 
     const shuffleRef = useRef([]);
     const [isStart, setIsStart] = useState(false);
@@ -73,10 +77,14 @@ const PlayerSection = () => {
         if (isStart && isReady) setIsReady(false);
     }
 
+    // 요청사항 처리 effect
     useEffect(() => {
-        if (accessedUserReq.id) {
+        if (!playerRef.current) return addToast("플레이어가 없는 상태입니다.");
+        if (playerRef.current && accessedUserReq.id) {
+            // 유저 요청 초기화
             setAccessedUserReq({});
-            console.log("승인된 것 ㅎㅎ", accessedUserReq)
+            const {request} = accessedUserReq;
+            if (request === "pause") playerRef.current?.getInternalPlayer().pauseVideo();
         }
     }, [accessedUserReq])
 
@@ -140,6 +148,7 @@ const PlayerSection = () => {
                                     {/* 플레이어 */}
                                     <div className="w-full max-w-[580px] h-[330px]">
                                         <ReactPlayer
+                                            ref={playerRef}
                                             url={currentMusic.link}
                                             width='100%'
                                             height='100%'

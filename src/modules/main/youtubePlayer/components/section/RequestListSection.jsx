@@ -84,7 +84,7 @@ const RequestListSection = () => {
                 id: doc.id,
                 ...doc.data(),
             }));
-            resetCount();
+            resetCount(); // 요청이 들어오는 경우 카운팅 리셋
             setUserRequestList(contentArr);
         });
 
@@ -105,25 +105,6 @@ const RequestListSection = () => {
                 ${userRequestList.length && "bottom-[20px]"}`
             }
         >
-
-            {/* todo: 테스트 박스 dev애서만 보임, 테스트 후 삭제 */}
-            {isDev &&
-                <div className="bg-black text-white p-5 fixed left-1/2 top-1/2"
-                     onClick={() => {
-                         if (onSectionRef.current) {
-                             setUserRequestList([]);
-                             onSectionRef.current = false;
-                         } else {
-                             setUserRequestList([1]);
-                             onSectionRef.current = true;
-                         }
-                     }}
-                >
-                    테스트
-                </div>
-            }
-
-
             <div className="flex justify-between">
                 <p className="text-[18px] font-bold text-line text-white ">
                     {'< 요청 리스트 >'}
