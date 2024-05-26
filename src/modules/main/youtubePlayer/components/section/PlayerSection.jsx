@@ -86,7 +86,19 @@ const PlayerSection = () => {
             if (request === "pause") playerRef.current?.getInternalPlayer().pauseVideo();
             else if (request === "play") playerRef.current?.getInternalPlayer().playVideo();
             else if (request === "next") playYoutubeMusic();
-            else if (request === "volume") console.log("볼륨조절 찾아보자고",playerRef.current?.getInternalPlayer().getVolume());
+            else if (request === "volume") {
+                // 볼륨 세팅
+                playerRef.current?.getInternalPlayer().setVolume(accessedUserReq.volume);
+                // 현재 볼륨을 리세팅
+                (async () => {
+                    const getVolume = await getFireStoreData("currentVolume");
+                    await updateFireStoreData(
+                        getVolume[0].id,
+                        {volume: accessedUserReq.volume},
+                        "currentVolume"
+                    );
+                })()
+            }
         }
     }
 
