@@ -3,7 +3,7 @@ import Prepare from "../../../common/Prepare";
 
 const Poll = () => {
     return (
-        <div>
+        <div className="min-w-full">
             <>
                 {(isDev) ? (
                     <div className="">투표!!!</div>

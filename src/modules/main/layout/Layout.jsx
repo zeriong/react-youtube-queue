@@ -9,7 +9,7 @@ const Layout = () => {
 
          {/* 메인 컨테이너 */}
          <main className="overflow-hidden w-full grow ">
-             <div className="w-full h-full overflow-auto customScroll-vertical main">
+             <div className="relative w-full h-full overflow-hidden customScroll-vertical main">
                  <Outlet/>
              </div>
          </main>

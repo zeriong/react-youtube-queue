@@ -1,4 +1,4 @@
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useParams} from "react-router-dom";
 import {LogoutIcon} from "../../svgComponents/svgComponents";
 import {deleteUser} from "../../../utils/firebase";
 import {useTokenStore} from "../../../store/commonStore";
@@ -12,6 +12,8 @@ const Header = () => {
     const { token, deleteToken } = useTokenStore();
     const { addToast } = useToastsStore();
 
+    const param = useParams()["*"];
+
     // 접속 종료
     const logout = async () => {
         await deleteUser(token.id);
@@ -21,8 +23,8 @@ const Header = () => {
 
     // select effect
     useEffect(() => {
-        setActiveName(location.pathname);
-    }, [location.pathname]);
+        setActiveName(param);
+    }, [param]);
 
     return (
         <header className="w-full px-[20px] shadow-md flex items-center justify-between">
@@ -33,8 +35,8 @@ const Header = () => {
                 </Link>
                 <ul className="flex items-center gap-[8px] my-[8px]">
                     {HEADER_LIST.map((item, idx) => (
-                        <li key={idx} className={`h-full rounded-md hover:bg-gray-200 ${activeName === item.to && "bg-gray-200"}`}>
-                            <Link to={item.to} className="h-full flex items-center px-[16px] py-[10px]">
+                        <li key={idx} className={`h-full rounded-md hover:bg-gray-200 ${activeName === item.path && "bg-gray-200"}`}>
+                            <Link to={`/main/${item.path}`} className="h-full flex items-center px-[16px] py-[10px]">
                                 {item.title}
                             </Link>
                         </li>
