@@ -2,14 +2,8 @@ import SubmitListItem from "../lists/SubmitListItem";
 import {usePlayerStore} from "../../../../../store/playerStore";
 import {useToastsStore} from "../../../../common/Toasts";
 
-/**@desc 유튜브 음악 플레이어 화면 Aside
- * @param {any} logout 로그아웃
- * @param {any} submitMusic 유튜브음악 제출
- * @param {any} setIsShowPreViewModal 미리보기 모달 setState
- * @param {any} setIsShowEditModal 로그아웃
- *  */
 const PlayerAside = () => {
-    const { submitMusic, submitMaxLength, setIsShowEditModal,  } = usePlayerStore();
+    const { submitMusic, submitMaxLength, setIsShowEditModal, } = usePlayerStore();
     const { addToast } = useToastsStore();
 
     // 신청하기 버튼 함수

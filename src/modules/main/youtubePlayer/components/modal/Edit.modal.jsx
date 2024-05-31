@@ -23,7 +23,10 @@ const EditModal = () => {
 
     const { addToast } = useToastsStore();
     const tokenStore = useTokenStore();
-    const { submitMaxLength, submitMusic, selectedCurrentMusic, setSelectedCurrentMusic, isShowEditModal, setIsShowEditModal } = usePlayerStore();
+    const {
+        submitMaxLength, submitMusic, selectedCurrentMusic,
+        setSelectedCurrentMusic, isShowEditModal, setIsShowEditModal
+    } = usePlayerStore();
 
     // submit URL onChange
     const handleSubmitOnChange = ({ target: { value } }) => {

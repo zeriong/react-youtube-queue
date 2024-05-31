@@ -78,20 +78,25 @@ const SubmitListItem = ({ item, idx, isSavedList }) => {
             <div className="flex">
                 {((item?.nickName === token?.nickName) || (token?.role === 1)) &&
                     <div className="flex gap-2">
+
                         {/* 에디트 아이콘은 반드시 본인에게만 나타남 */}
                         {(!isSavedList && item?.nickName === token?.nickName) &&
                             <button type="button" onClick={onEditModal}>
                                 <EditIcon className="cursor-pointer" />
                             </button>
                         }
+
+                        {/* todo: 추 후 일반 유저는 요청할 수 있도록 변경 */}
                         {isSavedList &&
                             <button type="button" onClick={submitCurrentSavedMusic}>
                                 <AddIcon style={{ cursor: "pointer" }}/>
                             </button>
                         }
-                        <button type="button" onClick={onDelete}>
+
+                        {/* 어드민 계정에서만 삭제 가능 */}
+                        {token.role === 1 && <button type="button" onClick={onDelete}>
                             <CloseIcon/>
-                        </button>
+                        </button>}
                     </div>
                 }
             </div>
