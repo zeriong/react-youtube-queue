@@ -132,3 +132,6 @@ export const onNotYetToast = () => {
 
 // pathName 마지막 경로
 export const lastPathName = () => window.location.pathname.split("/").pop();
+
+// JSON 을 활용한 다차원 객체 깊은복사
+export const jsonDeepCopy = (obj) => JSON.parse(JSON.stringify(obj));
