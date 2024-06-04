@@ -5,6 +5,7 @@ import GhostLeg from "./games/ghostLeg/GhostLeg";
 import Poll from "./games/poll/Poll";
 import {useEffect, useRef} from "react";
 import {HEADER_LIST} from "../../constants/headerList";
+import Tetris from "./games/tetris/Tetris";
 
 const Main = () => {
     const containerRef = useRef();
@@ -36,6 +37,9 @@ const Main = () => {
 
             {/* poll */}
             <Poll/>
+
+            {/* Tetris */}
+            <Tetris/>
         </div>
     )
 }

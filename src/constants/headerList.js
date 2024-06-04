@@ -11,4 +11,8 @@ export const HEADER_LIST = [
         path: "poll",
         title: "투표",
     },
+    {
+        path: "tetris",
+        title: "테트리스",
+    },
 ];
