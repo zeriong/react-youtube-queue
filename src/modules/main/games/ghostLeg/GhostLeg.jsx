@@ -43,6 +43,7 @@ const GhostLeg = () => {
     const init = () => {
         if (!ctx) return;
         const { width, height } = canvasRef.current;
+        if (!width || !height) return;
         ctx.save();
         ctx.clearRect(0, 0, width, height);
         ctx.restore();
@@ -54,6 +55,7 @@ const GhostLeg = () => {
         setBridgeCoordinates([]);
 
         const canvas = canvasRef.current;
+
         // canvas ref가 있을 때만 동작
         if (!canvas) return;
 
@@ -82,7 +84,10 @@ const GhostLeg = () => {
     };
     function drawBridge() {
         if (!ctx) return;
+
         const { width, height } = canvasRef.current;
+        if (!width || !height) return;
+
         for (let i = 0; i < users; i++) {
             let startPosX = (i / users) * width + ((1 / users) * width) / 2;
             ctx.save();
@@ -206,6 +211,7 @@ const GhostLeg = () => {
     };
     const clearContext = () => {
         const canvas = canvasRef.current;
+        if (!canvas) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         setCoordinates([]);
         setBridgeCoordinates([]);
@@ -288,6 +294,7 @@ const GhostLeg = () => {
 
     useEffect(() => {
         const canvas = canvasRef.current;
+        if (!canvas) return;
         canvas.width = window.innerWidth * 0.9;
         canvas.height = window.innerHeight * 0.7;
 
