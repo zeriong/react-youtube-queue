@@ -52,7 +52,11 @@ const GhostLeg = () => {
     const drawBaseLine = () => {
         init();
         setBridgeCoordinates([]);
+
         const canvas = canvasRef.current;
+        // canvas ref가 있을 때만 동작
+        if (!canvas) return;
+
         const width = canvas.width;
         const height = canvas.height;
         const _arr = [];
