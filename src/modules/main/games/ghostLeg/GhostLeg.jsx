@@ -315,7 +315,7 @@ const GhostLeg = () => {
 
     return (
         <div className="min-w-full">
-            {isDev ? <Prepare/> :
+            {!isDev ? <Prepare/> :
                 <div className="w-full grid place-items-center overflow-auto">
                     <div>
                         <label htmlFor="user-count">users : </label>
