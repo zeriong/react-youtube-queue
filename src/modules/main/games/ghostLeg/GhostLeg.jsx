@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {jsonDeepCopy} from "../../../../utils/common";
+import {isDev} from "../../../../App";
+import Prepare from "../../../common/Prepare";
 
 
 
@@ -301,72 +303,76 @@ const GhostLeg = () => {
     }, []);
 
     return (
-        <div className="min-w-full grid place-items-center overflow-auto">
-            <div>
-                <label htmlFor="user-count">users : </label>
-                <input
-                    type="number"
-                    id="user-count"
-                    value={users}
-                    onChange={({ target: {value} }) => {
-                        if (value < 0) return;
-                        setUsers(value);
-                    }}
-                />
+        <div className="min-w-full">
+            {!isDev ? <Prepare/> :
+                <div className="w-full grid place-items-center overflow-auto">
+                    <div>
+                        <label htmlFor="user-count">users : </label>
+                        <input
+                            type="number"
+                            id="user-count"
+                            value={users}
+                            onChange={({target: {value}}) => {
+                                if (value < 0) return;
+                                setUsers(value);
+                            }}
+                        />
 
-                <button
-                    className="p-4 bg-red-300"
-                    onClick={drawBaseLine}
-                >
-                    apply
-                </button>
-                <button
-                    className="p-4 bg-gray-200"
-                    onClick={clearContext}
-                >
-                    reset
-                </button>
-                <div style={{width: window.innerWidth * 0.9}}>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            border: "1px solid black",
-                            marginLeft: ((1 / users) * window.innerWidth * 0.9) / 2,
-                            marginRight: ((1 / users) * window.innerWidth * 0.9) / 2
-                        }}
-                    >
-                        {coordinates.map((item, idx) => (
-                            <button key={idx} onClick={() => tracePath(idx)}>
-                                {idx + 1}
-                            </button>
-                        ))}
+                        <button
+                            className="p-4 bg-red-300"
+                            onClick={drawBaseLine}
+                        >
+                            apply
+                        </button>
+                        <button
+                            className="p-4 bg-gray-200"
+                            onClick={clearContext}
+                        >
+                            reset
+                        </button>
+                        <div style={{width: window.innerWidth * 0.9}}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    border: "1px solid black",
+                                    marginLeft: ((1 / users) * window.innerWidth * 0.9) / 2,
+                                    marginRight: ((1 / users) * window.innerWidth * 0.9) / 2
+                                }}
+                            >
+                                {coordinates.map((item, idx) => (
+                                    <button key={idx} onClick={() => tracePath(idx)}>
+                                        {idx + 1}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <canvas
+                            className="border border-red-500 block"
+                            ref={canvasRef}
+                            onMouseDown={startDrawing}
+                            onMouseMove={drawing}
+                            onMouseUp={finishDrawing}
+                        ></canvas>
+
+                        <div style={{width: window.innerWidth * 0.9}}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    border: "1px solid black",
+                                    marginLeft: ((1 / users) * window.innerWidth * 0.9) / 2,
+                                    marginRight: ((1 / users) * window.innerWidth * 0.9) / 2
+                                }}
+                            >
+                                {coordinates.map((item, idx) => (
+                                    <input key={new Date().getTime() * idx} style={{maxWidth: 20}}/>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <canvas
-                    className="border border-red-500 block"
-                    ref={canvasRef}
-                    onMouseDown={startDrawing}
-                    onMouseMove={drawing}
-                    onMouseUp={finishDrawing}
-                ></canvas>
-
-                <div style={{width: window.innerWidth * 0.9}}>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            border: "1px solid black",
-                            marginLeft: ((1 / users) * window.innerWidth * 0.9) / 2,
-                            marginRight: ((1 / users) * window.innerWidth * 0.9) / 2
-                        }}
-                    >
-                        {coordinates.map((item, idx) => (
-                            <input key={new Date().getTime() * idx} style={{maxWidth: 20}}/>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     );
 };
