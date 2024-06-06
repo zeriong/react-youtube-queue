@@ -1,16 +1,13 @@
 import {useEffect, useRef, useState} from "react";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
-import {isDev} from "../../../../../App";
 import {deleteFireStore} from "../../../../../utils/firebase";
-import {useTokenStore} from "../../../../../store/commonStore";
 import {useToastsStore} from "../../../../common/Toasts";
 import {usePlayerStore} from "../../../../../store/playerStore";
 import {USER_REQUEST_LIST} from "../../../../../constants/userRequestList";
 
 const RequestListSection = () => {
     const countTimeoutRef = useRef(null);
-    const onSectionRef = useRef(false);
     const countRef = useRef(5);
     const [count, setCount] = useState(5);
     const [userRequestList, setUserRequestList] = useState([]);

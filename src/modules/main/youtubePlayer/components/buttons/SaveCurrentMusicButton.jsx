@@ -26,7 +26,7 @@ const SaveCurrentMusicButton = () => {
             </button>
 
             {/* 타이틀 지정 모달 */}
-            <SaveCurrentMusicModal/>
+            <SaveCurrentMusicModal isAdmin={true}/>
         </>
     )
 }

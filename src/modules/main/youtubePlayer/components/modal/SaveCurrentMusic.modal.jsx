@@ -1,15 +1,18 @@
 import {CloseIcon} from "../../../../svgComponents/svgComponents";
-import React, {useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {getFireStoreData} from "../../../../../utils/firebase";
 import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
 import {usePlayerStore} from "../../../../../store/playerStore";
 import {useToastsStore} from "../../../../common/Toasts";
 import {ModalStandard} from "../../../../common/ModalStandard";
+import {CANCEL_USER_REQ} from "../../../../../constants/message";
+import {useTokenStore} from "../../../../../store/commonStore";
 
-const SaveCurrentMusicModal = () => {
+const SaveCurrentMusicModal = ({isAdmin}) => {
     const titleInputRef = useRef();
     const { addToast } = useToastsStore();
+    const {token} = useTokenStore();
     const {
         setIsShowSaveCurrentMusicModal,
         isShowSaveCurrentMusicModal,
@@ -17,43 +20,76 @@ const SaveCurrentMusicModal = () => {
         isSubmitPlaying,
         currentMusic,
         savedMusic,
+
+        // 어드민이 아닌 유저가 요청한 저장일때
+        isShowSaveCurrentMusicRequestModal,
+        setIsShowSaveCurrentMusicRequestModal,
     } = usePlayerStore();
+
     const saveCurrentPlayMusic = (e) => {
         (async () => {
             e.preventDefault();
             // 타이틀, 기본음악 저장불가, 최대 음악개수 validate
             if (!titleInputRef.current?.value) return addToast("타이틀을 입력해주세요!");
-            if (!isSubmitPlaying) return addToast("기본 음악은 저장할 수 없습니다.");
-            if (savedMusic.length >= saveMusicMaxLength) return addToast(`플레이리스트 저장은 최대 ${saveMusicMaxLength}개까지 가능합니다.`);
 
-            // confirm을 체크 후 fireStore에 저장
-            const confirmSubmit = window.confirm("재생중인 플레이리스트를 저장하시겠습니까?");
-            if (!confirmSubmit) return addToast("플레이리스트 저장이 취소되었습니다.");
+            // 어드민이 저장하는 경우
+            if (isAdmin) {
+                if (!isSubmitPlaying) return addToast("기본 음악은 저장할 수 없습니다.");
+                if (savedMusic.length >= saveMusicMaxLength) return addToast(`플레이리스트 저장은 최대 ${saveMusicMaxLength}개까지 가능합니다.`);
 
-            // 링크가 같다면 추가하지 않음
+                const confirmSubmit = window.confirm("재생중인 플레이리스트를 저장하시겠습니까?");
+                if (!confirmSubmit) return addToast("플레이리스트 저장이 취소되었습니다.");
+            }
+
+            // 링크가 이미 존재한다면 추가하지 않음
             const getSavedLists = await getFireStoreData("savedList");
             if (getSavedLists.some(list => list.link === currentMusic.link)) {
                 return addToast("이미 저장된 플레이리스트입니다.");
             }
 
-            try {
-                // 타이틀 추가 지정
-                currentMusic.title = titleInputRef.current?.value;
+            // 어드민이 저장할 때
+            if (isAdmin) {
+                try {
+                    // 타이틀 추가 지정
+                    currentMusic.title = titleInputRef.current?.value;
 
-                // 링크가 다르다면 fireStore에 저장
-                await addDoc(collection(initFireStore, "savedList"), currentMusic);
-            } catch (e) {
-                console.log("재생중인 플레이리스트 저장에 실패했습니다. \nerror: ", e);
-            } finally {
-                setIsShowSaveCurrentMusicModal(false);
+                    // 링크가 다르다면 fireStore에 저장
+                    await addDoc(collection(initFireStore, "savedList"), currentMusic);
+                } catch (e) {
+                    console.log("재생중인 플레이리스트 저장에 실패했습니다. \nerror: ", e);
+                } finally {
+                    setIsShowSaveCurrentMusicModal(false);
+                }
+
+            // 유저가 요청한 저장일 때
+            } else {
+                const isConfirm = window.confirm(`현재 음악 저장을 요청하시겠습니까?`);
+                if (!isConfirm) return addToast(CANCEL_USER_REQ);
+
+                await addDoc(collection(initFireStore, "userRequest"), {
+                    nickName: token.nickName,
+                    createAt: Date.now(),
+                    request: "save",
+                    musicTitle: titleInputRef.current?.value,
+                })
+                    .then(() => {
+                        addToast(`현재 음악 저장을 요청하였습니다.`);
+                    })
+                    .catch((e) => {
+                        alert("요청에 실패하였습니다.");
+                        console.log("유저 요청실패 error:",e);
+                    })
+                    .finally(() => {
+                        setIsShowSaveCurrentMusicRequestModal(false);
+                    });
             }
         })();
     };
 
     return (
         <ModalStandard
-            setIsShow={setIsShowSaveCurrentMusicModal}
-            isShow={isShowSaveCurrentMusicModal}
+            setIsShow={isAdmin ? setIsShowSaveCurrentMusicModal : setIsShowSaveCurrentMusicRequestModal}
+            isShow={isAdmin ? isShowSaveCurrentMusicModal : isShowSaveCurrentMusicRequestModal}
             headerTitle={"재생중인 음악 저장"}
             isFit={true}
             contentArea={

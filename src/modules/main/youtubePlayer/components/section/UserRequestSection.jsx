@@ -1,19 +1,17 @@
-import {onNotYetToast} from "../../../../../utils/common";
 import {useToastsStore} from "../../../../common/Toasts";
-import {addDoc, collection, onSnapshot, orderBy, query} from "firebase/firestore";
+import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
 import {CANCEL_USER_REQ} from "../../../../../constants/message";
 import {useTokenStore} from "../../../../../store/commonStore";
 import {USER_REQUEST_LIST} from "../../../../../constants/userRequestList";
-import {useEffect, useState} from "react";
 import RequestEditVolumeModal from "../modal/RequestEditVolume.modal";
 import {usePlayerStore} from "../../../../../store/playerStore";
+import SaveCurrentMusicModal from "../modal/SaveCurrentMusic.modal";
 
 const UserRequestSection = () => {
-    const [currentVolume, setCurrentVolume] = useState([]);
     const {addToast} = useToastsStore();
     const {token} = useTokenStore();
-    const {setIsShowEditVolumeModal} = usePlayerStore();
+    const {setIsShowEditVolumeModal, setIsShowSaveCurrentMusicRequestModal} = usePlayerStore();
 
 
     // 일시정지 요청
@@ -52,32 +50,40 @@ const UserRequestSection = () => {
                     일반 인증 유저는 원하는 유튜브 음악을<br/>
                     신청, 삭제, 수정할 수 있습니다.
                 </p>
-                <section className="border border-dashed p-4 rounded-lg flex flex-col gap-4">
-                    <p>아래 버튼을 통해 관리자에게 요청할 수 있습니다</p>
-                    <section className="flex justify-center">
-                        <div className="flex gap-4">
-                            {USER_REQUEST_LIST.map((item, idx) => {
-                                return (
-                                    <button
-                                        key={idx}
-                                        onClick={() => {
-                                            if (item.request === "volume") setIsShowEditVolumeModal(true);
-                                            else handleRequest(item)
-                                        }}
-                                        className="px-4 py-2 bg-white rounded-md text-black"
-                                        type="button"
-                                    >
-                                        {item.name}
-                                    </button>
-                                )
-                            })}
+                <section className="px-4">
+                    <div className="border border-dashed p-4 rounded-lg flex flex-col gap-4">
+                        <p>아래 버튼을 통해 관리자에게 요청할 수 있습니다</p>
+                        <div className="flex justify-center px-4">
+                            <div className="flex gap-4 flex-wrap justify-center">
+                                {USER_REQUEST_LIST.map((item, idx) => {
+                                    return (
+                                        <button
+                                            key={idx}
+                                            onClick={() => {
+                                                if (item.request === "volume") setIsShowEditVolumeModal(true);
+                                                else if (item.request === "save") {
+                                                    setIsShowSaveCurrentMusicRequestModal(true);
+                                                }
+                                                else handleRequest(item)
+                                            }}
+                                            className="px-4 py-2 bg-white rounded-md text-black"
+                                            type="button"
+                                        >
+                                            {item.name}
+                                        </button>
+                                    )
+                                })}
+                            </div>
                         </div>
-                    </section>
+                    </div>
                 </section>
             </div>
 
             {/* 볼륨변경 요청 모달 */}
             <RequestEditVolumeModal/>
+
+            {/* 저장 요청 모달 */}
+            <SaveCurrentMusicModal/>
         </div>
     )
 }
