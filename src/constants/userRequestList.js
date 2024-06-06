@@ -15,4 +15,8 @@ export const USER_REQUEST_LIST = [
         request: "volume",
         name: "볼륨 변경",
     },
+    {
+        request: "save",
+        name: "현재 음악 저장",
+    },
 ]
