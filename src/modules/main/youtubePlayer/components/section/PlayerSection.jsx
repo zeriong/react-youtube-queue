@@ -19,7 +19,6 @@ const PlayerSection = () => {
     const playerRef = useRef();
 
     const { token } = useTokenStore();
-    const { currentMusic } = usePlayerStore();
     const { addToast } = useToastsStore();
 
     const shuffleRef = useRef([]);
@@ -31,14 +30,11 @@ const PlayerSection = () => {
     const [prevDisabled, setPrevDisabled] = useState(true);
 
     const {
-        submitMusic, isSubmitPlaying, accessedUserReq,
+        submitMusic, isSubmitPlaying, accessedUserReq, saveMusicMaxLength,
+        savedMusic, currentMusic,
         setSubmitMusic, setCurrentMusic, setIsSubmitPlaying,
         setAccessedUserReq,
     } = usePlayerStore();
-
-
-
-    // 기본 Lofi음악 리스트 랜덤 재생
 
 
     // 재생상태를 지정하고 상태에 따른 플레이어 재생
@@ -61,6 +57,29 @@ const PlayerSection = () => {
 
         // setCurrentMusic -> link state를 변경하여 즉시 플레이어 실행
         setCurrentMusic(firstItem);
+    }
+
+    // 재생중인 음악 저장 요청 함수
+    const handleSaveRequest = () => {
+        (async () => {
+            // 타이틀, 기본음악 저장불가, 최대 음악개수 validate
+            if (!isSubmitPlaying) return addToast("기본 음악은 저장할 수 없습니다.");
+            if (savedMusic.length >= saveMusicMaxLength) return addToast(`플레이리스트 저장은 최대 ${saveMusicMaxLength}개까지 가능합니다.`);
+
+            // 링크가 같다면 추가하지 않음
+            const getSavedLists = await getFireStoreData("savedList");
+            if (getSavedLists.some(list => list.link === currentMusic.link)) {
+                return addToast("이미 저장된 플레이리스트입니다.");
+            }
+            try {
+                // 타이틀 추가 지정
+                currentMusic.title = accessedUserReq?.musicTitle;
+                // 링크가 다르다면 fireStore에 저장
+                await addDoc(collection(initFireStore, "savedList"), currentMusic);
+            } catch (e) {
+                console.log("재생중인 플레이리스트 저장에 실패했습니다. \nerror: ", e);
+            }
+        })()
     }
 
     // 이전곡을 재생할 함수
@@ -86,6 +105,7 @@ const PlayerSection = () => {
             if (request === "pause") playerRef.current?.getInternalPlayer().pauseVideo();
             else if (request === "play") playerRef.current?.getInternalPlayer().playVideo();
             else if (request === "next") playYoutubeMusic();
+            else if (request === "save") handleSaveRequest();
             else if (request === "volume") {
                 // 볼륨 세팅
                 playerRef.current?.getInternalPlayer().setVolume(accessedUserReq.volume);
@@ -126,7 +146,6 @@ const PlayerSection = () => {
                 const playerVolume = playerRef.current?.getInternalPlayer().getVolume();
                 // 볼륨데이터가 있다면 업데이트
                 if (getVolume.length) {
-                    console.log("뿌엥?")
                     updateFireStoreData(getVolume[0].id, {volume: playerVolume}, "currentVolume")
                         .then(res => console.log(res))
                         .catch(e => console.log(e));
