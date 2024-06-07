@@ -119,7 +119,11 @@ const RequestListSection = () => {
             </div>
             <ul className="overflow-x-hidden flex flex-col gap-4 customScroll-vertical">
                 {userRequestList?.map((req, idx) => {
-                    let reqMsg = USER_REQUEST_LIST.find(val => val.request === req.request).name;
+                    let reqMsg = USER_REQUEST_LIST.find(val => val.request === req.request)?.name;
+                    // 유저 요청 리스트에 없는 경우
+                    if (!reqMsg) {
+                        if (req.link) reqMsg = "저장된 음악 재생"
+                    }
                     return (
                         <li key={idx} className="whitespace-break-spaces rounded border-2 border-gray-500 p-[8px]">
                             <p className="border-b-2 border-gray-400">{`${idx + 1}. ${req.nickName}`}</p>

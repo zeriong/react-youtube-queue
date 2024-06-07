@@ -82,6 +82,25 @@ const PlayerSection = () => {
         })()
     }
 
+    // 저장된 플리를 현재 플리에 추가 요청
+    const handleAddCurrentPlayListRequest = (item) => {
+        (async () => {
+            await addDoc(collection(initFireStore, "playList"), {
+                // ! 유저네임 불필요
+                createAt: item.createAt,
+                title: item.title,
+                link: item.link,
+            })
+                .then(() => {
+                    addToast("플레이리스트에 추가되었습니다.");
+                })
+                .catch((e) => {
+                    alert("플레이리스트 추가에 실패하였습니다.");
+                    console.log(e);
+                });
+        })()
+    }
+
     // 이전곡을 재생할 함수
     const playPrevMusic = () => {
         console.log("아직은 미구현!")
@@ -106,6 +125,7 @@ const PlayerSection = () => {
             else if (request === "play") playerRef.current?.getInternalPlayer().playVideo();
             else if (request === "next") playYoutubeMusic();
             else if (request === "save") handleSaveRequest();
+            else if (request === "playSavedMusic") handleAddCurrentPlayListRequest(accessedUserReq);
             else if (request === "volume") {
                 // 볼륨 세팅
                 playerRef.current?.getInternalPlayer().setVolume(accessedUserReq.volume);

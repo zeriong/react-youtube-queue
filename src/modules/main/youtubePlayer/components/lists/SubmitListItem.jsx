@@ -5,6 +5,7 @@ import {usePlayerStore} from "../../../../../store/playerStore";
 import {useTokenStore} from "../../../../../store/commonStore";
 import {addDoc, collection} from "firebase/firestore";
 import {initFireStore} from "../../../../../libs/firebase";
+import {CANCEL_USER_REQ} from "../../../../../constants/message";
 
 const SubmitListItem = ({ item, idx, isSavedList }) => {
     const { addToast } = useToastsStore();
@@ -37,27 +38,57 @@ const SubmitListItem = ({ item, idx, isSavedList }) => {
         if (isDeleted) addToast(isDeleted ? "해당 플레이리스트가 삭제되었습니다." : "플레이리스트 삭제가 취소되었습니다.");
     }
 
+    // 저장된 플리를 현재 플리에 추가
+    const addCurrentPlayList = () => {
+        (async () => {
+            await addDoc(collection(initFireStore, "playList"), {
+                // ! 유저네임 불필요
+                createAt: Date.now(),
+                title: item.title,
+                link: item.link,
+            })
+                .then(() => {
+                    addToast("플레이리스트에 추가되었습니다.");
+                    setIsShowEditModal(false);
+                })
+                .catch((e) => {
+                    alert("플레이리스트 추가에 실패하였습니다.");
+                    console.log(e);
+                });
+        })()
+    }
+
     // 저장된 플레이리스트를 현재 플레이리스트에 추가
     const submitCurrentSavedMusic = () => {
         (async () => {
-            // confirm을 체크 후 fireStore에 저장
-            const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
-            if (confirmSubmit) {
-                await addDoc(collection(initFireStore, "playList"), {
+            // 어드민인 경우
+            if (token.role === 1) {
+                // confirm을 체크 후 fireStore에 저장
+                const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
+
+                // 해당 리스트를 추가/취소
+                if (confirmSubmit) addCurrentPlayList();
+                else addToast("플레이리스트 신청이 취소되었습니다.");
+
+                // 일반 유저인 경우
+            } else {
+                const isConfirm = window.confirm("저장된 해당 음악을 요청하시겠습니까?");
+                if (!isConfirm) return addToast(CANCEL_USER_REQ);
+
+                await addDoc(collection(initFireStore, "userRequest"), {
                     nickName: token.nickName,
                     createAt: Date.now(),
+                    request: "playSavedMusic",
+                    title: item.title,
                     link: item.link,
                 })
                     .then(() => {
-                        addToast("플레이리스트에 추가되었습니다.");
-                        setIsShowEditModal(false);
+                        addToast(`저장된 해당 음악을 요청하였습니다.`);
                     })
                     .catch((e) => {
-                        alert("플레이리스트 추가에 실패하였습니다.");
-                        console.log(e);
+                        alert("요청에 실패하였습니다.");
+                        console.log("유저 요청실패 error:",e);
                     });
-            } else {
-                addToast("플레이리스트 신청이 취소되었습니다.");
             }
         })()
     }
@@ -76,29 +107,26 @@ const SubmitListItem = ({ item, idx, isSavedList }) => {
             </div>
 
             <div className="flex">
-                {((item?.nickName === token?.nickName) || (token?.role === 1)) &&
-                    <div className="flex gap-2">
+                <div className="flex gap-2">
 
-                        {/* 에디트 아이콘은 반드시 본인에게만 나타남 */}
-                        {(!isSavedList && item?.nickName === token?.nickName) &&
-                            <button type="button" onClick={onEditModal}>
-                                <EditIcon className="cursor-pointer" />
-                            </button>
-                        }
+                    {/* 에디트 아이콘은 반드시 본인에게만 나타남 (저장된 리스트가 아닌 경우만) */}
+                    {(!isSavedList && item?.nickName === token?.nickName) &&
+                        <button type="button" onClick={onEditModal}>
+                            <EditIcon className="cursor-pointer"/>
+                        </button>
+                    }
 
-                        {/* todo: 추 후 일반 유저는 요청할 수 있도록 변경 */}
-                        {isSavedList &&
-                            <button type="button" onClick={submitCurrentSavedMusic}>
-                                <AddIcon style={{ cursor: "pointer" }}/>
-                            </button>
-                        }
+                    {isSavedList &&
+                        <button type="button" onClick={submitCurrentSavedMusic}>
+                            <AddIcon style={{cursor: "pointer"}}/>
+                        </button>
+                    }
 
-                        {/* 어드민 계정에서만 삭제 가능 */}
-                        {token.role === 1 && <button type="button" onClick={onDelete}>
-                            <CloseIcon/>
-                        </button>}
-                    </div>
-                }
+                    {/* 어드민 계정에서만 삭제 가능 */}
+                    {token.role === 1 && <button type="button" onClick={onDelete}>
+                        <CloseIcon/>
+                    </button>}
+                </div>
             </div>
         </li>
     )
