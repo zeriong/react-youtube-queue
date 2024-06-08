@@ -1,4 +1,4 @@
-export const HEADER_LIST = [
+export const CONTENT_LIST = [
     {
         path: "player",
         title: "유튜브 플레이어",

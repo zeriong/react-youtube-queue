@@ -3,8 +3,8 @@ import {LogoutIcon} from "../../svgComponents/svgComponents";
 import {deleteUser} from "../../../utils/firebase";
 import {useTokenStore} from "../../../store/commonStore";
 import {useToastsStore} from "../../common/Toasts";
-import {HEADER_LIST} from "../../../constants/headerList";
 import {useEffect, useState} from "react";
+import {CONTENT_LIST} from "../../../constants/contentList";
 
 const Header = () => {
     const location = useLocation();
@@ -34,7 +34,7 @@ const Header = () => {
                     Z-Space
                 </Link>
                 <ul className="flex items-center gap-[8px] my-[8px]">
-                    {HEADER_LIST.map((item, idx) => (
+                    {CONTENT_LIST.map((item, idx) => (
                         <li key={idx} className={`h-full rounded-md hover:bg-gray-200 ${activeName === item.path && "bg-gray-200"}`}>
                             <Link to={`/main/${item.path}`} className="h-full flex items-center px-[16px] py-[10px]">
                                 {item.title}
