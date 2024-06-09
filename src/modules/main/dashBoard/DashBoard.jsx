@@ -11,8 +11,12 @@ const DashBoard = () => {
                     <ul className="grid grid-cols-4 flex-wrap gap-4 py-4">
                         {CONTENT_LIST.map((item, idx) => {
                             return (
-                                <li key={idx} className="border relative border-gray-500 p-4 overflow-hidden rounded-md shadow-lg">
-                                    <p className="font-bold mb-2">{item.title}</p>
+                                <li
+                                    key={idx}
+                                    className="border relative transition-all ease-in-out border-gray-500 p-4 overflow-hidden rounded-md shadow-lg
+                                     bottom-0 hover:bottom-2"
+                                >
+                                    <p className="font-bold mb-2 text-[20px]">{item.title}</p>
                                     <p className="whitespace-break-spaces text-[15px] text-gray-800">{item.desc}</p>
                                 </li>
                             )
