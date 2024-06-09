@@ -6,13 +6,14 @@ const DashBoard = () => {
     return (
         <div className="w-full min-w-full h-full flex justify-center">
             {(isDev) ? (
-                <div className="max-w-[1300px] w-full bg-gray-200 py-[40px]">
-                    <p className="text-[40px] font-bold mb-[24px]">컨텐츠</p>
-                    <ul className="bg-red-300 flex flex-wrap gap-4">
+                <div className="max-w-[1300px] w-full py-[40px]">
+                    <p className="text-[40px] font-bold mb-[12px]">컨텐츠</p>
+                    <ul className="grid grid-cols-4 flex-wrap gap-4 py-4">
                         {CONTENT_LIST.map((item, idx) => {
                             return (
-                                <li key={idx}>
-                                    {item.title}
+                                <li key={idx} className="border relative border-gray-500 p-4 overflow-hidden rounded-md shadow-lg">
+                                    <p className="font-bold mb-2">{item.title}</p>
+                                    <p className="whitespace-break-spaces text-[15px] text-gray-800">{item.desc}</p>
                                 </li>
                             )
                         })}
