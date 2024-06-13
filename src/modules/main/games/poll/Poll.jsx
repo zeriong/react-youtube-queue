@@ -3,13 +3,55 @@ import Prepare from "../../../common/Prepare";
 import {useEffect, useState} from "react";
 
 const Poll = () => {
-    const [pollData, setPollData] = useState();
+    const [pollData, setPollData] = useState([]);
     const [hasPoll, setHasPoll] = useState(false);
 
     // 투표 데이터 get fetcher
     const getPollData = () => {
         (async () => {
-            console.log("가져왔다 투표데이터~");
+            console.log("가져왔다 투표데이터~(지금은 목데이터임)");
+            setPollData([
+                {
+                    id: 'ddddddd'+ Math.random(),
+                    startDate: '2024. 05. 20',
+                    endDate: '2024. 06. 10',
+                    title: '비품 한달에 한번 종합하기',
+                    selectors: [
+                        {
+                            title: '너무 좋다.',
+                            selected: 3
+                        },
+                        {
+                            title: '너무너무 좋다.',
+                            selected: 1239
+                        },
+                        {
+                            title: '지금 처럼 대표님만 기다린다.',
+                            selected: 0
+                        },
+                    ]
+                },
+                {
+                    id: 'ddddddd'+ Math.random(),
+                    startDate: '2024. 05. 20',
+                    endDate: '2024. 06. 10',
+                    title: '수, 금 재택 근무에 대하여...',
+                    selectors: [
+                        {
+                            title: '대표님만 출근',
+                            selected: 3
+                        },
+                        {
+                            title: '너무너무 좋다. 진행시켜',
+                            selected: 1239
+                        },
+                        {
+                            title: '대표님만 재택',
+                            selected: 0
+                        },
+                    ]
+                },
+            ])
         })()
     }
 
@@ -17,22 +59,43 @@ const Poll = () => {
         getPollData();
     }, []);
     return (
-        <div className="min-w-full p-[40px]">
+        <div className="min-w-full p-[40px] flex justify-center">
             {(isDev) ? (
-                <div className="mb-[24px]">
-                    {hasPoll ?
-                        <div className="">
-                            더 이상 투표를 개설할 수 없습니다.
+                <>
+                    <div className="max-w-[1500px]">
+                        <div className="flex justify-center mb-[24px]">
+                            {hasPoll ?
+                                <div className="">
+                                    더 이상 투표를 개설할 수 없습니다.
+                                </div>
+                                :
+                                <button
+                                    type="button"
+                                    className="flex items-center justify-center p-[20px] border-4 border-gray-400/70 rounded-lg text-[24px]"
+                                >
+                                    투표 생성하기
+                                </button>
+                            }
                         </div>
-                        :
-                        <button
-                            type="button"
-                            className="flex items-center justify-center p-[20px] border-4 border-gray-400/70 rounded-lg text-[24px]"
-                        >
-                            투표 생성하기
-                        </button>
-                    }
-                </div>
+                        <ul className="grid grid-cols-4 gap-6">
+                            {pollData.map((item, idx) => {
+                                return (
+                                    <li key={idx}
+                                        className="border-4 border-gray-400/50 rounded-md shadow-2xl p-6 flex flex-col justify-between h-[192px]">
+                                        <p className="font-black text-[24px] whitespace-break-spaces line-clamp-2">
+                                            {item.title}
+                                        </p>
+                                        <div className="flex justify-end text-gray-600 font-bold mt-4">
+                                            <p>7일 후 종료</p>
+                                        </div>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </div>
+
+                    {/* todo: 투표 클릭 시 띄울 모달 추가 */}
+                </>
             ) : (
                 <Prepare/>
             )}
