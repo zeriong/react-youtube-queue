@@ -3,11 +3,12 @@ import {useNavigate} from "react-router-dom";
 import {setAuthStorage, validateByteFormLength} from "../../utils/common";
 import {useToastsStore} from "../common/Toasts";
 import {addDoc, collection} from "firebase/firestore";
-import {initFireStore} from "../../libs/firebase";
+import {authService, initFireStore} from "../../libs/firebase";
 import {add, format} from "date-fns";
 import {getFireStoreData} from "../../utils/firebase";
 import usePreventSpam from "../../hooks/usePreventSpam";
 import {useTokenStore} from "../../store/commonStore";
+import { GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 
 const Enter = () => {
     const nickNameInputRef = useRef(null);
@@ -22,6 +23,21 @@ const Enter = () => {
     const [certificate, setCertificate] = useState("");
 
     const navigate = useNavigate();
+
+    // OAuth 함수
+    const onSocialClick = async (event)=> {
+        const {
+            target: { name }
+        } = event;
+        let provider;
+        if (name === "google") {
+            provider = new GoogleAuthProvider();
+        } else if (name === "github") {
+            provider = new GithubAuthProvider();
+        }
+        const data = await authService.signInWithPopup(provider);
+        console.log(data);
+    };
 
     const onChangeNickName = ({ target: { value } }) => {
         const { isValidate, byte } = validateByteFormLength(value, 16);
