@@ -3,12 +3,13 @@ import {useNavigate} from "react-router-dom";
 import {setAuthStorage, validateByteFormLength} from "../../utils/common";
 import {useToastsStore} from "../common/Toasts";
 import {addDoc, collection} from "firebase/firestore";
-import {authService, initFireStore} from "../../libs/firebase";
+import {firebaseAuth, initFireStore} from "../../libs/firebase";
 import {add, format} from "date-fns";
 import {getFireStoreData} from "../../utils/firebase";
 import usePreventSpam from "../../hooks/usePreventSpam";
 import {useTokenStore} from "../../store/commonStore";
-import { GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
+import {GithubIcon, GoogleIcon} from "../svgComponents/svgComponents";
+import { GithubAuthProvider, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const Enter = () => {
     const nickNameInputRef = useRef(null);
@@ -25,23 +26,21 @@ const Enter = () => {
     const navigate = useNavigate();
 
     // OAuth 함수
-    const onSocialClick = async (event)=> {
-        const {
-            target: { name }
-        } = event;
-        let provider;
-        if (name === "google") {
-            provider = new GoogleAuthProvider();
-        } else if (name === "github") {
-            provider = new GithubAuthProvider();
-        }
-        const data = await authService.signInWithPopup(provider);
-        console.log(data);
-    };
+    // const onSocialClick = async (authCategory)=> {
+    //     let provider;
+    //
+    //     if (authCategory === "google") {
+    //         provider = new GoogleAuthProvider();
+    //     } else if (authCategory === "github") {
+    //         provider = new GithubAuthProvider();
+    //     }
+    //
+    //     const data = await signInWithPopup(firebaseAuth, provider);
+    //     console.log(data);
+    // };
 
     const onChangeNickName = ({ target: { value } }) => {
         const { isValidate, byte } = validateByteFormLength(value, 16);
-        console.log("얍얍", isValidate)
         if (isValidate) {
             setByteCount(byte);
             setNickName(value);
@@ -110,7 +109,7 @@ const Enter = () => {
                 <h1 className="text-7xl">YouTube Queue Player!</h1>
                 <p className="text-xl">원하는 유튜브 음악의 URL을 요청하면 플레이리스트에 등록되고<br/> 순차적으로 재생시켜주는 웹앱이에요</p>
             </div>
-            <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber} >
+            <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber}>
                 <div className="flex gap-5 items-center">
                     <p className="w-[160px] text-[24px] text-center" onClick={() => nickNameInputRef.current.focus()}>
                         Nick Name
@@ -141,6 +140,13 @@ const Enter = () => {
                         autoComplete="new-password"
                     />
                 </div>
+
+                {/*<button onClick={() => onSocialClick("google")} className="">*/}
+                {/*    Continue with Google <GoogleIcon/>*/}
+                {/*</button>*/}
+                {/*<button onClick={() => onSocialClick("github")} className="">*/}
+                {/*    Continue with Github <GithubIcon/>*/}
+                {/*</button>*/}
 
                 <button className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4" type="submit">
                     Enter
