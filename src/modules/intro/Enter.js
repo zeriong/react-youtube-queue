@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {setAuthStorage, validateByteFormLength} from "../../utils/common";
 import {useToastsStore} from "../common/Toasts";
@@ -26,18 +26,18 @@ const Enter = () => {
     const navigate = useNavigate();
 
     // OAuth 함수
-    // const onSocialClick = async (authCategory)=> {
-    //     let provider;
-    //
-    //     if (authCategory === "google") {
-    //         provider = new GoogleAuthProvider();
-    //     } else if (authCategory === "github") {
-    //         provider = new GithubAuthProvider();
-    //     }
-    //
-    //     const data = await signInWithPopup(firebaseAuth, provider);
-    //     console.log(data);
-    // };
+    const onSocialClick = async (authCategory)=> {
+        let provider;
+
+        if (authCategory === "google") {
+            provider = new GoogleAuthProvider();
+        } else if (authCategory === "github") {
+            provider = new GithubAuthProvider();
+        }
+
+        const data = await signInWithPopup(firebaseAuth, provider);
+        console.log(data);
+    };
 
     const onChangeNickName = ({ target: { value } }) => {
         const { isValidate, byte } = validateByteFormLength(value, 16);
@@ -100,6 +100,15 @@ const Enter = () => {
         })()
     }
 
+    useEffect(() => {
+        firebaseAuth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log("유저: ",user)
+                console.log("유저 uid", user.uid)
+            }
+        })
+    }, []);
+
     return (
         <div className="w-full h-full flex flex-col gap-[60px] justify-center items-center">
 
@@ -141,12 +150,12 @@ const Enter = () => {
                     />
                 </div>
 
-                {/*<button onClick={() => onSocialClick("google")} className="">*/}
-                {/*    Continue with Google <GoogleIcon/>*/}
-                {/*</button>*/}
-                {/*<button onClick={() => onSocialClick("github")} className="">*/}
-                {/*    Continue with Github <GithubIcon/>*/}
-                {/*</button>*/}
+                <button onClick={() => onSocialClick("google")} className="">
+                    Continue with Google <GoogleIcon/>
+                </button>
+                <button onClick={() => onSocialClick("github")} className="">
+                    Continue with Github <GithubIcon/>
+                </button>
 
                 <button className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4" type="submit">
                     Enter
