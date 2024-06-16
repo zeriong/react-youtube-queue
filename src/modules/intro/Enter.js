@@ -150,16 +150,20 @@ const Enter = () => {
                     />
                 </div>
 
-                <button onClick={() => onSocialClick("google")} className="">
-                    Continue with Google <GoogleIcon/>
-                </button>
-                <button onClick={() => onSocialClick("github")} className="">
-                    Continue with Github <GithubIcon/>
-                </button>
+                {/*<button onClick={() => onSocialClick("google")} className="">*/}
+                {/*    Continue with Google <GoogleIcon/>*/}
+                {/*</button>*/}
+                {/*<button onClick={() => onSocialClick("github")} className="">*/}
+                {/*    Continue with Github <GithubIcon/>*/}
+                {/*</button>*/}
 
-                <button className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4" type="submit">
-                    Enter
-                </button>
+                {/*<button type="button" className="p-[50px] text-[30px] bg-black text-white" onClick={() => firebaseAuth.signOut()}>*/}
+                {/*    로그아웃 테스트*/}
+                {/*</button>*/}
+
+                {/*<button className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4" type="submit">*/}
+                {/*    Enter*/}
+                {/*</button>*/}
             </form>
         </div>
     )
