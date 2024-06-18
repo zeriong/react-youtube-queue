@@ -115,10 +115,33 @@ const Enter = () => {
 
             {/*<div className="p-5 fixed left-1/2 top-1/2 bg-black text-white" onClick={() =>  console.log("이거슨 토큰", tokenStore.token)}> test </div>*/}
 
-            <div className="flex flex-col gap-[40px] text-center">
-                <h1 className="text-7xl">YouTube Queue Player!</h1>
-                <p className="text-xl">원하는 유튜브 음악의 URL을 요청하면 플레이리스트에 등록되고<br/> 순차적으로 재생시켜주는 웹앱이에요</p>
+            <div className="flex flex-col gap-[40px] text-center mx-auto">
+                <h1 className="text-7xl font-[800]">우리의 공간 <sapn
+                    className="font-[900] text-line text-amber-400">{'< Z-Space />'}</sapn></h1>
             </div>
+
+            <ul className="flex flex-col text-[15px] gap-4">
+                <div className="flex gap-4 mx-auto">
+                    <li className="px-[16px] font-[500] py-[8px] border-[3px] shadow-lg border-gray-300 rounded-md w-fit">
+                        # 듣고 싶은 노래를 말만해 Everything ♬
+                    </li>
+                    <li className="px-[16px] font-[500] py-[8px] border-[3px] shadow-lg border-gray-300 rounded-md w-fit">
+                        # 대표님: 사다리타기 걸린 사람이 오늘 커피 쏘는거야 ^^
+                    </li>
+
+                </div>
+                <div className="flex gap-4 mx-auto font-[500]">
+                    <li className="px-[16px]  py-[8px] border-[3px] shadow-lg border-gray-300 rounded-md w-fit">
+                        # 불공정해? 투표만큼 공정한게 없지
+                    </li>
+                    <li className="px-[16px] font-[500] py-[8px] border-[3px] shadow-lg border-gray-300 rounded-md w-fit">
+                        # 네가 그렇게 테트리스를 잘해? 옥땅으로 따라와.
+                    </li>
+                </div>
+
+
+            </ul>
+
             <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber}>
                 <div className="flex gap-5 items-center">
                     <p className="w-[160px] text-[24px] text-center" onClick={() => nickNameInputRef.current.focus()}>
@@ -156,14 +179,14 @@ const Enter = () => {
                     <div className="flex w-full justify-center gap-10">
                         <button
                             onClick={() => onSocialClick("google")}
-                            className="flex px-[18px] py-[12px] bg-gray-500 text-white gap-3 hover:scale-110"
+                            className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
                         >
                             <GoogleIcon/>
                             <p>구글 로그인</p>
                         </button>
                         <button
                             onClick={() => onSocialClick("github")}
-                            className="flex px-[18px] py-[12px] bg-gray-500 text-white gap-3 hover:scale-110"
+                            className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
                         >
                             <GithubIcon/>
                             <p>깃허브 로그인</p>
@@ -176,9 +199,9 @@ const Enter = () => {
                 {/*    로그아웃 테스트*/}
                 {/*</button>*/}
 
-                {/*<button className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4" type="submit">*/}
-                {/*    Enter*/}
-                {/*</button>*/}
+                <button className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4" type="submit">
+                    Enter
+                </button>
             </form>
         </div>
     )
