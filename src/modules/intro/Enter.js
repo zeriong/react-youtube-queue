@@ -10,6 +10,7 @@ import usePreventSpam from "../../hooks/usePreventSpam";
 import {useTokenStore} from "../../store/commonStore";
 import {GithubIcon, GoogleIcon} from "../svgComponents/svgComponents";
 import { GithubAuthProvider, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {isDev} from "../../App";
 
 const Enter = () => {
     const nickNameInputRef = useRef(null);
@@ -150,12 +151,26 @@ const Enter = () => {
                     />
                 </div>
 
-                {/*<button onClick={() => onSocialClick("google")} className="">*/}
-                {/*    Continue with Google <GoogleIcon/>*/}
-                {/*</button>*/}
-                {/*<button onClick={() => onSocialClick("github")} className="">*/}
-                {/*    Continue with Github <GithubIcon/>*/}
-                {/*</button>*/}
+                {/* todo: 테스트 및 개발중이므로 개발 빌드중에만 보이도록 */}
+                {isDev &&
+                    <div className="flex w-full justify-center gap-10">
+                        <button
+                            onClick={() => onSocialClick("google")}
+                            className="flex px-[18px] py-[12px] bg-gray-500 text-white gap-3 hover:scale-110"
+                        >
+                            <GoogleIcon/>
+                            <p>구글 로그인</p>
+                        </button>
+                        <button
+                            onClick={() => onSocialClick("github")}
+                            className="flex px-[18px] py-[12px] bg-gray-500 text-white gap-3 hover:scale-110"
+                        >
+                            <GithubIcon/>
+                            <p>깃허브 로그인</p>
+                        </button>
+                    </div>
+                }
+
 
                 {/*<button type="button" className="p-[50px] text-[30px] bg-black text-white" onClick={() => firebaseAuth.signOut()}>*/}
                 {/*    로그아웃 테스트*/}
