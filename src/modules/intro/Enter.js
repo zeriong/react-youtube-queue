@@ -102,12 +102,7 @@ const Enter = () => {
     }
 
     useEffect(() => {
-        firebaseAuth.onAuthStateChanged((user) => {
-            if (user) {
-                console.log("유저: ",user)
-                console.log("유저 uid", user.uid)
-            }
-        })
+
     }, []);
 
     return (
@@ -138,7 +133,6 @@ const Enter = () => {
                         # 네가 그렇게 테트리스를 잘해? 옥땅으로 따라와.
                     </li>
                 </div>
-
 
             </ul>
 

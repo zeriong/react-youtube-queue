@@ -4,6 +4,7 @@ import Toasts from "./modules/common/Toasts";
 import {getAuthStorage} from "./utils/common";
 import {deleteUser} from "./utils/firebase";
 import {useTokenStore} from "./store/commonStore";
+import {firebaseAuth} from "./libs/firebase";
 
 // 빌드 모드 검증 변수
 export const isDev = process.env.NODE_ENV === "development";
@@ -40,11 +41,31 @@ function App() {
 
     // init effect
     useEffect(() => {
+
+        // firebase를 활용한 로그인상태 체크
+        firebaseAuth.onAuthStateChanged((user) => {
+            // todo: 적용시키기 위해선 토큰으로 사용하던걸 모두 삭제해야 함.
+            //      1. 로컬스토리지 활용 안하는걸로 컨버팅
+            //      2. 상태관리 로그인로직 체크 필
+            //      3. 자동 로그아웃 되는 부분 체크
+            //      4. privateElement 체크
+
+
+            if (user) {
+                console.log("유저: ",user)
+                console.log("유저 uid", user.uid)
+            } else {
+                console.log('로그인상태 아님')
+            }
+        })
+
+
+
         // 초기 토큰 세팅 후 페이지 렌더링
         initSetToken().then(() => setIsLoading(false));
         // 전역에 로컬스토리지 변경 감지 이벤트 등록
         window.addEventListener('storage', autoLogout);
-        
+
         // 언마운트 시 이벤트 해제
         return () => window.removeEventListener('storage', autoLogout);
     }, []);
