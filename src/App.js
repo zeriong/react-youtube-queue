@@ -5,6 +5,7 @@ import {getAuthStorage} from "./utils/common";
 import {deleteUser} from "./utils/firebase";
 import {useTokenStore} from "./store/commonStore";
 import {firebaseAuth} from "./libs/firebase";
+import {useUserStore} from "./store/userStore";
 
 // 빌드 모드 검증 변수
 export const isDev = process.env.NODE_ENV === "development";
@@ -12,6 +13,8 @@ export const isDev = process.env.NODE_ENV === "development";
 function App() {
     const tokenRef = useRef(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    const { setLogin } = useUserStore();
 
     // 스토리지에서 직접적으로 변경, 삭제 시도하거나
     // 새로운 브라우저로 페이지 접속 시 일괄 로그아웃
@@ -49,14 +52,7 @@ function App() {
             //      2. 상태관리 로그인로직 체크 필
             //      3. 자동 로그아웃 되는 부분 체크
             //      4. privateElement 체크
-
-
-            if (user) {
-                console.log("유저: ",user)
-                console.log("유저 uid", user.uid)
-            } else {
-                console.log('로그인상태 아님')
-            }
+            if (user) setLogin(user);
         })
 
 
