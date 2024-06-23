@@ -17,10 +17,10 @@ const Header = () => {
 
     // 접속 종료
     const logout = async () => {
+        await firebaseAuth.signOut();
         await deleteUser(token.id);
         deleteToken();
         addToast("로그아웃 되었습니다.");
-        firebaseAuth.signOut();
     }
 
     // select effect

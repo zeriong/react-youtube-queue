@@ -23,7 +23,7 @@ function App() {
 
     // 초기 토큰 set
     const initSetToken = async () => {
-        const getToken = getAuthStorage();
+        const getToken = await getAuthStorage();
         tokenStore.setToken(getToken);
     }
 
@@ -51,14 +51,15 @@ function App() {
             //      2. 상태관리 로그인로직 체크 필
             //      3. 자동 로그아웃 되는 부분 체크
             //      4. privateElement 체크
+
             if (user) setLogin(user);
-            setIsLoading(false);
+            // setIsLoading(false); // todo: 배포서비스 정상화를 위한 임시 주석
         })
 
 
 
         // 초기 토큰 세팅 후 페이지 렌더링
-        initSetToken().then(() => console.log("토큰 세팅"));
+        initSetToken().then(() => setIsLoading(false)) // todo: 배포서비스 정상화를 위한 임시 활성화
         // 전역에 로컬스토리지 변경 감지 이벤트 등록
         window.addEventListener('storage', autoLogout);
 
