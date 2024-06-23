@@ -23,7 +23,7 @@ function App() {
 
     // 초기 토큰 set
     const initSetToken = async () => {
-        const getToken = await getAuthStorage();
+        const getToken = getAuthStorage();
         tokenStore.setToken(getToken);
     }
 
@@ -32,7 +32,6 @@ function App() {
         // 지속보존된 tokenRef.current 를 통해 fireStore data 삭제 후 로그아웃
         if (!tokenRef.current) return;
         deleteUser(tokenRef.current.id).then(() => tokenStore.deleteToken());
-        alert("해당 페이지는 로컬스토리지 조작을 해킹시도로 인식합니다.\n로그인되어있다면 자동으로 로그아웃되며 초기페이지로 이동합니다.");
     }
 
     // 토큰이 있는 경우에만 지속적으로 별도의 DOM 에 깊은 복사하여 보존
@@ -53,12 +52,13 @@ function App() {
             //      3. 자동 로그아웃 되는 부분 체크
             //      4. privateElement 체크
             if (user) setLogin(user);
+            setIsLoading(false);
         })
 
 
 
         // 초기 토큰 세팅 후 페이지 렌더링
-        initSetToken().then(() => setIsLoading(false));
+        initSetToken().then(() => console.log("토큰 세팅"));
         // 전역에 로컬스토리지 변경 감지 이벤트 등록
         window.addEventListener('storage', autoLogout);
 
