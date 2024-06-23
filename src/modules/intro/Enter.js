@@ -172,9 +172,7 @@ const Enter = () => {
                     />
                 </div>
 
-                {/*<button type="button" className="p-[50px] text-[30px] bg-black text-white" onClick={() => firebaseAuth.signOut()}>*/}
-                {/*    로그아웃 테스트*/}
-                {/*</button>*/}
+
 
                 <button className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4" type="submit">
                     Enter
@@ -183,22 +181,28 @@ const Enter = () => {
 
             {/* todo: 테스트 및 개발중이므로 개발 빌드중에만 보이도록 */}
             {isDev &&
-                <div className="flex w-full justify-center gap-10">
-                    <button
-                        onClick={() => onSocialClick("google")}
-                        className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
-                    >
-                        <GoogleIcon/>
-                        <p>구글 로그인</p>
+                <>
+                    <div className="flex w-full justify-center gap-10">
+                        <button
+                            onClick={() => onSocialClick("google")}
+                            className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
+                        >
+                            <GoogleIcon/>
+                            <p>구글 로그인</p>
+                        </button>
+                        <button
+                            onClick={() => onSocialClick("github")}
+                            className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
+                        >
+                            <GithubIcon/>
+                            <p>깃허브 로그인</p>
+                        </button>
+                    </div>
+                    <button type="button" className="p-[50px] text-[30px] bg-black text-white"
+                            onClick={() => firebaseAuth.signOut()}>
+                        로그아웃 테스트
                     </button>
-                    <button
-                        onClick={() => onSocialClick("github")}
-                        className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
-                    >
-                        <GithubIcon/>
-                        <p>깃허브 로그인</p>
-                    </button>
-                </div>
+                </>
             }
         </div>
     )
