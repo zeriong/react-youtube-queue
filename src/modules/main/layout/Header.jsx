@@ -5,6 +5,7 @@ import {useTokenStore} from "../../../store/commonStore";
 import {useToastsStore} from "../../common/Toasts";
 import {useEffect, useState} from "react";
 import {CONTENT_LIST} from "../../../constants/contentList";
+import {firebaseAuth} from "../../../libs/firebase";
 
 const Header = () => {
     const location = useLocation();
@@ -19,6 +20,7 @@ const Header = () => {
         await deleteUser(token.id);
         deleteToken();
         addToast("로그아웃 되었습니다.");
+        firebaseAuth.signOut();
     }
 
     // select effect
