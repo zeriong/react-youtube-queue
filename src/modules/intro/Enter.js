@@ -48,6 +48,8 @@ const Enter = () => {
         }
     }
 
+    // todo: 별도로 어드민 (로그인 / 회원가입) 창을 만들고 회원가입 요청을 하면
+    //       총 책임자(내걸로다가) 계정에서 수락할 수 있도록 마이그레이션
     const submitCertificateNumber = (e) => {
         (async () => {
             e.preventDefault();
@@ -136,6 +138,8 @@ const Enter = () => {
 
             </ul>
 
+            <p>* 공지사항: 현재 소셜 로그인으로 마이그레이션중이므로 반드시 구글</p>
+
             <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber}>
                 <div className="flex gap-5 items-center">
                     <p className="w-[160px] text-[24px] text-center" onClick={() => nickNameInputRef.current.focus()}>
@@ -168,27 +172,6 @@ const Enter = () => {
                     />
                 </div>
 
-                {/* todo: 테스트 및 개발중이므로 개발 빌드중에만 보이도록 */}
-                {isDev &&
-                    <div className="flex w-full justify-center gap-10">
-                        <button
-                            onClick={() => onSocialClick("google")}
-                            className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
-                        >
-                            <GoogleIcon/>
-                            <p>구글 로그인</p>
-                        </button>
-                        <button
-                            onClick={() => onSocialClick("github")}
-                            className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
-                        >
-                            <GithubIcon/>
-                            <p>깃허브 로그인</p>
-                        </button>
-                    </div>
-                }
-
-
                 {/*<button type="button" className="p-[50px] text-[30px] bg-black text-white" onClick={() => firebaseAuth.signOut()}>*/}
                 {/*    로그아웃 테스트*/}
                 {/*</button>*/}
@@ -197,6 +180,26 @@ const Enter = () => {
                     Enter
                 </button>
             </form>
+
+            {/* todo: 테스트 및 개발중이므로 개발 빌드중에만 보이도록 */}
+            {isDev &&
+                <div className="flex w-full justify-center gap-10">
+                    <button
+                        onClick={() => onSocialClick("google")}
+                        className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
+                    >
+                        <GoogleIcon/>
+                        <p>구글 로그인</p>
+                    </button>
+                    <button
+                        onClick={() => onSocialClick("github")}
+                        className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
+                    >
+                        <GithubIcon/>
+                        <p>깃허브 로그인</p>
+                    </button>
+                </div>
+            }
         </div>
     )
 }
