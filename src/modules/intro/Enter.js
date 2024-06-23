@@ -138,8 +138,6 @@ const Enter = () => {
 
             </ul>
 
-            <p>* 공지사항: 현재 소셜 로그인으로 마이그레이션중이므로 반드시 구글</p>
-
             <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber}>
                 <div className="flex gap-5 items-center">
                     <p className="w-[160px] text-[24px] text-center" onClick={() => nickNameInputRef.current.focus()}>
