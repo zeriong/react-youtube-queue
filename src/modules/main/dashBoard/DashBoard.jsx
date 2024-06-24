@@ -2,10 +2,25 @@ import {isDev} from "../../../App";
 import Prepare from "../../common/Prepare";
 import {CONTENT_LIST} from "../../../constants/contentList";
 import {Link} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useUserStore} from "../../../store/userStore";
+import {updateProfile} from "firebase/auth";
 
 const DashBoard = () => {
+    const [userName, setUserName] = useState('');
+    const { user } = useUserStore();
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        if(user.displayName !== userName){
+            await updateProfile(user.auth.currentUser,{displayName: userName});
+        }
+    }
+
+    useEffect(() => {
+        console.log(user)
+    }, []);
     return (
-        <div className="w-full min-w-full h-full flex justify-center">
+        <div className="w-full min-w-full h-full flex flex-col items-center">
             <div className="max-w-[1300px] w-full py-[40px]">
                 <p className="text-[40px] font-bold mb-[12px]">컨텐츠</p>
                 <ul className="grid grid-cols-4 flex-wrap gap-4 py-4">
@@ -28,6 +43,17 @@ const DashBoard = () => {
                     })}
                 </ul>
             </div>
+            {isDev &&
+                <>
+                    <form onSubmit={onSubmit}>
+                        <div>테스트</div>
+                        <input className="bg-gray-100" onChange={(e) => setUserName(e.target.value)}/>
+                        <div>{user.displayName}</div>
+                        <button type="submit">제출</button>
+                    </form> 
+
+                </>
+            }
         </div>
     )
 }
