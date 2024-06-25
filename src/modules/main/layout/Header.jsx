@@ -1,5 +1,5 @@
 import {Link, useLocation, useParams} from "react-router-dom";
-import {LogoutIcon} from "../../svgComponents/svgComponents";
+import {LogoutIcon, UserIcon} from "../../svgComponents/svgComponents";
 import {deleteUser} from "../../../utils/firebase";
 import {useTokenStore} from "../../../store/commonStore";
 import {useToastsStore} from "../../common/Toasts";
@@ -47,7 +47,15 @@ const Header = () => {
             </div>
 
             {/* Right Section */}
-            <div>
+            <div className="flex gap-3">
+                <button
+                    type="button"
+                    className="p-[4px] border-2 border-gray-500 rounded-md h-[40px]"
+                    // onClick={onAccountSettingModal} todo: 주스탠드로 관리
+                >
+                       <UserIcon/>
+                </button>
+
                 <button
                     type="button"
                     className="bg-gray-300 px-3 py-2 rounded-md text-[20px] hover:scale-110"
