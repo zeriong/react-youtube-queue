@@ -8,6 +8,7 @@ import {addDoc, collection} from "firebase/firestore";
 import {updateFireStoreData} from "../../../../../utils/firebase";
 import {useTokenStore} from "../../../../../store/commonStore";
 import {usePlayerStore} from "../../../../../store/playerStore";
+import {useUserStore} from "../../../../../store/userStore";
 
 const EditModal = () => {
     const timeoutRef = useRef(null);
@@ -21,6 +22,7 @@ const EditModal = () => {
     const [canSubmit, setCanSubmit] = useState(false);
     const [isOnce, setIsOnce] = useState(false);
 
+    const { user } = useUserStore()
     const { addToast } = useToastsStore();
     const tokenStore = useTokenStore();
     const {
@@ -72,7 +74,9 @@ const EditModal = () => {
             const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
             if (confirmSubmit) {
                 await addDoc(collection(initFireStore, "playList"), {
-                    nickName: tokenStore.token.nickName,
+                    // todo: 추 후 uid와 nickName에 대한 refactoring 필요
+                    uid: user.uid,
+                    nickName: user.displayName,
                     createAt: Date.now(),
                     link: submitURLInput,
                     title: titleInputRef.current.value,
