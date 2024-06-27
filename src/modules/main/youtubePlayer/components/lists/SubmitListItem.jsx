@@ -124,14 +124,13 @@ const SubmitListItem = ({ item, idx, isSavedList }) => {
 
                     {/* 어드민 계정에서만 삭제 가능 */}
                     {(
-                        // (isSavedList && token.role === 1) ||
-                        (!isSavedList && item?.nickName === token?.nickName) &&
+                        (isSavedList && token.role === 1) ||
+                        (!isSavedList && item?.nickName === token?.nickName) ||
+                        (token.role === 1)) &&
                         <button type="button" onClick={onDelete}>
                             <CloseIcon/>
                         </button>
-                        // (token.role === 1)) &&
-
-                    )}
+                    }
                 </div>
             </div>
         </li>
