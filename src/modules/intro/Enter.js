@@ -180,20 +180,23 @@ const Enter = () => {
             {/* todo: 테스트 및 개발중이므로 개발 빌드중에만 보이도록 */}
             {isDev &&
                 <>
-                    <div className="flex w-full justify-center gap-10">
+                    <div className="flex w-full justify-center gap-6 items-center">
                         <button
                             onClick={() => onSocialClick("google")}
-                            className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
+                            className="flex px-[24px] py-[16px] bg-gray-800 text-white gap-3 hover:scale-110 rounded-md text-[20px]"
                         >
                             <GoogleIcon/>
                             <p>구글 로그인</p>
                         </button>
                         <button
                             onClick={() => onSocialClick("github")}
-                            className="flex px-[18px] py-[12px] bg-black text-white gap-3 hover:scale-110"
+                            className="flex px-[24px] py-[16px] bg-gray-800 text-white gap-3 hover:scale-110 rounded-md text-[20px]"
                         >
                             <GithubIcon/>
                             <p>깃허브 로그인</p>
+                        </button>
+                        <button type="button" className="flex px-[24px] py-[12px] bg-gray-100 border-4 border-black font-black gap-3 hover:scale-110 rounded-md text-[20px]">
+                            앱 관리자 로그인
                         </button>
                     </div>
                     <button type="button" className="p-[50px] text-[30px] bg-black text-white"
