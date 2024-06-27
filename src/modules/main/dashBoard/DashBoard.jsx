@@ -11,9 +11,9 @@ const DashBoard = () => {
     const { user } = useUserStore();
     const onSubmit = async (e) => {
         e.preventDefault();
-        if(user.displayName !== userName){
-            await updateProfile(user.auth.currentUser,{displayName: userName});
-        }
+        // if(user.displayName !== userName){
+        //     await updateProfile(user.auth.currentUser,{displayName: userName});
+        // }
     }
 
     useEffect(() => {
@@ -45,12 +45,12 @@ const DashBoard = () => {
             </div>
             {isDev &&
                 <>
-                    <form onSubmit={onSubmit}>
-                        <div>테스트</div>
-                        <input className="bg-gray-100" onChange={(e) => setUserName(e.target.value)}/>
-                        <div>{user.displayName}</div>
-                        <button type="submit">제출</button>
-                    </form> 
+                    {/*<form onSubmit={onSubmit}>*/}
+                    {/*    <div>테스트</div>*/}
+                    {/*    <input className="bg-gray-100" onChange={(e) => setUserName(e.target.value)}/>*/}
+                    {/*    <div>{user.displayName}</div>*/}
+                    {/*    <button type="submit">제출</button>*/}
+                    {/*</form> */}
 
                 </>
             }
