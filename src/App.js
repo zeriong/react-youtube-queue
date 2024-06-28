@@ -53,13 +53,14 @@ function App() {
             //      4. privateElement 체크
 
             if (user) setLogin(user);
-            // setIsLoading(false); // todo: 배포서비스 정상화를 위한 임시 주석
+            setIsLoading(false);
+            console.log(user)
         })
 
 
 
         // 초기 토큰 세팅 후 페이지 렌더링
-        initSetToken().then(() => setIsLoading(false)) // todo: 배포서비스 정상화를 위한 임시 활성화
+        initSetToken().then()
         // 전역에 로컬스토리지 변경 감지 이벤트 등록
         window.addEventListener('storage', autoLogout);
 
