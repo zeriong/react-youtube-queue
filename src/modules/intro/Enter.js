@@ -11,6 +11,7 @@ import {useTokenStore} from "../../store/commonStore";
 import {GithubIcon, GoogleIcon} from "../svgComponents/svgComponents";
 import { GithubAuthProvider, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import {isDev} from "../../App";
+import {ModalStandard} from "../common/ModalStandard";
 
 const Enter = () => {
     const nickNameInputRef = useRef(null);
@@ -23,6 +24,7 @@ const Enter = () => {
     const [nickName, setNickName] = useState("");
     const [byteCount, setByteCount] = useState(0);
     const [certificate, setCertificate] = useState("");
+    const [isModal, setIsModal] = useState(false);
 
     const navigate = useNavigate();
 
@@ -138,44 +140,52 @@ const Enter = () => {
 
             </ul>
 
-            <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber}>
-                <div className="flex gap-5 items-center">
-                    <p className="w-[160px] text-[24px] text-center" onClick={() => nickNameInputRef.current.focus()}>
-                        Nick Name
-                    </p>
-                    <div className="relative">
-                        <input
-                            className="py-1 pl-4 pr-12 bg-gray-100 text-[18px] rounded-[8px] w-[300px]"
-                            ref={nickNameInputRef}
-                            type="text"
-                            onChange={onChangeNickName}
-                            value={nickName}
-                        />
-                        <p className="absolute right-2 top-1/2 -translate-y-1/2 text-[14px]">{`${byteCount}/16 byte`}</p>
-                    </div>
-                </div>
+            <ModalStandard
+                setIsShow={setIsModal}
+                isShow={isModal}
+                headerTitle="앱 관리자 로그인"
+                contentArea={
+                    <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber}>
+                        <div className="flex gap-5 items-center">
+                            <p className="w-[160px] text-[24px] text-center"
+                               onClick={() => nickNameInputRef.current.focus()}>
+                                Nick Name
+                            </p>
+                            <div className="relative">
+                                <input
+                                    className="py-1 pl-4 pr-12 bg-gray-100 text-[18px] rounded-[8px] w-[300px]"
+                                    ref={nickNameInputRef}
+                                    type="text"
+                                    onChange={onChangeNickName}
+                                    value={nickName}
+                                />
+                                <p className="absolute right-2 top-1/2 -translate-y-1/2 text-[14px]">{`${byteCount}/16 byte`}</p>
+                            </div>
+                        </div>
 
-                <div className="flex gap-5 items-center">
-                    <p className="w-[160px] text-[24px] text-center"
-                       onClick={() => certificateInputRef.current.focus()}>
-                        Certificate
-                    </p>
-                    <input
-                        className="py-1 px-4 bg-gray-100 text-[18px] rounded-[8px] w-[300px]"
-                        ref={certificateInputRef}
-                        type="password"
-                        onChange={(e) => setCertificate(e.target.value)}
-                        value={certificate}
-                        autoComplete="new-password"
-                    />
-                </div>
+                        <div className="flex gap-5 items-center">
+                            <p className="w-[160px] text-[24px] text-center"
+                               onClick={() => certificateInputRef.current.focus()}>
+                                Certificate
+                            </p>
+                            <input
+                                className="py-1 px-4 bg-gray-100 text-[18px] rounded-[8px] w-[300px]"
+                                ref={certificateInputRef}
+                                type="password"
+                                onChange={(e) => setCertificate(e.target.value)}
+                                value={certificate}
+                                autoComplete="new-password"
+                            />
+                        </div>
 
 
+                        <button className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4" type="submit">
+                            Enter
+                        </button>
+                    </form>
+                }
+            />
 
-                <button className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4" type="submit">
-                    Enter
-                </button>
-            </form>
 
             {/* todo: 테스트 및 개발중이므로 개발 빌드중에만 보이도록 */}
             {isDev &&
@@ -195,7 +205,10 @@ const Enter = () => {
                             <GithubIcon/>
                             <p>깃허브 로그인</p>
                         </button>
-                        <button type="button" className="flex px-[24px] py-[12px] bg-gray-100 border-4 border-black font-black gap-3 hover:scale-110 rounded-md text-[20px]">
+                        <button type="button"
+                                className="flex px-[24px] py-[12px] bg-gray-100 border-4 border-black font-black gap-3 hover:scale-110 rounded-md text-[20px]"
+                                onClick={() => setIsModal(true)}
+                        >
                             앱 관리자 로그인
                         </button>
                     </div>
