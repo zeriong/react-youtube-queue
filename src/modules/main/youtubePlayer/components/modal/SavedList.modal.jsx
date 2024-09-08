@@ -41,8 +41,8 @@ const SavedListModal = () => {
             setIsShow={setIsShowSavedListModal}
             headerTitle={<p>저장된 플레이리스트<span>{`${savedMusic?.length + "/" + saveMusicMaxLength}`}</span></p>}
             contentArea={
-                <section className="grow px-2 pb-2">
-                    <ul className="p-2 bg-gray-100 rounded-md overflow-hidden h-full min-h-[200px]">
+                <section className="grow px-2 pb-2 overflow-hidden">
+                    <ul className="p-2 bg-gray-100 rounded-md overflow-y-auto customScroll-vertical h-full min-h-[200px]">
                         {!!savedMusic.length ?
                             savedMusic.map((item, idx) =>
                                 <div key={idx} className="flex w-full gap-2">
