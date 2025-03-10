@@ -4,4 +4,5 @@ export const DEFAULT_PLAYLIST = [
     "https://www.youtube.com/live/jxz9SaqvTKY?si=U7VcVYkktNvbLJwk",
     "https://www.youtube.com/live/dRDbmBVJ43w?si=HImrhsUulJlm3tmi",
     "https://www.youtube.com/live/6KbLIieGmZ8?si=Dns6heC0nDrTn6cM",
+    "https://youtu.be/aWV6uv8Que0?si=sAQIe1wqwT1814cJ",
 ];
