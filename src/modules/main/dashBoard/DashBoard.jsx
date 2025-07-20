@@ -5,6 +5,7 @@ import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useUserStore} from "../../../store/userStore";
 import {updateProfile} from "firebase/auth";
+import { twMerge } from 'tailwind-merge'
 
 const DashBoard = () => {
     const [userName, setUserName] = useState('');
@@ -21,9 +22,10 @@ const DashBoard = () => {
     }, []);
     return (
         <div className="w-full min-w-full h-full flex flex-col items-center">
-            <div className="max-w-[1300px] w-full py-[40px]">
+            <div className={twMerge("md:max-w-[1300px] md:w-full md:py-[40px]", "px-4 py-[20px]")}>
                 <p className="text-[40px] font-bold mb-[12px]">컨텐츠</p>
-                <ul className="grid grid-cols-4 flex-wrap gap-4 py-4">
+                <ul className={twMerge("md:grid-cols-4 md:py-4",
+                    "grid grid-cols-1 flex-wrap gap-4")}>
                     {CONTENT_LIST.map((item, idx) => {
                         return (
                             <Link
