@@ -113,8 +113,9 @@ const Enter = () => {
             {/*<div className="p-5 fixed left-1/2 top-1/2 bg-black text-white" onClick={() =>  console.log("이거슨 토큰", tokenStore.token)}> test </div>*/}
 
             <div className="flex flex-col gap-[40px] text-center mx-auto">
-                <h1 className="text-7xl font-[800]">우리의 공간 <sapn
-                    className="font-[900] text-line text-amber-400">{'< Z-Space />'}</sapn></h1>
+                <div className="text-7xl font-[800] flex gap-[24px]">
+                    <div>우리의 공간</div>
+                    <div className="font-[900] text-line text-amber-400">{'< Z-Space />'}</div></div>
             </div>
 
             <ul className="flex flex-col text-[15px] gap-4">
