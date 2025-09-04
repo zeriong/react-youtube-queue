@@ -300,7 +300,7 @@ const PlayerSection = () => {
             </div>
 
             {/* 일반유저 요청 nav */}
-            {token.role === 1 && <RequestListSection/>}
+            {token?.role === 1 && <RequestListSection/>}
         </section>
     )
 }
