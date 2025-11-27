@@ -9,4 +9,5 @@ export const DEFAULT_PLAYLIST = [
     "https://youtu.be/R_K7UqHplyA?si=L1ug-PD3TV2Pc6Bo",
     "https://youtu.be/ohyiTPgAxgY?si=3GxLAIFMzWQ97Yq2",
     "https://youtu.be/8Wpy_DOeaP8?si=e4EHBzk1keZ1pujA",
+    "https://youtu.be/tGfeZaCElno",
 ];
