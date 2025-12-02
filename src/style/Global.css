@@ -3,61 +3,62 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: 'DungGeunMo';
-    src: url('../assets/fonts/DungGeunMo.woff') format('woff');
+  font-family: "DungGeunMo";
+  src: url("../shared/assets/fonts/DungGeunMo.woff") format("woff");
 }
 
 * {
-    font-family: 'DungGeunMo', serif;
-    white-space: nowrap;
+  font-family: "DungGeunMo", serif;
+  white-space: nowrap;
 }
 
-html, body, #root {
-    user-select: none;
-    width: 100%;
-    height: 100%;
+html,
+body,
+#root {
+  user-select: none;
+  width: 100%;
+  height: 100%;
 }
 
 /* 커스텀 스크롤 */
 /* 세로 */
 .customScroll-vertical::-webkit-scrollbar {
-    width: 9px;
+  width: 9px;
 }
 /* 메인 컨테이너 스크롤 별도 지정 */
 .customScroll-vertical.main::-webkit-scrollbar {
-    width: 14px;
+  width: 14px;
 }
 .customScroll-vertical::-webkit-scrollbar-thumb {
-    background-color: #fff;
-    border: solid 2px #afafaf;
-    border-radius: 5px;
+  background-color: #fff;
+  border: solid 2px #afafaf;
+  border-radius: 5px;
 }
 .customScroll-vertical::-webkit-scrollbar-track {
-    background-color: #f6f6f6;
+  background-color: #f6f6f6;
 }
 
 .vibrate {
-    animation-name: vibrate;
-    animation-duration: 50ms;
-    animation-iteration-count: 8;
+  animation-name: vibrate;
+  animation-duration: 50ms;
+  animation-iteration-count: 8;
 }
 
 .text-line {
-    text-shadow: -2px 0 #000, 0 2px #000, 2px 0 #000, 0 -2px #000;
+  text-shadow: -2px 0 #000, 0 2px #000, 2px 0 #000, 0 -2px #000;
 }
 .play-next {
-    clip-path: polygon(75% 0, 100% 50%, 75% 100%, 0 100%, 0 49%, 0 0);
+  clip-path: polygon(75% 0, 100% 50%, 75% 100%, 0 100%, 0 49%, 0 0);
 }
 .play-prev {
-    clip-path: polygon(100% 0%, 100% 50%, 100% 100%, 25% 100%, 0% 50%, 25% 0%);
+  clip-path: polygon(100% 0%, 100% 50%, 100% 100%, 25% 100%, 0% 50%, 25% 0%);
 }
 
-
 @keyframes vibrate {
-    0% {
-        left: 3px;
-    }
-    100% {
-        left: -3px;
-    }
+  0% {
+    left: 3px;
+  }
+  100% {
+    left: -3px;
+  }
 }
