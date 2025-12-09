@@ -9,7 +9,7 @@ import Poll from "../modules/main/games/poll/Poll";
 import GhostLeg from "../modules/main/games/ghostLeg/GhostLeg";
 import YoutubeQueuePlay from "../modules/main/youtubePlayer/YoutubeQueuePlay";
 import DashBoard from "../modules/main/dashBoard/DashBoard";
-import Main from "../pages/Main";
+import Main from "../pages/main";
 
 const Router = () => {
   return (

@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
-import DashBoard from "../modules/main/dashBoard/DashBoard";
-import YoutubeQueuePlay from "../modules/main/youtubePlayer/YoutubeQueuePlay";
-import GhostLeg from "../modules/main/games/ghostLeg/GhostLeg";
-import Poll from "../modules/main/games/poll/Poll";
+import DashBoard from "../../modules/main/dashBoard/DashBoard";
+import YoutubeQueuePlay from "../../modules/main/youtubePlayer/YoutubeQueuePlay";
+import GhostLeg from "../../modules/main/games/ghostLeg/GhostLeg";
+import Poll from "../../modules/main/games/poll/Poll";
 import { useEffect, useRef } from "react";
-import Tetris from "../modules/main/games/tetris/Tetris";
-import { CONTENT_LIST } from "../constants/contentList";
+import Tetris from "../../modules/main/games/tetris/Tetris";
+import { CONTENT_LIST } from "../../constants/contentList";
 
 const Main = () => {
   const containerRef = useRef();
