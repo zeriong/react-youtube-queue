@@ -16,4 +16,5 @@
 - biome 추가
 - TS 추가
 - React-Dom-Router -> Tanstack-Router
-- tailwindcss 
+- tailwindcss 3v -> 4v
+
