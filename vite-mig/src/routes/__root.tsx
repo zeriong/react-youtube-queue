@@ -1,8 +1,7 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import { createRootRoute, Scripts } from "@tanstack/react-router";
+import { createRootRoute, Outlet, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-
-import appCss from "../styles.css?url";
+import "@/shared/assets/styles/global.css";
 
 export const Route = createRootRoute({
 	head: () => ({
@@ -18,22 +17,16 @@ export const Route = createRootRoute({
 				title: "TanStack Start Starter",
 			},
 		],
-		links: [
-			{
-				rel: "stylesheet",
-				href: appCss,
-			},
-		],
 	}),
 
-	shellComponent: RootDocument,
+	component: RootDocument,
 });
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument() {
 	return (
 		<html lang="en">
 			<body>
-				{children}
+				<Outlet />
 				<TanStackDevtools
 					config={{
 						position: "bottom-right",
