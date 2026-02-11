@@ -1,1 +1,84 @@
 @import "tailwindcss";
+
+/* Tailwind v4에서 v3 기본 border 색상 복원 (currentColor → gray-200) */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, #e5e7eb);
+  }
+}
+
+/* Tailwind v4 테마 설정 (원본 tailwind.config.js 마이그레이션) */
+@theme {
+  --color-brand-ivory: #f7eedd;
+  --color-brand-blue-300: #008dda;
+  --color-brand-blue-200: #41c9e2;
+  --color-brand-blue-100: #ace2e1;
+  --breakpoint-pc: 1100px;
+}
+
+@font-face {
+  font-family: "DungGeunMo";
+  src: url("../fonts/DungGeunMo.woff") format("woff");
+}
+
+* {
+  font-family: "DungGeunMo", serif;
+}
+
+html,
+body {
+  user-select: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* 커스텀 스크롤 */
+/* 세로 */
+.customScroll-vertical::-webkit-scrollbar {
+  width: 9px;
+}
+/* 메인 컨테이너 스크롤 별도 지정 */
+.customScroll-vertical.main::-webkit-scrollbar {
+  width: 14px;
+}
+.customScroll-vertical::-webkit-scrollbar-thumb {
+  background-color: #fff;
+  border: solid 2px #afafaf;
+  border-radius: 5px;
+}
+.customScroll-vertical::-webkit-scrollbar-track {
+  background-color: #f6f6f6;
+}
+
+.vibrate {
+  animation-name: vibrate;
+  animation-duration: 50ms;
+  animation-iteration-count: 8;
+}
+
+.text_line {
+  text-shadow:
+    -2px 0 #000,
+    0 2px #000,
+    2px 0 #000,
+    0 -2px #000;
+}
+.play-next {
+  clip-path: polygon(75% 0, 100% 50%, 75% 100%, 0 100%, 0 49%, 0 0);
+}
+.play-prev {
+  clip-path: polygon(100% 0%, 100% 50%, 100% 100%, 25% 100%, 0% 50%, 25% 0%);
+}
+
+@keyframes vibrate {
+  0% {
+    left: 3px;
+  }
+  100% {
+    left: -3px;
+  }
+}
