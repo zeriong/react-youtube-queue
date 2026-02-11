@@ -9,38 +9,120 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MainRouteImport } from './routes/main'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MainIndexRouteImport } from './routes/main/index'
+import { Route as MainTetrisIndexRouteImport } from './routes/main/tetris/index'
+import { Route as MainPollIndexRouteImport } from './routes/main/poll/index'
+import { Route as MainPlayerIndexRouteImport } from './routes/main/player/index'
+import { Route as MainGhostLegIndexRouteImport } from './routes/main/ghostLeg/index'
 
+const MainRoute = MainRouteImport.update({
+  id: '/main',
+  path: '/main',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MainIndexRoute = MainIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainTetrisIndexRoute = MainTetrisIndexRouteImport.update({
+  id: '/tetris/',
+  path: '/tetris/',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainPollIndexRoute = MainPollIndexRouteImport.update({
+  id: '/poll/',
+  path: '/poll/',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainPlayerIndexRoute = MainPlayerIndexRouteImport.update({
+  id: '/player/',
+  path: '/player/',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainGhostLegIndexRoute = MainGhostLegIndexRouteImport.update({
+  id: '/ghostLeg/',
+  path: '/ghostLeg/',
+  getParentRoute: () => MainRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/main': typeof MainRouteWithChildren
+  '/main/': typeof MainIndexRoute
+  '/main/ghostLeg/': typeof MainGhostLegIndexRoute
+  '/main/player/': typeof MainPlayerIndexRoute
+  '/main/poll/': typeof MainPollIndexRoute
+  '/main/tetris/': typeof MainTetrisIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/main': typeof MainIndexRoute
+  '/main/ghostLeg': typeof MainGhostLegIndexRoute
+  '/main/player': typeof MainPlayerIndexRoute
+  '/main/poll': typeof MainPollIndexRoute
+  '/main/tetris': typeof MainTetrisIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/main': typeof MainRouteWithChildren
+  '/main/': typeof MainIndexRoute
+  '/main/ghostLeg/': typeof MainGhostLegIndexRoute
+  '/main/player/': typeof MainPlayerIndexRoute
+  '/main/poll/': typeof MainPollIndexRoute
+  '/main/tetris/': typeof MainTetrisIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/main'
+    | '/main/'
+    | '/main/ghostLeg/'
+    | '/main/player/'
+    | '/main/poll/'
+    | '/main/tetris/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/main'
+    | '/main/ghostLeg'
+    | '/main/player'
+    | '/main/poll'
+    | '/main/tetris'
+  id:
+    | '__root__'
+    | '/'
+    | '/main'
+    | '/main/'
+    | '/main/ghostLeg/'
+    | '/main/player/'
+    | '/main/poll/'
+    | '/main/tetris/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MainRoute: typeof MainRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/main': {
+      id: '/main'
+      path: '/main'
+      fullPath: '/main'
+      preLoaderRoute: typeof MainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +130,65 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/main/': {
+      id: '/main/'
+      path: '/'
+      fullPath: '/main/'
+      preLoaderRoute: typeof MainIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/main/tetris/': {
+      id: '/main/tetris/'
+      path: '/tetris'
+      fullPath: '/main/tetris/'
+      preLoaderRoute: typeof MainTetrisIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/main/poll/': {
+      id: '/main/poll/'
+      path: '/poll'
+      fullPath: '/main/poll/'
+      preLoaderRoute: typeof MainPollIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/main/player/': {
+      id: '/main/player/'
+      path: '/player'
+      fullPath: '/main/player/'
+      preLoaderRoute: typeof MainPlayerIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/main/ghostLeg/': {
+      id: '/main/ghostLeg/'
+      path: '/ghostLeg'
+      fullPath: '/main/ghostLeg/'
+      preLoaderRoute: typeof MainGhostLegIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
   }
 }
 
+interface MainRouteChildren {
+  MainIndexRoute: typeof MainIndexRoute
+  MainGhostLegIndexRoute: typeof MainGhostLegIndexRoute
+  MainPlayerIndexRoute: typeof MainPlayerIndexRoute
+  MainPollIndexRoute: typeof MainPollIndexRoute
+  MainTetrisIndexRoute: typeof MainTetrisIndexRoute
+}
+
+const MainRouteChildren: MainRouteChildren = {
+  MainIndexRoute: MainIndexRoute,
+  MainGhostLegIndexRoute: MainGhostLegIndexRoute,
+  MainPlayerIndexRoute: MainPlayerIndexRoute,
+  MainPollIndexRoute: MainPollIndexRoute,
+  MainTetrisIndexRoute: MainTetrisIndexRoute,
+}
+
+const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MainRoute: MainRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

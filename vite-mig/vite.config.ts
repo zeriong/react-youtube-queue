@@ -1,11 +1,11 @@
-import { defineConfig } from "vite";
+import { fileURLToPath, URL } from "node:url";
+import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
+import type { PluginOption } from "vite";
+import { defineConfig } from "vite";
 import viteTsConfigPaths from "vite-tsconfig-paths";
-import { fileURLToPath, URL } from "url";
-
-import tailwindcss from "@tailwindcss/vite";
 
 const config = defineConfig({
   resolve: {
@@ -14,12 +14,12 @@ const config = defineConfig({
     },
   },
   plugins: [
-    devtools(),
+    devtools() as PluginOption,
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
       projects: ["./tsconfig.json"],
     }),
-    tailwindcss(),
+    tailwindcss() as PluginOption,
     tanstackStart(),
     viteReact(),
   ],
