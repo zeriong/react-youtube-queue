@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 
 interface UsePreventSpamReturn {
-  isPrevent: boolean;
-  preventCounting: (warnCount?: number) => void;
-  preventSpamTrigger: (delay?: number) => void;
+	isPrevent: boolean;
+	preventCounting: (warnCount?: number) => void;
+	preventSpamTrigger: (delay?: number) => void;
 }
 
 /**
@@ -25,45 +25,45 @@ interface UsePreventSpamReturn {
  * }
  */
 const usePreventSpam = (): UsePreventSpamReturn => {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const countRef = useRef(0);
-  const isPrevent = useRef(false);
+	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const countRef = useRef(0);
+	const isPrevent = useRef(false);
 
-  /**
-   * @description (isPrevent === true) 일때 클릭을 카운팅하여
-   * warnCount와 같거나 커지면 alert을 띄움
-   */
-  const preventCounting = (warnCount = 10) => {
-    countRef.current += 1;
-    if (countRef.current >= warnCount) {
-      countRef.current = 0;
-      alert("지나친 클릭 또는 요청을 자제해주시기바랍니다.");
-    }
-  };
+	/**
+	 * @description (isPrevent === true) 일때 클릭을 카운팅하여
+	 * warnCount와 같거나 커지면 alert을 띄움
+	 */
+	const preventCounting = (warnCount = 10) => {
+		countRef.current += 1;
+		if (countRef.current >= warnCount) {
+			countRef.current = 0;
+			alert("지나친 클릭 또는 요청을 자제해주시기바랍니다.");
+		}
+	};
 
-  /**
-   * @description 광클을 방지할 함수 마지막 라인에 넣는 함수
-   */
-  const preventSpamTrigger = (delay = 1500) => {
-    isPrevent.current = true;
-    timeoutRef.current = setTimeout(() => {
-      countRef.current = 0;
-      isPrevent.current = false;
-      timeoutRef.current = null;
-    }, delay);
-  };
+	/**
+	 * @description 광클을 방지할 함수 마지막 라인에 넣는 함수
+	 */
+	const preventSpamTrigger = (delay = 1500) => {
+		isPrevent.current = true;
+		timeoutRef.current = setTimeout(() => {
+			countRef.current = 0;
+			isPrevent.current = false;
+			timeoutRef.current = null;
+		}, delay);
+	};
 
-  // 언마운트 시 타임아웃이 걸려있다면 해제
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current !== null) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    };
-  }, []);
+	// 언마운트 시 타임아웃이 걸려있다면 해제
+	useEffect(() => {
+		return () => {
+			if (timeoutRef.current !== null) {
+				clearTimeout(timeoutRef.current);
+				timeoutRef.current = null;
+			}
+		};
+	}, []);
 
-  return { isPrevent: isPrevent.current, preventCounting, preventSpamTrigger };
+	return { isPrevent: isPrevent.current, preventCounting, preventSpamTrigger };
 };
 
 export default usePreventSpam;
