@@ -1,39 +1,45 @@
-import PlayPrevButton from "../buttons/PlayPrevButton";
-import ReactPlayer from "react-player";
-import PlayNextButton from "../buttons/PlayNextButton";
-import { PlayIcon } from "@/shared/ui/icons";
-import Cursor from "@/shared/ui/Cursor";
-import SaveCurrentMusicButton from "../buttons/SaveCurrentMusicButton";
-import { useTokenStore } from "@/entities/user/model";
-import { usePlayerStore } from "@/entities/player/model";
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
-import { defaultPlayer } from "@/shared/utils/common";
+import ReactPlayer from "react-player";
+import { twMerge } from "tailwind-merge";
+import { usePlayerStore } from "@/entities/player/model";
+import { useToastsStore } from "@/entities/toast/model";
+import { useTokenStore } from "@/entities/user/model";
+import { initFireStore } from "@/shared/config/firebase";
 import {
   deleteFireStore,
   getFireStoreData,
   updateFireStoreData,
 } from "@/shared/lib/firebase";
-import { addDoc, collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import { initFireStore } from "@/shared/config/firebase";
+import type { Music } from "@/shared/types";
+import Cursor from "@/shared/ui/Cursor";
+import { PlayIcon } from "@/shared/ui/icons";
+import { defaultPlayer } from "@/shared/utils/common";
+import PlayNextButton from "../buttons/PlayNextButton";
+import PlayPrevButton from "../buttons/PlayPrevButton";
+import SaveCurrentMusicButton from "../buttons/SaveCurrentMusicButton";
 import RequestListSection from "./RequestListSection";
 import UserRequestSection from "./UserRequestSection";
-import { useToastsStore } from "@/entities/toast/model";
-import type { Music } from "@/shared/types";
-import { twMerge } from "tailwind-merge";
 
 const PlayerSection = () => {
-  const playerRef = useRef<any>();
+  const playerRef = useRef<HTMLVideoElement>(null);
 
   const { token } = useTokenStore();
   const { addToast } = useToastsStore();
 
   const shuffleRef = useRef<number[]>([]);
+  const shouldAutoPlayRef = useRef(false);
   const [isStart, setIsStart] = useState(false);
-  const [isPlay, setIsPlay] = useState(false);
-  const [isReady, setIsReady] = useState(false);
+  const [volume, setVolumeState] = useState(1); // HTMLMediaElement: 0-1
 
   // todo: 이전 버튼 구현 시 사용할 disabled state
-  const [prevDisabled, setPrevDisabled] = useState(true);
+  const [prevDisabled, _setPrevDisabled] = useState(true);
 
   const {
     submitMusic,
@@ -52,6 +58,7 @@ const PlayerSection = () => {
   const playYoutubeMusic = () => {
     // 첫 재생을 위한 컴포넌트 변경
     if (!isStart) setIsStart(true);
+    shouldAutoPlayRef.current = true;
 
     // 기본 플리 재생중인지 아닌지 체크할 수 있도록
     const isSubmitPlayingVar = !!submitMusic.length;
@@ -77,7 +84,7 @@ const PlayerSection = () => {
       if (!isSubmitPlaying) return addToast("기본 음악은 저장할 수 없습니다.");
       if (savedMusic.length >= saveMusicMaxLength) {
         return addToast(
-          `플레이리스트 저장은 최대 ${saveMusicMaxLength}개까지 가능합니다.`
+          `플레이리스트 저장은 최대 ${saveMusicMaxLength}개까지 가능합니다.`,
         );
       }
 
@@ -92,10 +99,7 @@ const PlayerSection = () => {
         // 링크가 다르다면 fireStore에 저장
         await addDoc(collection(initFireStore, "savedList"), currentMusic);
       } catch (e) {
-        console.log(
-          "재생중인 플레이리스트 저장에 실패했습니다. \nerror: ",
-          e
-        );
+        console.log("재생중인 플레이리스트 저장에 실패했습니다. \nerror: ", e);
       }
     })();
   };
@@ -126,11 +130,11 @@ const PlayerSection = () => {
 
   // 네트워크 온라인 함수
   const onFunc = () => {
-    if (isStart && !isReady) setIsReady(true);
+    if (isStart) playerRef.current?.play();
   };
   // 네트워크 오프라인 함수
   const offFunc = () => {
-    if (isStart && isReady) setIsReady(false);
+    if (isStart) playerRef.current?.pause();
   };
 
   const handleUserRequest = () => {
@@ -140,9 +144,9 @@ const PlayerSection = () => {
       setAccessedUserReq({});
       const { request } = accessedUserReq as any;
       if (request === "pause") {
-        playerRef.current?.getInternalPlayer().pauseVideo();
+        playerRef.current?.pause();
       } else if (request === "play") {
-        playerRef.current?.getInternalPlayer().playVideo();
+        playerRef.current?.play();
       } else if (request === "next") {
         playYoutubeMusic();
       } else if (request === "save") {
@@ -150,17 +154,19 @@ const PlayerSection = () => {
       } else if (request === "playSavedMusic") {
         handleAddCurrentPlayListRequest(accessedUserReq as any);
       } else if (request === "volume") {
-        // 볼륨 세팅
-        playerRef.current
-          ?.getInternalPlayer()
-          .setVolume((accessedUserReq as any).volume);
+        // 볼륨 세팅 (Firestore: 0-100, HTMLMediaElement: 0-1)
+        const newVolume = (accessedUserReq as any).volume / 100;
+        setVolumeState(newVolume);
+        if (playerRef.current) {
+          playerRef.current.volume = newVolume;
+        }
         // 현재 볼륨을 리세팅
         (async () => {
           const getVolume = await getFireStoreData("currentVolume");
           await updateFireStoreData(
             (getVolume[0] as any).id,
             { volume: (accessedUserReq as any).volume },
-            "currentVolume"
+            "currentVolume",
           );
         })();
       }
@@ -168,33 +174,31 @@ const PlayerSection = () => {
   };
 
   // 요청사항 처리 effect
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 원본과 동일하게 accessedUserReq 변경 시에만 실행
   useEffect(() => {
     handleUserRequest();
   }, [accessedUserReq]);
 
-  // 동영상이 준비된 상태를 체크하여 실행
-  useEffect(() => {
-    if (isReady) setIsPlay(true);
-    else setIsPlay(false);
-  }, [isReady]);
-
   // 신청곡을 감지하여 기본 플리 재생중일 땐 즉시 신청곡을 재생하도록 구성
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 원본과 동일하게 submitMusic 변경 시에만 실행
   useEffect(() => {
     if (isStart && !isSubmitPlaying) playYoutubeMusic();
   }, [submitMusic]);
 
   // 영상이 존재했을 때 현재 볼륨 저장
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 첫 시작 시 1회만 볼륨 저장
   useEffect(() => {
-    if (isStart && playerRef.current && isReady) {
+    if (isStart && playerRef.current) {
       (async () => {
         const getVolume = await getFireStoreData("currentVolume");
-        const playerVolume = playerRef.current?.getInternalPlayer().getVolume();
+        // HTMLMediaElement volume: 0-1 → Firestore: 0-100
+        const playerVolume = Math.round((playerRef.current?.volume ?? 1) * 100);
         // 볼륨데이터가 있다면 업데이트
         if (getVolume.length) {
           updateFireStoreData(
             (getVolume[0] as any).id,
             { volume: playerVolume },
-            "currentVolume"
+            "currentVolume",
           )
             .then((res) => console.log(res))
             .catch((e) => console.log(e));
@@ -208,18 +212,19 @@ const PlayerSection = () => {
         }
       })();
     }
-  }, [isStart, isReady]);
+  }, [isStart]);
 
   // init effect
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 원본과 동일하게 마운트 시 1회만 실행
   useEffect(() => {
     // 데이터 쿼리를 생성 날짜 오름차순으로 정렬 (queue 형태를 구현하기 위함)
     const playListQuery = query(
       collection(initFireStore, "playList"),
-      orderBy("createAt", "asc")
+      orderBy("createAt", "asc"),
     );
 
     // onSnapshot을 활용하여 실시간 데이터를 받음
-    onSnapshot(playListQuery, (snapshot) => {
+    const unsubscribe = onSnapshot(playListQuery, (snapshot) => {
       const contentArr = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -232,6 +237,7 @@ const PlayerSection = () => {
     window.addEventListener("offline", offFunc);
 
     return () => {
+      unsubscribe();
       window.removeEventListener("online", onFunc);
       window.removeEventListener("offline", offFunc);
     };
@@ -241,7 +247,7 @@ const PlayerSection = () => {
     <section
       className={twMerge(
         "w-full flex flex-col items-center mt-[100px] gap-6 p-10",
-        "overflow-hidden"
+        "overflow-hidden",
       )}
     >
       {/* 플레이어 섹션 */}
@@ -254,7 +260,7 @@ const PlayerSection = () => {
                 {/* Player area */}
                 <div
                   className={twMerge(
-                    "relative flex items-center h-full justify-center gap-4"
+                    "relative flex items-center h-full justify-center gap-4",
                   )}
                 >
                   {/* todo: 이전 곡 버튼 구현예정 */}
@@ -269,17 +275,18 @@ const PlayerSection = () => {
                   <div className="w-full max-w-[580px] h-[330px]">
                     <ReactPlayer
                       ref={playerRef}
-                      url={currentMusic.link}
+                      src={currentMusic.link}
                       width="100%"
                       height="100%"
                       controls={true}
-                      playing={isPlay}
-                      onEnded={() => {
-                        playYoutubeMusic();
-                        setIsReady(false);
+                      volume={volume}
+                      onEnded={() => playYoutubeMusic()}
+                      onReady={() => {
+                        if (shouldAutoPlayRef.current) {
+                          shouldAutoPlayRef.current = false;
+                          playerRef.current?.play();
+                        }
                       }}
-                      onPause={() => setIsReady(false)}
-                      onReady={() => setIsReady(true)}
                     />
                   </div>
 
@@ -317,20 +324,20 @@ const PlayerSection = () => {
               <div
                 className={twMerge(
                   "w-[580px] h-[330px] m-auto text-white flex",
-                  "justify-center items-center"
+                  "justify-center items-center",
                 )}
               >
                 <div
                   className={twMerge(
                     "group flex flex-col justify-center items-center",
-                    "bg-black max-w-[580px] w-full h-full cursor-pointer"
+                    "bg-black max-w-[580px] w-full h-full cursor-pointer",
                   )}
                 >
                   <div
                     onClick={playYoutubeMusic}
                     className={twMerge(
                       "w-full h-full group-hover:scale-105 flex flex-col",
-                      "items-center justify-center gap-4"
+                      "items-center justify-center gap-4",
                     )}
                   >
                     <p className="text-4xl">플레이리스트 재생하기</p>

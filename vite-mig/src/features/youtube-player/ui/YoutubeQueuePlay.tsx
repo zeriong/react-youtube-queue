@@ -1,10 +1,10 @@
-import PreViewModal from "./modals/PreView.modal";
+import { twMerge } from "tailwind-merge";
+import SavedMusicListButton from "./buttons/SavedMusicListButton";
 import EditModal from "./modals/Edit.modal";
+import PreViewModal from "./modals/PreView.modal";
 import SavedListModal from "./modals/SavedList.modal";
 import PlayerAside from "./sections/PlayerAside";
 import PlayerSection from "./sections/PlayerSection";
-import SavedMusicListButton from "./buttons/SavedMusicListButton";
-import { twMerge } from "tailwind-merge";
 
 const YoutubeQueuePlay = () => {
   return (
@@ -12,8 +12,8 @@ const YoutubeQueuePlay = () => {
       {/* transform을 설정하여 내부 컨텐츠 fixed 의 기준을 지정 */}
       <div
         className={twMerge(
-          "transform flex flex-col pc:flex-row w-full min-w-full h-full",
-          "cursor-default relative overflow-hidden"
+          "rotate-0 flex flex-col pc:flex-row w-full min-w-full h-full",
+          "cursor-default relative overflow-hidden",
         )}
       >
         {/* 저장된 플레이리스트 버튼 */}

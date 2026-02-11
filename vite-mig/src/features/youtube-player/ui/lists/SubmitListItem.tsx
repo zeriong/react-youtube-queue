@@ -1,12 +1,12 @@
-import { AddIcon, CloseIcon, EditIcon } from "@/shared/ui/icons";
-import { deleteFireStore } from "@/shared/lib/firebase";
-import { useToastsStore } from "@/entities/toast/model";
-import { usePlayerStore } from "@/entities/player/model";
-import { useTokenStore } from "@/entities/user/model";
 import { addDoc, collection } from "firebase/firestore";
+import { usePlayerStore } from "@/entities/player/model";
+import { useToastsStore } from "@/entities/toast/model";
+import { useTokenStore } from "@/entities/user/model";
 import { initFireStore } from "@/shared/config/firebase";
 import { CANCEL_USER_REQ } from "@/shared/constants/message";
+import { deleteFireStore } from "@/shared/lib/firebase";
 import type { Music } from "@/shared/types";
+import { AddIcon, CloseIcon, EditIcon } from "@/shared/ui/icons";
 
 interface SubmitListItemProps {
   item: Music;
@@ -17,11 +17,8 @@ interface SubmitListItemProps {
 const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
   const { addToast } = useToastsStore();
   const { token } = useTokenStore();
-  const {
-    setSelectedCurrentMusic,
-    setIsShowPreViewModal,
-    setIsShowEditModal,
-  } = usePlayerStore();
+  const { setSelectedCurrentMusic, setIsShowPreViewModal, setIsShowEditModal } =
+    usePlayerStore();
 
   // 미리보기 모달 함수
   const onPreViewModal = () => {
@@ -36,14 +33,14 @@ const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
   };
 
   // 플레이리스트 삭제 함수
-  const onDelete = () => {
+  const onDelete = async () => {
     const isConfirmed = window.confirm("해당 리스트를 삭제하시겠습니까?");
-    let isDeleted;
+    let isDeleted: boolean | undefined;
     console.log("아이템의 아이디다~", item.id);
-    if (isConfirmed) {
-      isDeleted = deleteFireStore(
-        item.id!,
-        isSavedList ? "savedList" : "playList"
+    if (isConfirmed && item.id) {
+      isDeleted = await deleteFireStore(
+        item.id,
+        isSavedList ? "savedList" : "playList",
       );
     }
     // 실패, 성공에 따른 토스트
@@ -51,7 +48,7 @@ const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
       addToast(
         isDeleted
           ? "해당 플레이리스트가 삭제되었습니다."
-          : "플레이리스트 삭제가 취소되었습니다."
+          : "플레이리스트 삭제가 취소되었습니다.",
       );
     }
   };
@@ -87,9 +84,7 @@ const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
       }
     } else {
       // 일반 유저인 경우
-      const isConfirm = window.confirm(
-        "저장된 해당 음악을 요청하시겠습니까?"
-      );
+      const isConfirm = window.confirm("저장된 해당 음악을 요청하시겠습니까?");
       if (!isConfirm) return addToast(CANCEL_USER_REQ);
 
       try {
@@ -115,20 +110,23 @@ const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
         rounded-md bg-white w-full"
     >
       <div className="flex gap-3">
-        <p>{`${idx + 1}. ${item.title || (item as any)?.nickName + "님의 신청곡"}`}</p>
+        {/* 신청곡 제목 */}
+        <p className="break-words">{`${idx + 1}. ${item.title || `${item.nickName}님의 신청곡`}`}</p>
+
+        {/* 미리보기 버튼 */}
         <button
-          className="text-[12px] border border-gray-600 px-2 rounded-md"
+          className="text-[12px] border border-gray-600 px-2 rounded-md whitespace-nowrap h-[24px]"
           type="button"
           onClick={onPreViewModal}
         >
-          미리 보기
+          미리보기
         </button>
       </div>
 
       <div className="flex">
         <div className="flex gap-2">
           {/* 에디트 아이콘은 반드시 본인에게만 나타남 (저장된 리스트가 아닌 경우만) */}
-          {!isSavedList && (item as any)?.nickName === token?.nickName && (
+          {!isSavedList && item.nickName === token?.nickName && (
             <button type="button" onClick={onEditModal}>
               <EditIcon className="cursor-pointer" />
             </button>
@@ -142,7 +140,7 @@ const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
 
           {/* 어드민 계정에서만 삭제 가능 */}
           {((isSavedList && token?.role === 1) ||
-            (!isSavedList && (item as any)?.nickName === token?.nickName) ||
+            (!isSavedList && item.nickName === token?.nickName) ||
             token?.role === 1) && (
             <button type="button" onClick={onDelete}>
               <CloseIcon />
