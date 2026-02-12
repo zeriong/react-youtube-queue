@@ -1,55 +1,55 @@
 // User types
 export interface User {
-	id: string;
-	nickName: string;
-	expire: string;
+  id: string;
+  nickName: string;
+  expire: string;
 }
 
 export interface TokenData {
-	id: string;
-	nickName: string;
-	expire: string;
-	role?: number;
+  id: string;
+  nickName: string;
+  expire: string;
+  role?: number;
 }
 
 // Music types
 export interface Music {
-	id?: string;
-	link: string;
-	title?: string;
-	thumbnail?: string;
-	duration?: number;
-	nickName?: string;
+  id?: string;
+  link: string;
+  title?: string;
+  thumbnail?: string;
+  duration?: number;
+  nickName?: string;
 }
 
 export interface SavedMusic extends Music {
-	id: string;
-	savedAt: string;
+  id: string;
+  savedAt: string;
 }
 
 // User Request types
 export type UserRequestType = "play" | "pause" | "next" | "volume" | "save";
 
 export interface UserRequest {
-	request: UserRequestType;
-	name: string;
+  request: UserRequestType;
+  name: string;
 }
 
 export interface AccessedUserReq {
-	type: UserRequestType;
-	value?: number;
-	timestamp: number;
+  type: UserRequestType;
+  value?: number;
+  timestamp: number;
 }
 
 // Content types
 export interface Content {
-	path: string;
-	title: string;
-	desc: string;
+  path: string;
+  title: string;
+  desc: string;
 }
 
 // Validation types
 export interface ValidationResult {
-	byte: number;
-	isValidate: boolean;
+  byte: number;
+  isValidate: boolean;
 }

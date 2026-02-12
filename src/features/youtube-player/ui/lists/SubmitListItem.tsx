@@ -1,10 +1,6 @@
-import { addDoc, collection } from "firebase/firestore";
 import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/entities/toast/model";
 import { useTokenStore } from "@/entities/user/model";
-import { initFireStore } from "@/shared/config/firebase";
-import { CANCEL_USER_REQ } from "@/shared/constants/message";
-import { deleteFireStore } from "@/shared/lib/firebase";
+import { usePlaylistCRUD } from "@/features/youtube-player/model";
 import type { Music } from "@/shared/types";
 import { AddIcon, CloseIcon, EditIcon } from "@/shared/ui/icons";
 
@@ -15,10 +11,10 @@ interface SubmitListItemProps {
 }
 
 const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
-  const { addToast } = useToastsStore();
   const { token } = useTokenStore();
   const { setSelectedCurrentMusic, setIsShowPreViewModal, setIsShowEditModal } =
     usePlayerStore();
+  const { onDelete, submitCurrentSavedMusic } = usePlaylistCRUD();
 
   // 미리보기 모달 함수
   const onPreViewModal = () => {
@@ -30,77 +26,6 @@ const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
   const onEditModal = () => {
     setSelectedCurrentMusic(item);
     setIsShowEditModal(true);
-  };
-
-  // 플레이리스트 삭제 함수
-  const onDelete = async () => {
-    const isConfirmed = window.confirm("해당 리스트를 삭제하시겠습니까?");
-    let isDeleted: boolean | undefined;
-    console.log("아이템의 아이디다~", item.id);
-    if (isConfirmed && item.id) {
-      isDeleted = await deleteFireStore(
-        item.id,
-        isSavedList ? "savedList" : "playList",
-      );
-    }
-    // 실패, 성공에 따른 토스트
-    if (isDeleted) {
-      addToast(
-        isDeleted
-          ? "해당 플레이리스트가 삭제되었습니다."
-          : "플레이리스트 삭제가 취소되었습니다.",
-      );
-    }
-  };
-
-  // 저장된 플리를 현재 플리에 추가
-  const addCurrentPlayList = async () => {
-    try {
-      await addDoc(collection(initFireStore, "playList"), {
-        createAt: Date.now(),
-        title: item.title,
-        link: item.link,
-      });
-      addToast("플레이리스트에 추가되었습니다.");
-      setIsShowEditModal(false);
-    } catch (e) {
-      alert("플레이리스트 추가에 실패하였습니다.");
-      console.log(e);
-    }
-  };
-
-  // 저장된 플레이리스트를 현재 플레이리스트에 추가
-  const submitCurrentSavedMusic = async () => {
-    // 어드민인 경우
-    if (token?.role === 1) {
-      // confirm을 체크 후 fireStore에 저장
-      const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
-
-      // 해당 리스트를 추가/취소
-      if (confirmSubmit) {
-        addCurrentPlayList();
-      } else {
-        addToast("플레이리스트 신청이 취소되었습니다.");
-      }
-    } else {
-      // 일반 유저인 경우
-      const isConfirm = window.confirm("저장된 해당 음악을 요청하시겠습니까?");
-      if (!isConfirm) return addToast(CANCEL_USER_REQ);
-
-      try {
-        await addDoc(collection(initFireStore, "userRequest"), {
-          nickName: token?.nickName,
-          createAt: Date.now(),
-          request: "playSavedMusic",
-          title: item.title,
-          link: item.link,
-        });
-        addToast("저장된 해당 음악을 요청하였습니다.");
-      } catch (e) {
-        alert("요청에 실패하였습니다.");
-        console.log("유저 요청실패 error:", e);
-      }
-    }
   };
 
   return (
@@ -133,7 +58,7 @@ const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
           )}
 
           {isSavedList && (
-            <button type="button" onClick={submitCurrentSavedMusic}>
+            <button type="button" onClick={() => submitCurrentSavedMusic(item)}>
               <AddIcon style={{ cursor: "pointer" }} />
             </button>
           )}
@@ -142,7 +67,7 @@ const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
           {((isSavedList && token?.role === 1) ||
             (!isSavedList && item.nickName === token?.nickName) ||
             token?.role === 1) && (
-            <button type="button" onClick={onDelete}>
+            <button type="button" onClick={() => onDelete(item, isSavedList)}>
               <CloseIcon />
             </button>
           )}

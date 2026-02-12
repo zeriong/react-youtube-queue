@@ -15,7 +15,7 @@ import { Route as MainIndexRouteImport } from './routes/main/index'
 import { Route as MainTetrisIndexRouteImport } from './routes/main/tetris/index'
 import { Route as MainPollIndexRouteImport } from './routes/main/poll/index'
 import { Route as MainPlayerIndexRouteImport } from './routes/main/player/index'
-import { Route as MainGhostLegIndexRouteImport } from './routes/main/ghostLeg/index'
+import { Route as MainGhostLegIndexRouteImport } from './routes/main/ghost-leg/index'
 
 const MainRoute = MainRouteImport.update({
   id: '/main',
@@ -48,8 +48,8 @@ const MainPlayerIndexRoute = MainPlayerIndexRouteImport.update({
   getParentRoute: () => MainRoute,
 } as any)
 const MainGhostLegIndexRoute = MainGhostLegIndexRouteImport.update({
-  id: '/ghostLeg/',
-  path: '/ghostLeg/',
+  id: '/ghost-leg/',
+  path: '/ghost-leg/',
   getParentRoute: () => MainRoute,
 } as any)
 
@@ -57,7 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/main': typeof MainRouteWithChildren
   '/main/': typeof MainIndexRoute
-  '/main/ghostLeg/': typeof MainGhostLegIndexRoute
+  '/main/ghost-leg/': typeof MainGhostLegIndexRoute
   '/main/player/': typeof MainPlayerIndexRoute
   '/main/poll/': typeof MainPollIndexRoute
   '/main/tetris/': typeof MainTetrisIndexRoute
@@ -65,7 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/main': typeof MainIndexRoute
-  '/main/ghostLeg': typeof MainGhostLegIndexRoute
+  '/main/ghost-leg': typeof MainGhostLegIndexRoute
   '/main/player': typeof MainPlayerIndexRoute
   '/main/poll': typeof MainPollIndexRoute
   '/main/tetris': typeof MainTetrisIndexRoute
@@ -75,7 +75,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/main': typeof MainRouteWithChildren
   '/main/': typeof MainIndexRoute
-  '/main/ghostLeg/': typeof MainGhostLegIndexRoute
+  '/main/ghost-leg/': typeof MainGhostLegIndexRoute
   '/main/player/': typeof MainPlayerIndexRoute
   '/main/poll/': typeof MainPollIndexRoute
   '/main/tetris/': typeof MainTetrisIndexRoute
@@ -86,7 +86,7 @@ export interface FileRouteTypes {
     | '/'
     | '/main'
     | '/main/'
-    | '/main/ghostLeg/'
+    | '/main/ghost-leg/'
     | '/main/player/'
     | '/main/poll/'
     | '/main/tetris/'
@@ -94,7 +94,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/main'
-    | '/main/ghostLeg'
+    | '/main/ghost-leg'
     | '/main/player'
     | '/main/poll'
     | '/main/tetris'
@@ -103,7 +103,7 @@ export interface FileRouteTypes {
     | '/'
     | '/main'
     | '/main/'
-    | '/main/ghostLeg/'
+    | '/main/ghost-leg/'
     | '/main/player/'
     | '/main/poll/'
     | '/main/tetris/'
@@ -158,10 +158,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainPlayerIndexRouteImport
       parentRoute: typeof MainRoute
     }
-    '/main/ghostLeg/': {
-      id: '/main/ghostLeg/'
-      path: '/ghostLeg'
-      fullPath: '/main/ghostLeg/'
+    '/main/ghost-leg/': {
+      id: '/main/ghost-leg/'
+      path: '/ghost-leg'
+      fullPath: '/main/ghost-leg/'
       preLoaderRoute: typeof MainGhostLegIndexRouteImport
       parentRoute: typeof MainRoute
     }

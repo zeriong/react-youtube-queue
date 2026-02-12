@@ -1,12 +1,12 @@
 import {
-	collection,
-	type DocumentData,
-	deleteDoc,
-	doc,
-	getDoc,
-	getDocs,
-	type Query,
-	updateDoc,
+  collection,
+  type DocumentData,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  type Query,
+  updateDoc,
 } from "firebase/firestore";
 import { initFireStore } from "@/shared/config/firebase";
 
@@ -15,28 +15,27 @@ import { initFireStore } from "@/shared/config/firebase";
  * 별도의 query를 넣어주고 싶은 경우 두번째 매개변수에 query를 추가한다.
  */
 export const getFireStoreData = async <T extends DocumentData>(
-	dataPath?: string,
-	query?: Query<DocumentData>,
+  dataPath?: string,
+  query?: Query<DocumentData>,
 ): Promise<T[]> => {
-	let setQuery: Query<DocumentData>;
+  let setQuery: Query<DocumentData>;
 
-	// 조건에 따른 get 데이터
-	if (dataPath && !query) {
-		setQuery = collection(initFireStore, dataPath);
-	} else if (query) {
-		setQuery = query;
-	} else {
-		throw new Error("dataPath or query is required");
-	}
+  // 조건에 따른 get 데이터
+  if (dataPath && !query) {
+    setQuery = collection(initFireStore, dataPath);
+  } else if (query) {
+    setQuery = query;
+  } else {
+    throw new Error("dataPath or query is required");
+  }
 
-	const getUsersData = await getDocs(setQuery);
-	const data: T[] = [];
-	getUsersData.forEach((doc) => {
-		const dataParse = doc.data() as T;
-		(dataParse as any).id = doc.id;
-		data.push(dataParse);
-	});
-	return data;
+  const getUsersData = await getDocs(setQuery);
+  const data: T[] = [];
+  getUsersData.forEach((doc) => {
+    const dataParse = { ...doc.data(), id: doc.id } as unknown as T;
+    data.push(dataParse);
+  });
+  return data;
 };
 
 /**
@@ -46,50 +45,50 @@ export const getFireStoreData = async <T extends DocumentData>(
  * @param dataPath 업데이트할 데이터의 path
  */
 export const updateFireStoreData = async (
-	id: string,
-	updateObj: Partial<DocumentData>,
-	dataPath: string,
+  id: string,
+  updateObj: Partial<DocumentData>,
+  dataPath: string,
 ): Promise<boolean> => {
-	try {
-		const targetDoc = doc(initFireStore, dataPath, id);
-		await updateDoc(targetDoc, updateObj);
-		return true;
-	} catch (error) {
-		console.error("Error updating document:", error);
-		return false;
-	}
+  try {
+    const targetDoc = doc(initFireStore, dataPath, id);
+    await updateDoc(targetDoc, updateObj);
+    return true;
+  } catch (error) {
+    console.error("Error updating document:", error);
+    return false;
+  }
 };
 
 /**
  * @description 매개변수에 fireStore에 저장되어있는 id와 데이터 path를 기입 시 삭제 후 boolean형으로 반환
  */
 export const deleteFireStore = async (
-	id: string,
-	dataPath: string,
+  id: string,
+  dataPath: string,
 ): Promise<boolean> => {
-	try {
-		const targetDoc = doc(initFireStore, dataPath, id);
-		await deleteDoc(targetDoc);
-		return true;
-	} catch (error) {
-		console.error("Error deleting document:", error);
-		return false;
-	}
+  try {
+    const targetDoc = doc(initFireStore, dataPath, id);
+    await deleteDoc(targetDoc);
+    return true;
+  } catch (error) {
+    console.error("Error deleting document:", error);
+    return false;
+  }
 };
 
 /**
  * @description fireStore 내에 유저를 검색 후 있다면 삭제
  */
 export const deleteUser = async (userId?: string): Promise<void> => {
-	// 아이디가 있는 경우에만 삭제
-	if (!userId) return;
+  // 아이디가 있는 경우에만 삭제
+  if (!userId) return;
 
-	const userDoc = doc(initFireStore, "users", userId);
-	const getUser = await getDoc(userDoc);
-	const userData = getUser.data();
+  const userDoc = doc(initFireStore, "users", userId);
+  const getUser = await getDoc(userDoc);
+  const userData = getUser.data();
 
-	if (userData) {
-		const targetDoc = doc(initFireStore, "users", userId);
-		await deleteDoc(targetDoc).catch((e) => console.log(e));
-	}
+  if (userData) {
+    const targetDoc = doc(initFireStore, "users", userId);
+    await deleteDoc(targetDoc).catch((e) => console.log(e));
+  }
 };

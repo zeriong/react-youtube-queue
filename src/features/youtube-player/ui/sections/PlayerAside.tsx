@@ -77,7 +77,7 @@ const PlayerAside = () => {
             )}
           >
             {submitMusic?.map((list, idx) => (
-              <SubmitListItem key={idx} item={list} idx={idx} />
+              <SubmitListItem key={list.id ?? idx} item={list} idx={idx} />
             ))}
           </ul>
         </div>

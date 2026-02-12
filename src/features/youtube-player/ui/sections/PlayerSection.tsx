@@ -1,26 +1,11 @@
-import {
-  addDoc,
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { twMerge } from "tailwind-merge";
-import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/entities/toast/model";
-import { useTokenStore } from "@/entities/user/model";
-import { initFireStore } from "@/shared/config/firebase";
 import {
-  deleteFireStore,
-  getFireStoreData,
-  updateFireStoreData,
-} from "@/shared/lib/firebase";
-import type { Music } from "@/shared/types";
+  usePlayerLogic,
+  usePlaylistSubscription,
+} from "@/features/youtube-player/model";
 import Cursor from "@/shared/ui/Cursor";
 import { PlayIcon } from "@/shared/ui/icons";
-import { defaultPlayer } from "@/shared/utils/common";
 import PlayNextButton from "../buttons/PlayNextButton";
 import PlayPrevButton from "../buttons/PlayPrevButton";
 import SaveCurrentMusicButton from "../buttons/SaveCurrentMusicButton";
@@ -28,220 +13,19 @@ import RequestListSection from "./RequestListSection";
 import UserRequestSection from "./UserRequestSection";
 
 const PlayerSection = () => {
-  const playerRef = useRef<HTMLVideoElement>(null);
-
-  const { token } = useTokenStore();
-  const { addToast } = useToastsStore();
-
-  const shuffleRef = useRef<number[]>([]);
-  const shouldAutoPlayRef = useRef(false);
-  const [isStart, setIsStart] = useState(false);
-  const [volume, setVolumeState] = useState(1); // HTMLMediaElement: 0-1
-
-  // todo: 이전 버튼 구현 시 사용할 disabled state
-  const [prevDisabled, _setPrevDisabled] = useState(true);
+  usePlaylistSubscription();
 
   const {
-    submitMusic,
-    isSubmitPlaying,
-    accessedUserReq,
-    saveMusicMaxLength,
-    savedMusic,
+    playerRef,
+    token,
+    isStart,
+    volume,
+    prevDisabled,
     currentMusic,
-    setSubmitMusic,
-    setCurrentMusic,
-    setIsSubmitPlaying,
-    setAccessedUserReq,
-  } = usePlayerStore();
-
-  // 재생상태를 지정하고 상태에 따른 플레이어 재생
-  const playYoutubeMusic = () => {
-    // 첫 재생을 위한 컴포넌트 변경
-    if (!isStart) setIsStart(true);
-    shouldAutoPlayRef.current = true;
-
-    // 기본 플리 재생중인지 아닌지 체크할 수 있도록
-    const isSubmitPlayingVar = !!submitMusic.length;
-    setIsSubmitPlaying(isSubmitPlayingVar);
-
-    // 신청곡이 없다면 기본 곡 에서 랜덤재생
-    if (!isSubmitPlayingVar) return defaultPlayer(shuffleRef, setCurrentMusic);
-
-    // 신청곡이 있다면 차례로 재생
-    const firstItem = submitMusic[0];
-    // 리스트에서 삭제
-    const isDeleted = deleteFireStore(firstItem.id!, "playList");
-    if (!isDeleted) return alert("삭제에 실패하였습니다, 서버를 점검해주세요.");
-
-    // setCurrentMusic -> link state를 변경하여 즉시 플레이어 실행
-    setCurrentMusic(firstItem);
-  };
-
-  // 재생중인 음악 저장 요청 함수
-  const handleSaveRequest = () => {
-    (async () => {
-      // 타이틀, 기본음악 저장불가, 최대 음악개수 validate
-      if (!isSubmitPlaying) return addToast("기본 음악은 저장할 수 없습니다.");
-      if (savedMusic.length >= saveMusicMaxLength) {
-        return addToast(
-          `플레이리스트 저장은 최대 ${saveMusicMaxLength}개까지 가능합니다.`,
-        );
-      }
-
-      // 링크가 같다면 추가하지 않음
-      const getSavedLists = await getFireStoreData<Music>("savedList");
-      if (getSavedLists.some((list) => list.link === currentMusic.link)) {
-        return addToast("이미 저장된 플레이리스트입니다.");
-      }
-      try {
-        // 타이틀 추가 지정
-        currentMusic.title = (accessedUserReq as any)?.musicTitle;
-        // 링크가 다르다면 fireStore에 저장
-        await addDoc(collection(initFireStore, "savedList"), currentMusic);
-      } catch (e) {
-        console.log("재생중인 플레이리스트 저장에 실패했습니다. \nerror: ", e);
-      }
-    })();
-  };
-
-  // 저장된 플리를 현재 플리에 추가 요청
-  const handleAddCurrentPlayListRequest = (item: Music) => {
-    (async () => {
-      await addDoc(collection(initFireStore, "playList"), {
-        // ! 유저네임 불필요
-        createAt: (item as any).createAt,
-        title: item.title,
-        link: item.link,
-      })
-        .then(() => {
-          addToast("플레이리스트에 추가되었습니다.");
-        })
-        .catch((e) => {
-          alert("플레이리스트 추가에 실패하였습니다.");
-          console.log(e);
-        });
-    })();
-  };
-
-  // 이전곡을 재생할 함수
-  const playPrevMusic = () => {
-    console.log("아직은 미구현!");
-  };
-
-  // 네트워크 온라인 함수
-  const onFunc = () => {
-    if (isStart) playerRef.current?.play();
-  };
-  // 네트워크 오프라인 함수
-  const offFunc = () => {
-    if (isStart) playerRef.current?.pause();
-  };
-
-  const handleUserRequest = () => {
-    if ((accessedUserReq as any).id) {
-      if (!playerRef.current) return addToast("플레이어가 없는 상태입니다.");
-      // 유저 요청 초기화
-      setAccessedUserReq({});
-      const { request } = accessedUserReq as any;
-      if (request === "pause") {
-        playerRef.current?.pause();
-      } else if (request === "play") {
-        playerRef.current?.play();
-      } else if (request === "next") {
-        playYoutubeMusic();
-      } else if (request === "save") {
-        handleSaveRequest();
-      } else if (request === "playSavedMusic") {
-        handleAddCurrentPlayListRequest(accessedUserReq as any);
-      } else if (request === "volume") {
-        // 볼륨 세팅 (Firestore: 0-100, HTMLMediaElement: 0-1)
-        const newVolume = (accessedUserReq as any).volume / 100;
-        setVolumeState(newVolume);
-        if (playerRef.current) {
-          playerRef.current.volume = newVolume;
-        }
-        // 현재 볼륨을 리세팅
-        (async () => {
-          const getVolume = await getFireStoreData("currentVolume");
-          await updateFireStoreData(
-            (getVolume[0] as any).id,
-            { volume: (accessedUserReq as any).volume },
-            "currentVolume",
-          );
-        })();
-      }
-    }
-  };
-
-  // 요청사항 처리 effect
-  // biome-ignore lint/correctness/useExhaustiveDependencies: 원본과 동일하게 accessedUserReq 변경 시에만 실행
-  useEffect(() => {
-    handleUserRequest();
-  }, [accessedUserReq]);
-
-  // 신청곡을 감지하여 기본 플리 재생중일 땐 즉시 신청곡을 재생하도록 구성
-  // biome-ignore lint/correctness/useExhaustiveDependencies: 원본과 동일하게 submitMusic 변경 시에만 실행
-  useEffect(() => {
-    if (isStart && !isSubmitPlaying) playYoutubeMusic();
-  }, [submitMusic]);
-
-  // 영상이 존재했을 때 현재 볼륨 저장
-  // biome-ignore lint/correctness/useExhaustiveDependencies: 첫 시작 시 1회만 볼륨 저장
-  useEffect(() => {
-    if (isStart && playerRef.current) {
-      (async () => {
-        const getVolume = await getFireStoreData("currentVolume");
-        // HTMLMediaElement volume: 0-1 → Firestore: 0-100
-        const playerVolume = Math.round((playerRef.current?.volume ?? 1) * 100);
-        // 볼륨데이터가 있다면 업데이트
-        if (getVolume.length) {
-          updateFireStoreData(
-            (getVolume[0] as any).id,
-            { volume: playerVolume },
-            "currentVolume",
-          )
-            .then((res) => console.log(res))
-            .catch((e) => console.log(e));
-        } else {
-          // 볼륨데이터가 없다면 새로 저장
-          addDoc(collection(initFireStore, "currentVolume"), {
-            volume: playerVolume,
-          })
-            .then((res) => console.log(res))
-            .catch((e) => console.log(e));
-        }
-      })();
-    }
-  }, [isStart]);
-
-  // init effect
-  // biome-ignore lint/correctness/useExhaustiveDependencies: 원본과 동일하게 마운트 시 1회만 실행
-  useEffect(() => {
-    // 데이터 쿼리를 생성 날짜 오름차순으로 정렬 (queue 형태를 구현하기 위함)
-    const playListQuery = query(
-      collection(initFireStore, "playList"),
-      orderBy("createAt", "asc"),
-    );
-
-    // onSnapshot을 활용하여 실시간 데이터를 받음
-    const unsubscribe = onSnapshot(playListQuery, (snapshot) => {
-      const contentArr = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Music[];
-      setSubmitMusic(contentArr);
-    });
-
-    // 네트워크 상태 이벤트
-    window.addEventListener("online", onFunc);
-    window.addEventListener("offline", offFunc);
-
-    return () => {
-      unsubscribe();
-      window.removeEventListener("online", onFunc);
-      window.removeEventListener("offline", offFunc);
-    };
-  }, []);
+    playYoutubeMusic,
+    playPrevMusic,
+    onReady,
+  } = usePlayerLogic();
 
   return (
     <section
@@ -281,12 +65,7 @@ const PlayerSection = () => {
                       controls={true}
                       volume={volume}
                       onEnded={() => playYoutubeMusic()}
-                      onReady={() => {
-                        if (shouldAutoPlayRef.current) {
-                          shouldAutoPlayRef.current = false;
-                          playerRef.current?.play();
-                        }
-                      }}
+                      onReady={onReady}
                     />
                   </div>
 
@@ -333,6 +112,8 @@ const PlayerSection = () => {
                     "bg-black max-w-[580px] w-full h-full cursor-pointer",
                   )}
                 >
+                  {/* biome-ignore lint/a11y/useKeyWithClickEvents: 플레이어 시작 영역 */}
+                  {/* biome-ignore lint/a11y/noStaticElementInteractions: 플레이어 시작 영역 */}
                   <div
                     onClick={playYoutubeMusic}
                     className={twMerge(

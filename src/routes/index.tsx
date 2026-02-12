@@ -1,21 +1,9 @@
-import { useToastsStore } from "@/entities/toast/model";
-import { useTokenStore, useUserStore } from "@/entities/user/model";
-import { firebaseAuth, initFireStore } from "@/shared/config/firebase";
-import usePreventSpam from "@/shared/hooks/usePreventSpam";
-import { getFireStoreData } from "@/shared/lib/firebase";
-import PrivateRoute from "@/shared/ui/PrivateRoute";
-import { setAuthStorage } from "@/shared/utils/auth";
-import { validateByteFormLength } from "@/shared/utils/validation";
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { add, format } from "date-fns";
-import {
-  GithubAuthProvider,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
-import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
+import { useTokenStore, useUserStore } from "@/entities/user/model";
+import { useCertificateLogin, useNickNameInput } from "@/features/auth/model";
+import PrivateRoute from "@/shared/ui/PrivateRoute";
 
 export const Route = createFileRoute("/")({
   beforeLoad: () => {
@@ -38,91 +26,11 @@ export const Route = createFileRoute("/")({
 function Enter() {
   const nickNameInputRef = useRef<HTMLInputElement>(null);
   const certificateInputRef = useRef<HTMLInputElement>(null);
-  const { isPrevent, preventSpamTrigger, preventCounting } = usePreventSpam();
 
-  const toastStore = useToastsStore();
-  const tokenStore = useTokenStore();
+  const { nickName, byteCount, onChangeNickName } = useNickNameInput();
+  const { submitCertificateNumber } = useCertificateLogin();
 
-  const [nickName, setNickName] = useState("");
-  const [byteCount, setByteCount] = useState(0);
   const [certificate, setCertificate] = useState("");
-
-  const navigate = useNavigate();
-
-  // OAuth 함수
-  const onSocialClick = async (authCategory: "google" | "github") => {
-    let provider;
-
-    if (authCategory === "google") {
-      provider = new GoogleAuthProvider();
-    } else if (authCategory === "github") {
-      provider = new GithubAuthProvider();
-    }
-
-    if (provider) {
-      const data = await signInWithPopup(firebaseAuth, provider);
-      console.log(data);
-    }
-  };
-
-  const onChangeNickName = ({
-    target: { value },
-  }: ChangeEvent<HTMLInputElement>) => {
-    const { isValidate, byte } = validateByteFormLength(value, 16);
-    if (isValidate) {
-      setByteCount(byte);
-      setNickName(value);
-    }
-  };
-
-  const submitCertificateNumber = (e: FormEvent) => {
-    (async () => {
-      e.preventDefault();
-
-      if (isPrevent) return preventCounting();
-      preventSpamTrigger();
-
-      const trimNickName = nickName.trim();
-
-      if (trimNickName === "")
-        return toastStore.addToast("닉네임을 입력해주세요.");
-
-      const isAdmin = certificate === import.meta.env.VITE_CERTIFICATE_ADMIN;
-      const isAccess = certificate === import.meta.env.VITE_CERTIFICATE_NUMBER;
-
-      if (isAccess || isAdmin) {
-        const expire = format(add(Date.now(), { months: 1 }), "yyyy-MM-dd");
-
-        const role = isAdmin ? 1 : 0;
-        const userData: any = { nickName: trimNickName, expire, role };
-
-        const users = await getFireStoreData("users");
-        if (users.some((user: any) => user.nickName === trimNickName)) {
-          return toastStore.addToast(
-            "이미 접속중인 닉네임입니다, 다른 닉네임으로 접속해주세요!",
-          );
-        }
-
-        await addDoc(collection(initFireStore, "users"), {
-          nickName: trimNickName,
-        })
-          .then((res) => {
-            userData.id = res.id;
-          })
-          .catch((e) => {
-            console.log("error: ", e);
-            return toastStore.addToast("유저데이터 저장에 실패하였습니다.");
-          });
-
-        setAuthStorage(userData);
-        tokenStore.setToken(userData);
-
-        return navigate({ to: "/main/player" });
-      }
-
-      return toastStore.addToast("인증번호가 일치하지 않습니다.");
-    })();
-  };
 
   return (
     <div
@@ -178,16 +86,23 @@ function Enter() {
         </div>
       </ul>
 
-      <form className="flex flex-col gap-5" onSubmit={submitCertificateNumber}>
+      <form
+        className="flex flex-col gap-5"
+        onSubmit={(e) => {
+          e.preventDefault();
+          submitCertificateNumber(nickName, certificate);
+        }}
+      >
         <div className="flex gap-5 items-center">
-          <p
+          <label
             className="w-[160px] text-[24px] text-center"
-            onClick={() => nickNameInputRef.current?.focus()}
+            htmlFor="login-nickname"
           >
             Nick Name
-          </p>
+          </label>
           <div className="relative">
             <input
+              id="login-nickname"
               className="py-1 pl-4 pr-12 bg-gray-100 text-[18px] rounded-[8px] w-[300px]"
               ref={nickNameInputRef}
               type="text"
@@ -201,13 +116,14 @@ function Enter() {
         </div>
 
         <div className="flex gap-5 items-center">
-          <p
+          <label
             className="w-[160px] text-[24px] text-center"
-            onClick={() => certificateInputRef.current?.focus()}
+            htmlFor="login-certificate"
           >
             Certificate
-          </p>
+          </label>
           <input
+            id="login-certificate"
             className="py-1 px-4 bg-gray-100 text-[18px] rounded-[8px] w-[300px]"
             ref={certificateInputRef}
             type="password"

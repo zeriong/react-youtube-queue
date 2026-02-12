@@ -18,10 +18,10 @@ const DashBoard = () => {
             "grid grid-cols-1 flex-wrap gap-4",
           )}
         >
-          {CONTENT_LIST.map((item, idx) => {
+          {CONTENT_LIST.map((item) => {
             return (
               <Link
-                key={idx}
+                key={item.path}
                 to={`/main/${item.path}`}
                 className={twMerge(
                   "border-2 relative transition-all ease-in-out border-gray-300 p-4",
