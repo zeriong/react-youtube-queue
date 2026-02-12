@@ -1,1 +1,0 @@
-export const CANCEL_USER_REQ = "요청이 취소되었습니다.";

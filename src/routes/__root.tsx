@@ -27,10 +27,17 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
+        name: "robots",
+        content: "noindex,nofollow",
+      },
+      {
         title: "Z-Space",
       },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
+    ],
   }),
 
   component: RootDocument,

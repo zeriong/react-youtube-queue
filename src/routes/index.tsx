@@ -1,3 +1,11 @@
+import { useToastsStore } from "@/entities/toast/model";
+import { useTokenStore, useUserStore } from "@/entities/user/model";
+import { firebaseAuth, initFireStore } from "@/shared/config/firebase";
+import usePreventSpam from "@/shared/hooks/usePreventSpam";
+import { getFireStoreData } from "@/shared/lib/firebase";
+import PrivateRoute from "@/shared/ui/PrivateRoute";
+import { setAuthStorage } from "@/shared/utils/auth";
+import { validateByteFormLength } from "@/shared/utils/validation";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { add, format } from "date-fns";
 import {
@@ -6,17 +14,8 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
-import { type ChangeEvent, type FormEvent, useRef, useState } from "react";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { twMerge } from "tailwind-merge";
-import { useToastsStore } from "@/entities/toast/model";
-import { useTokenStore, useUserStore } from "@/entities/user/model";
-import { firebaseAuth, initFireStore } from "@/shared/config/firebase";
-import usePreventSpam from "@/shared/hooks/usePreventSpam";
-import { getFireStoreData } from "@/shared/lib/firebase";
-import { GithubIcon, GoogleIcon } from "@/shared/ui/icons";
-import PrivateRoute from "@/shared/ui/PrivateRoute";
-import { setAuthStorage } from "@/shared/utils/auth";
-import { validateByteFormLength } from "@/shared/utils/validation";
 
 export const Route = createFileRoute("/")({
   beforeLoad: () => {
