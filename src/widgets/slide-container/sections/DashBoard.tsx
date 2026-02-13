@@ -6,12 +6,9 @@ const DashBoard = () => {
   return (
     <div className="w-full min-w-full h-full flex flex-col items-center">
       <div
-        className={twMerge(
-          "md:max-w-[1300px] md:w-full md:py-[40px]",
-          "px-4 py-[20px]",
-        )}
+        className={twMerge("md:max-w-[1300px] md:w-full md:py-10", "px-4 py-5")}
       >
-        <p className="text-[40px] font-bold mb-[12px]">컨텐츠</p>
+        <p className="text-[40px] font-bold mb-3">컨텐츠</p>
         <ul
           className={twMerge(
             "md:grid-cols-4 md:py-4",
@@ -28,7 +25,7 @@ const DashBoard = () => {
                   "overflow-hidden rounded-md shadow-lg bottom-0 hover:bottom-2",
                 )}
               >
-                <p className="font-bold mb-2 text-[20px]">{item.title}</p>
+                <p className="font-bold mb-2 text-xl">{item.title}</p>
                 <p className="break-words text-[15px] text-gray-800">
                   {item.desc}
                 </p>

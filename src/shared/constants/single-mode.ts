@@ -8,8 +8,8 @@ export const SINGLE_MODE_VOLUME_KEY = "singleModeVolume";
 
 // Single Mode 전용 fake admin 토큰
 export const SINGLE_MODE_TOKEN: TokenData = {
-	id: "single-mode",
-	nickName: "Single Player",
-	expire: "2099-12-31",
-	role: 1,
+  id: "single-mode",
+  nickName: "Single Player",
+  expire: "2099-12-31",
+  role: 1,
 };

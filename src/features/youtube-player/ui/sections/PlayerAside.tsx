@@ -39,12 +39,12 @@ const PlayerAside = () => {
           type="button"
           onClick={handleEditMusicModal}
           className={twMerge(
-            "rounded-[12px] p-[3px] border-2 border-gray-500 bg-gray-300",
+            "rounded-xl p-[3px] border-2 border-gray-500 bg-gray-300",
           )}
         >
           <p
             className={twMerge(
-              "font-bold text-white bg-red-500/85 py-3 text-[20px]",
+              "font-bold text-white bg-red-500/85 py-3 text-xl",
               "rounded-[9px] text_line border-2 border-gray-500",
             )}
           >
@@ -57,7 +57,7 @@ const PlayerAside = () => {
       <section className="h-full flex flex-col">
         <div
           className={twMerge(
-            "flex justify-between text-[20px] font-bold text-white",
+            "flex justify-between text-xl font-bold text-white",
             "text_line mb-2 mt-3",
           )}
         >

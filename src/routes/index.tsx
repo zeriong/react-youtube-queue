@@ -35,13 +35,13 @@ function Enter() {
   return (
     <div
       className={twMerge(
-        "w-full h-full flex flex-col gap-[60px] justify-center items-center",
+        "w-full h-full flex flex-col gap-15 justify-center items-center",
       )}
     >
-      <div className="flex flex-col gap-[40px] text-center mx-auto">
-        <div className="text-7xl font-[800] flex gap-[24px]">
+      <div className="flex flex-col gap-10 text-center mx-auto">
+        <div className="text-7xl font-extrabold flex gap-6">
           <div>우리의 공간</div>
-          <div className="font-[900] text_line text-amber-400">
+          <div className="font-black text_line text-amber-400">
             {"< Z-Space />"}
           </div>
         </div>
@@ -51,7 +51,7 @@ function Enter() {
         <div className="flex gap-4 mx-auto">
           <li
             className={twMerge(
-              "px-[16px] font-[500] py-[8px] border-[3px] shadow-lg",
+              "px-4 font-medium py-2 border-[3px] shadow-lg",
               "border-gray-300 rounded-md w-fit",
             )}
           >
@@ -59,17 +59,17 @@ function Enter() {
           </li>
           <li
             className={twMerge(
-              "px-[16px] font-[500] py-[8px] border-[3px] shadow-lg",
+              "px-4 font-medium py-2 border-[3px] shadow-lg",
               "border-gray-300 rounded-md w-fit",
             )}
           >
             # 사다리타기 걸린 사람이 오늘 커피 쏘는거야 ^^
           </li>
         </div>
-        <div className="flex gap-4 mx-auto font-[500]">
+        <div className="flex gap-4 mx-auto font-medium">
           <li
             className={twMerge(
-              "px-[16px] py-[8px] border-[3px] shadow-lg",
+              "px-4 py-2 border-[3px] shadow-lg",
               "border-gray-300 rounded-md w-fit",
             )}
           >
@@ -77,7 +77,7 @@ function Enter() {
           </li>
           <li
             className={twMerge(
-              "px-[16px] font-[500] py-[8px] border-[3px] shadow-lg",
+              "px-4 font-medium py-2 border-[3px] shadow-lg",
               "border-gray-300 rounded-md w-fit",
             )}
           >
@@ -95,7 +95,7 @@ function Enter() {
       >
         <div className="flex gap-5 items-center">
           <label
-            className="w-[160px] text-[24px] text-center"
+            className="w-[160px] text-2xl text-center"
             htmlFor="login-nickname"
           >
             Nick Name
@@ -103,13 +103,13 @@ function Enter() {
           <div className="relative">
             <input
               id="login-nickname"
-              className="py-1 pl-4 pr-12 bg-gray-100 text-[18px] rounded-[8px] w-[300px]"
+              className="py-1 pl-4 pr-12 bg-gray-100 text-lg rounded-lg w-[300px]"
               ref={nickNameInputRef}
               type="text"
               onChange={onChangeNickName}
               value={nickName}
             />
-            <p className="absolute right-2 top-1/2 -translate-y-1/2 text-[14px]">
+            <p className="absolute right-2 top-1/2 -translate-y-1/2 text-sm">
               {`${byteCount}/16 byte`}
             </p>
           </div>
@@ -117,14 +117,14 @@ function Enter() {
 
         <div className="flex gap-5 items-center">
           <label
-            className="w-[160px] text-[24px] text-center"
+            className="w-[160px] text-2xl text-center"
             htmlFor="login-certificate"
           >
             Certificate
           </label>
           <input
             id="login-certificate"
-            className="py-1 px-4 bg-gray-100 text-[18px] rounded-[8px] w-[300px]"
+            className="py-1 px-4 bg-gray-100 text-lg rounded-lg w-[300px]"
             ref={certificateInputRef}
             type="password"
             onChange={(e) => setCertificate(e.target.value)}

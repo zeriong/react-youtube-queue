@@ -71,7 +71,7 @@ const EditModal = () => {
                       type="button"
                       className={twMerge(
                         "bg-black absolute right-[7px] top-1/2",
-                        "-translate-y-1/2 rounded-full p-[2px] opacity-80",
+                        "-translate-y-1/2 rounded-full p-0.5 opacity-80",
                       )}
                       onClick={clearSubmitInput}
                     >
@@ -86,7 +86,7 @@ const EditModal = () => {
                     <p>신청곡 제목:</p>
                     <p
                       className={twMerge(
-                        "absolute text-[12px] left-1/2 -translate-x-1/2",
+                        "absolute text-xs left-1/2 -translate-x-1/2",
                         "bottom-[-12px] font-bold text-gray-400/85",
                       )}
                     >
@@ -112,7 +112,7 @@ const EditModal = () => {
                       type="button"
                       className={twMerge(
                         "bg-black absolute right-[7px] top-1/2",
-                        "-translate-y-1/2 rounded-full p-[2px] opacity-80",
+                        "-translate-y-1/2 rounded-full p-0.5 opacity-80",
                       )}
                       onClick={clearTitleInput}
                     >

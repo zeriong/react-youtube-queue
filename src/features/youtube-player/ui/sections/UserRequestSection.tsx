@@ -12,7 +12,7 @@ const UserRequestSection = () => {
         className="flex flex-col justify-center items-center w-[600px] h-[330px]
           bg-black text-white text-center gap-4 rounded-lg"
       >
-        <p className="text-[24px]">음악 재생은 어드민 유저에게 맡겨주세요!</p>
+        <p className="text-2xl">음악 재생은 어드민 유저에게 맡겨주세요!</p>
         <p>
           일반 인증 유저는 원하는 유튜브 음악을
           <br />

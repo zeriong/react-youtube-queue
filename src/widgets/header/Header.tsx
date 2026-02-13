@@ -17,15 +17,15 @@ const Header = () => {
   return (
     <header
       className={twMerge(
-        "w-full px-[20px] shadow-md flex items-center justify-between",
+        "w-full px-5 shadow-md flex items-center justify-between",
       )}
     >
       {/* Left Section */}
-      <div className="flex gap-[80px]">
-        <Link to="/main" className="text-[30px] font-black flex items-center">
+      <div className="flex gap-20">
+        <Link to="/main" className="text-3xl font-black flex items-center">
           Z-Space
         </Link>
-        <ul className="flex items-center gap-[8px] my-[8px]">
+        <ul className="flex items-center gap-2 my-2">
           {CONTENT_LIST.map((item) => (
             <li
               key={item.path}
@@ -36,7 +36,7 @@ const Header = () => {
             >
               <Link
                 to={`/main/${item.path}`}
-                className="h-full flex items-center px-[16px] py-[10px]"
+                className="h-full flex items-center px-4 py-2.5"
               >
                 {item.title}
               </Link>
@@ -49,7 +49,7 @@ const Header = () => {
       <div>
         <button
           type="button"
-          className="bg-gray-300 px-3 py-2 rounded-md text-[20px] hover:scale-110"
+          className="bg-gray-300 px-3 py-2 rounded-md text-xl hover:scale-110"
           onClick={logout}
         >
           <LogoutIcon />

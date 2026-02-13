@@ -76,7 +76,7 @@ const PlayerSection = () => {
                 </div>
 
                 {/* Buttons ([mobile: prev/next] + [default save current music]) */}
-                <div className="flex justify-center mt-[12px]">
+                <div className="flex justify-center mt-3">
                   <div className="flex items-center gap-4">
                     {/* 모바일버전 이전 곡 버튼 */}
                     <div className="block pc:hidden">

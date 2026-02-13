@@ -8,19 +8,19 @@ const RequestListSection = () => {
   return (
     <nav
       className={twMerge(
-        "fixed left-[20px] -bottom-[400px] w-[250px] h-[400px]",
+        "fixed left-5 -bottom-[400px] w-[250px] h-[400px]",
         "border-4 border-gray-500 rounded-lg z-[200] bg-white p-3",
         "flex flex-col gap-3 overflow-auto shadow-2xl",
         "ease-in-out duration-500",
-        userRequestList.length && "bottom-[20px]",
+        userRequestList.length && "bottom-5",
       )}
     >
       <div className="flex justify-between">
-        <p className="text-[18px] font-bold text_line text-white">
+        <p className="text-lg font-bold text_line text-white">
           {"< 요청 리스트 >"}
         </p>
       </div>
-      <div className="flex font-bold text-[18px]">
+      <div className="flex font-bold text-lg">
         <p>자동 승인 {`${userRequestList.length && count}초`}</p>
         <div>
           <button type="button" />
@@ -39,14 +39,14 @@ const RequestListSection = () => {
           return (
             <li
               key={req.id}
-              className="whitespace-break-spaces rounded border-2 border-gray-500 p-[8px]"
+              className="whitespace-break-spaces rounded border-2 border-gray-500 p-2"
             >
               <p className="border-b-2 border-gray-400">{`${idx + 1}. ${req.nickName}`}</p>
-              <p className="text-center my-[4px]">{reqMsg}</p>
-              <div className="flex w-full gap-[4px]">
+              <p className="text-center my-1">{reqMsg}</p>
+              <div className="flex w-full gap-1">
                 <button
                   type="button"
-                  className="w-full py-[4px] hover:bg-gray-200"
+                  className="w-full py-1 hover:bg-gray-200"
                   onClick={() => accessReq(req)}
                 >
                   허용
@@ -54,7 +54,7 @@ const RequestListSection = () => {
                 |
                 <button
                   type="button"
-                  className="w-full py-[4px] hover:bg-gray-200"
+                  className="w-full py-1 hover:bg-gray-200"
                   onClick={() => cancelReq(req.id)}
                 >
                   취소

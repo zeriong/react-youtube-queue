@@ -5,30 +5,30 @@ import { SINGLE_MODE_TOKEN } from "@/shared/constants/single-mode";
 import { setAuthStorage } from "@/shared/utils/auth";
 
 export const useSingleModeEntry = () => {
-	const navigate = useNavigate();
-	const { setIsSingleMode } = useModeStore();
-	const { setToken } = useTokenStore();
+  const navigate = useNavigate();
+  const { setIsSingleMode } = useModeStore();
+  const { setToken } = useTokenStore();
 
-	const enterSingleMode = () => {
-		setIsSingleMode(true);
-		setAuthStorage(SINGLE_MODE_TOKEN);
-		setToken(SINGLE_MODE_TOKEN);
-		navigate({ to: "/main/player" });
-	};
+  const enterSingleMode = () => {
+    setIsSingleMode(true);
+    setAuthStorage(SINGLE_MODE_TOKEN);
+    setToken(SINGLE_MODE_TOKEN);
+    navigate({ to: "/main/player" });
+  };
 
-	return { enterSingleMode };
+  return { enterSingleMode };
 };
 
 export const useSingleModeLogout = () => {
-	const navigate = useNavigate();
-	const { setIsSingleMode } = useModeStore();
-	const { deleteToken } = useTokenStore();
+  const navigate = useNavigate();
+  const { setIsSingleMode } = useModeStore();
+  const { deleteToken } = useTokenStore();
 
-	const exitSingleMode = () => {
-		setIsSingleMode(false);
-		deleteToken();
-		navigate({ to: "/" });
-	};
+  const exitSingleMode = () => {
+    setIsSingleMode(false);
+    deleteToken();
+    navigate({ to: "/" });
+  };
 
-	return { exitSingleMode };
+  return { exitSingleMode };
 };

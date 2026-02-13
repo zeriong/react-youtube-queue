@@ -40,7 +40,7 @@ const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
 
         {/* 미리보기 버튼 */}
         <button
-          className="text-[12px] border border-gray-600 px-2 rounded-md whitespace-nowrap h-[24px]"
+          className="text-xs border border-gray-600 px-2 rounded-md whitespace-nowrap h-6"
           type="button"
           onClick={onPreViewModal}
         >

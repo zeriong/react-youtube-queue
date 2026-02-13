@@ -43,10 +43,10 @@ const Toasts = () => {
       )}
     >
       {toastStore.toasts.length > 0 && (
-        <div className="flex p-[10px] md:p-[18px]">
-          <AlarmIcon className="fill-white h-[22px] mr-[6px]" />
+        <div className="flex p-2.5 md:p-[18px]">
+          <AlarmIcon className="fill-white h-[22px] mr-1.5" />
           <p
-            className="w-full font-normal text-white max-md:text-[14px]"
+            className="w-full font-normal text-white max-md:text-sm"
             // biome-ignore lint/security/noDangerouslySetInnerHtml: 레거시 코드 - 내부 토스트 메시지만 사용
             dangerouslySetInnerHTML={{ __html: toastStore.toasts[0] }}
           />

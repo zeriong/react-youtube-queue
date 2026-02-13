@@ -44,7 +44,7 @@ const SaveCurrentMusicModal = ({ isAdmin }: SaveCurrentMusicModalProps) => {
             <button
               type="button"
               className="bg-black absolute right-[7px] top-1/2 -translate-y-1/2
-                rounded-full p-[2px] opacity-80"
+                rounded-full p-0.5 opacity-80"
               onClick={() => {
                 if (titleInputRef.current) {
                   titleInputRef.current.value = "";

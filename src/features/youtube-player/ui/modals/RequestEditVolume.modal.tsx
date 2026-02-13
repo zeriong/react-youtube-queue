@@ -51,7 +51,7 @@ const RequestEditVolumeModal = () => {
               </div>
 
               {/* 요청할 볼륨 */}
-              <p className="font-bold text-center w-[60px] text-[20px]">
+              <p className="font-bold text-center w-[60px] text-xl">
                 {submitVolume}
               </p>
 
@@ -84,7 +84,7 @@ const RequestEditVolumeModal = () => {
             <div className="flex items-center gap-2 px-2">
               <p>직접 입력: </p>
               <input
-                className="bg-gray-100 rounded-md px-4 py-1 text-[18px] w-full"
+                className="bg-gray-100 rounded-md px-4 py-1 text-lg w-full"
                 type="text"
                 value={submitVolume}
                 onChange={handleOnChange}
