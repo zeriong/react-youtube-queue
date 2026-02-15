@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { add, format } from "date-fns";
 import { addDoc, collection } from "firebase/firestore";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
+import { useModeStore } from "@/entities/mode/model";
 import { useToastsStore } from "@/entities/toast/model";
 import { useTokenStore, useUserStore } from "@/entities/user/model";
 import { firebaseAuth, initFireStore } from "@/shared/config/firebase";
@@ -21,6 +22,7 @@ export const useRootAuth = () => {
   const tokenRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const { isSingleMode } = useModeStore();
   const { setLogin } = useUserStore();
   const tokenStore = useTokenStore();
 
@@ -34,6 +36,12 @@ export const useRootAuth = () => {
   // init effect
   // biome-ignore lint/correctness/useExhaustiveDependencies: 마운트 시 1회만 실행
   useEffect(() => {
+    // 싱글모드에서는 Firebase 인증을 건너뜀
+    if (isSingleMode) {
+      setIsLoading(false);
+      return;
+    }
+
     // firebase를 활용한 로그인상태 체크
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) setLogin(user);
@@ -151,10 +159,19 @@ export const useCertificateLogin = () => {
 export const useLogout = () => {
   const navigate = useNavigate();
   const { token, deleteToken } = useTokenStore();
+  const { isSingleMode, setIsSingleMode } = useModeStore();
   const { setLogout } = useUserStore();
   const { addToast } = useToastsStore();
 
   const logout = async () => {
+    if (isSingleMode) {
+      setIsSingleMode(false);
+      deleteToken();
+      addToast("싱글모드가 종료되었습니다.");
+      navigate({ to: "/" });
+      return;
+    }
+
     await firebaseAuth.signOut();
     await deleteUser(token?.id);
     deleteToken();

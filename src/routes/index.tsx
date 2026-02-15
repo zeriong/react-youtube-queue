@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { useTokenStore, useUserStore } from "@/entities/user/model";
 import { useCertificateLogin, useNickNameInput } from "@/features/auth/model";
+import { SingleModeButton } from "@/features/single-mode/ui/SingleModeButton";
 import PrivateRoute from "@/shared/ui/PrivateRoute";
 
 export const Route = createFileRoute("/")({
@@ -35,9 +36,10 @@ function Enter() {
   return (
     <div
       className={twMerge(
-        "w-full h-full flex flex-col gap-15 justify-center items-center",
+        "relative w-full h-full flex flex-col gap-15 justify-center items-center",
       )}
     >
+      <SingleModeButton />
       <div className="flex flex-col gap-10 text-center mx-auto">
         <div className="text-7xl font-extrabold flex gap-6">
           <div>우리의 공간</div>
