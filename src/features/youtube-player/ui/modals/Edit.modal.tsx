@@ -52,7 +52,7 @@ const EditModal = () => {
             <form className="flex gap-2 px-2 mb-3" onSubmit={submitURL}>
               <div className="relative w-full flex flex-col gap-2">
                 {/* 신청곡 url input */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2  whitespace-nowrap">
                   <label htmlFor="edit-submit-url">Youtube URL:</label>
                   {/* 신청곡 url input */}
                   <div className="relative w-full">
@@ -83,10 +83,10 @@ const EditModal = () => {
                 {/* 신청곡 제목 input */}
                 <div className="flex items-center gap-2">
                   <label className="relative top-[-5px]" htmlFor="edit-title">
-                    <p>신청곡 제목:</p>
+                    <p className="whitespace-nowrap">신청곡 제목:</p>
                     <p
                       className={twMerge(
-                        "absolute text-xs left-1/2 -translate-x-1/2",
+                        "absolute text-xs left-1/2 -translate-x-1/2 whitespace-nowrap",
                         "bottom-[-12px] font-bold text-gray-400/85",
                       )}
                     >
@@ -123,7 +123,7 @@ const EditModal = () => {
               </div>
               <button
                 className={twMerge(
-                  "border px-2 rounded-md",
+                  "border px-2 rounded-md whitespace-nowrap",
                   canSubmit
                     ? "bg-gray-300 font-bold hover:scale-105"
                     : "bg-gray-100 text-gray-400",

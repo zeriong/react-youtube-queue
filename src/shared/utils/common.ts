@@ -59,3 +59,15 @@ export const lastPathName = (): string => {
 export const jsonDeepCopy = <T>(obj: T): T => {
   return JSON.parse(JSON.stringify(obj));
 };
+
+/**
+ * @description 이벤트 전파 방지
+ */
+export const stopPropagation = (
+  e:
+    | React.MouseEvent<HTMLDivElement | HTMLElement>
+    | React.KeyboardEvent<HTMLDivElement | HTMLElement>
+    | React.FocusEvent<HTMLDivElement | HTMLElement>,
+) => {
+  e.stopPropagation();
+};

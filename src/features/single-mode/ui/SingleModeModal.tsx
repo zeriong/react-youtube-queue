@@ -21,11 +21,11 @@ export const SingleModeModal = ({
     <ModalStandard
       isShow={isShow}
       setIsShow={setIsShow}
-      headerTitle={<h2 className="text-lg font-bold px-2">Single Mode</h2>}
+      headerTitle={<h2 className="text-2xl font-bold px-2">Single Mode</h2>}
       isFit
       contentArea={
         <div className="flex flex-col gap-4 px-5 py-4">
-          <div className="flex flex-col gap-2 text-[15px] text-gray-700">
+          <div className="flex flex-col gap-2 text-gray-700">
             <p>혼자서 youtube player를 사용하는 'Single Mode'입니다.</p>
             <p>Music Player의 역할로 서비스를 이용할 수 있습니다.</p>
             <p>

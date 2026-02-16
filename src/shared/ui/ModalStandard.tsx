@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { stopPropagation } from "@/shared/utils/common";
 import { CloseIcon } from "./icons";
 
 interface ModalStandardProps {
@@ -16,13 +17,16 @@ export const ModalStandard = ({
   contentArea,
   isFit,
 }: ModalStandardProps) => {
+  const handleClose = () => {
+    setIsShow(false);
+  };
   return (
     isShow && (
-      // biome-ignore lint/a11y/useKeyWithClickEvents: 모달 오버레이 클릭 닫기 패턴
-      // biome-ignore lint/a11y/noStaticElementInteractions: 모달 오버레이
+      // 모달 전체를 감싸는 오버레이
       <div
-        onClick={() => setIsShow(false)}
-        className="fixed top-0 left-0 z-[100] w-full h-full bg-black/50
+        aria-hidden="true"
+        onClick={handleClose}
+        className="fixed top-0 left-0 z-100 w-full h-full bg-black/50
           flex justify-center items-center"
       >
         {/* 컨텐츠 박스 */}
@@ -30,10 +34,11 @@ export const ModalStandard = ({
           className={`p-3 max-w-[500px] max-h-[500px] w-full
             ${isFit ? "h-fit" : " h-full"}`}
         >
-          {/* biome-ignore lint/a11y/useKeyWithClickEvents: stopPropagation 용도 */}
-          {/* biome-ignore lint/a11y/noStaticElementInteractions: 모달 컨텐츠 영역 */}
           <div
-            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            onClick={stopPropagation}
+            onKeyDown={stopPropagation}
             className="bg-white w-full h-full flex flex-col rounded-2xl z-10"
           >
             {/* 모달 헤더 */}
