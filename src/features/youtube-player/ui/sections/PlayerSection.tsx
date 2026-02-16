@@ -1,5 +1,6 @@
 import ReactPlayer from "react-player";
 import { twMerge } from "tailwind-merge";
+import { useModeStore } from "@/entities/mode/model";
 import {
   usePlayerLogic,
   usePlaylistSubscription,
@@ -15,6 +16,7 @@ import UserRequestSection from "./UserRequestSection";
 const PlayerSection = () => {
   usePlaylistSubscription();
 
+  const { isSingleMode } = useModeStore();
   const {
     playerRef,
     token,
@@ -144,8 +146,8 @@ const PlayerSection = () => {
         </div>
       </div>
 
-      {/* 일반유저 요청 nav */}
-      {token?.role === 1 && <RequestListSection />}
+      {/* 일반유저 요청 nav (싱글모드에서는 숨김) */}
+      {token?.role === 1 && !isSingleMode && <RequestListSection />}
     </section>
   );
 };
