@@ -18,6 +18,13 @@ interface ModalEntry {
   close: () => void;
 }
 
+interface OverlayInset {
+  top?: number;
+  right?: number;
+  bottom?: number;
+  left?: number;
+}
+
 interface ModalContextValue {
   /** 모달을 스택에 등록 */
   register: (id: string, close: () => void) => void;
@@ -29,6 +36,14 @@ interface ModalContextValue {
   getZIndex: (id: string) => number;
   /** 해당 모달이 스택 최상위인지 확인 */
   isTopmost: (id: string) => boolean;
+  /** 오버레이 요소 ref (드래그 경계로 사용) */
+  overlayRef: React.RefObject<HTMLDivElement | null>;
+}
+
+interface ModalProviderProps {
+  children: ReactNode;
+  /** 오버레이의 viewport 안쪽 여백 (px). 예: { top: 48 } = 페이지 헤더 높이 제외 */
+  overlayInset?: OverlayInset;
 }
 
 // --- Constants ---
@@ -52,20 +67,31 @@ export const useModalId = () => useId();
 
 // --- Provider ---
 
-export const ModalProvider = ({ children }: { children: ReactNode }) => {
+export const ModalProvider = ({
+  children,
+  overlayInset,
+}: ModalProviderProps) => {
   const [stack, setStack] = useState<ModalEntry[]>([]);
   const stackRef = useRef(stack);
   const overlayPointerStartRef = useRef(false);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   // 이벤트 핸들러에서 최신 스택을 참조하기 위한 ref 동기화
   stackRef.current = stack;
 
   const register = useCallback((id: string, close: () => void) => {
-    setStack((prev) => [...prev.filter((e) => e.id !== id), { id, close }]);
+    setStack((prev) => {
+      const existing = prev.find((e) => e.id === id);
+      if (existing?.close === close) return prev;
+      return [...prev.filter((e) => e.id !== id), { id, close }];
+    });
   }, []);
 
   const unregister = useCallback((id: string) => {
-    setStack((prev) => prev.filter((e) => e.id !== id));
+    setStack((prev) => {
+      if (!prev.some((e) => e.id === id)) return prev;
+      return prev.filter((e) => e.id !== id);
+    });
   }, []);
 
   const bringToFront = useCallback((id: string) => {
@@ -130,7 +156,14 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const value = useMemo<ModalContextValue>(
-    () => ({ register, unregister, bringToFront, getZIndex, isTopmost }),
+    () => ({
+      register,
+      unregister,
+      bringToFront,
+      getZIndex,
+      isTopmost,
+      overlayRef,
+    }),
     [register, unregister, bringToFront, getZIndex, isTopmost],
   );
 
@@ -140,8 +173,15 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
       {hasModals &&
         createPortal(
           <div
-            className="fixed inset-0 bg-black/50"
-            style={{ zIndex: MODAL_BASE_Z_INDEX }}
+            ref={overlayRef}
+            className="fixed bg-black/50"
+            style={{
+              zIndex: MODAL_BASE_Z_INDEX,
+              top: overlayInset?.top ?? 0,
+              right: overlayInset?.right ?? 0,
+              bottom: overlayInset?.bottom ?? 0,
+              left: overlayInset?.left ?? 0,
+            }}
             onPointerDown={handleOverlayPointerDown}
             onPointerUp={handleOverlayPointerUp}
           />,

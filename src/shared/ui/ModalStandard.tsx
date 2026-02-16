@@ -1,7 +1,8 @@
-import { type ReactNode, useCallback, useEffect, useId, useRef } from "react";
+import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useModalStandard } from "@/shared/hooks/useModalStandard";
 import { CloseIcon } from "./icons";
-import { MODAL_BASE_Z_INDEX, useModalContext } from "./ModalProvider";
+import { MODAL_BASE_Z_INDEX } from "./ModalProvider";
 
 interface ModalStandardProps {
   isShow: boolean;
@@ -9,6 +10,9 @@ interface ModalStandardProps {
   headerTitle: ReactNode;
   contentArea?: ReactNode;
   isFit?: boolean;
+  draggable?: boolean;
+  /** true: 오버레이 경계를 넘어서 드래그 이동 가능 (기본값: false) */
+  dragOverflow?: boolean;
 }
 
 export const ModalStandard = ({
@@ -17,78 +21,28 @@ export const ModalStandard = ({
   headerTitle,
   contentArea,
   isFit,
+  draggable = true,
+  dragOverflow = false,
 }: ModalStandardProps) => {
-  const modalId = useId();
-  const titleId = `${modalId}-title`;
-  const ctx = useModalContext();
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const previousFocusRef = useRef<HTMLElement | null>(null);
-
-  const handleClose = useCallback(() => {
-    setIsShow(false);
-  }, [setIsShow]);
-
-  // Context 모드: 모달 스택 등록/해제
-  useEffect(() => {
-    if (!ctx) return;
-    if (isShow) {
-      ctx.register(modalId, handleClose);
-    } else {
-      ctx.unregister(modalId);
-    }
-    return () => ctx.unregister(modalId);
-  }, [isShow, ctx, modalId, handleClose]);
-
-  // Standalone 모드: ESC 키 핸들링 (ModalProvider 없이 단독 사용 시)
-  useEffect(() => {
-    if (ctx || !isShow) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        handleClose();
-      }
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [ctx, isShow, handleClose]);
-
-  // 포커스 관리: 열릴 때 dialog에 포커스, 닫힐 때 이전 포커스 복원
-  useEffect(() => {
-    if (isShow) {
-      previousFocusRef.current = document.activeElement as HTMLElement;
-      requestAnimationFrame(() => dialogRef.current?.focus());
-    } else if (previousFocusRef.current) {
-      previousFocusRef.current.focus();
-      previousFocusRef.current = null;
-    }
-  }, [isShow]);
-
-  // 포커스 트랩: Tab 키로 dialog 내부에서만 순환
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key !== "Tab" || !dialogRef.current) return;
-    const focusables = dialogRef.current.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-    );
-    if (focusables.length === 0) return;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  }, []);
-
-  // 모달 클릭 시 최상위로 이동 (Context 모드)
-  const handleModalPointerDown = useCallback(() => {
-    ctx?.bringToFront(modalId);
-  }, [ctx, modalId]);
+  const {
+    titleId,
+    isContextMode,
+    zIndex,
+    isDragging,
+    sectionStyle,
+    dialogRef,
+    sectionRef,
+    headerRef,
+    handleClose,
+    handleKeyDown,
+    handleModalPointerDown,
+    handleHeaderPointerDown,
+    handleHeaderPointerMove,
+    handleHeaderPointerUp,
+    handleOverlayPointerUp,
+  } = useModalStandard({ isShow, setIsShow, draggable, dragOverflow });
 
   if (!isShow) return null;
-
-  const zIndex = ctx ? ctx.getZIndex(modalId) : MODAL_BASE_Z_INDEX + 10;
 
   const dialog = (
     <div
@@ -100,8 +54,18 @@ export const ModalStandard = ({
       onKeyDown={handleKeyDown}
       className="bg-white w-full h-full flex flex-col rounded-2xl outline-none"
     >
-      {/* 모달 헤더 */}
-      <header className="py-2 px-2 flex justify-between">
+      {/* 모달 헤더 (드래그 핸들) */}
+      <header
+        ref={headerRef}
+        className={`py-2 px-2 flex justify-between${
+          draggable
+            ? ` select-none touch-none ${isDragging ? "cursor-grabbing" : "cursor-grab"}`
+            : ""
+        }`}
+        onPointerDown={handleHeaderPointerDown}
+        onPointerMove={handleHeaderPointerMove}
+        onPointerUp={handleHeaderPointerUp}
+      >
         <div id={titleId}>{headerTitle}</div>
         <button type="button" aria-label="닫기" onClick={handleClose}>
           <CloseIcon />
@@ -113,14 +77,16 @@ export const ModalStandard = ({
   );
 
   // ModalProvider 연동: portal 렌더링 (오버레이는 Provider가 관리)
-  if (ctx) {
+  if (isContextMode) {
     return createPortal(
       <div
         className="fixed inset-0 flex justify-center items-center pointer-events-none"
         style={{ zIndex }}
       >
         <section
+          ref={sectionRef}
           className={`p-3 max-w-[500px] max-h-[500px] w-full pointer-events-auto ${isFit ? "h-fit" : "h-full"}`}
+          style={sectionStyle}
           onPointerDown={handleModalPointerDown}
         >
           {dialog}
@@ -135,12 +101,12 @@ export const ModalStandard = ({
     <div
       className="fixed inset-0 bg-black/50 flex justify-center items-center"
       style={{ zIndex: MODAL_BASE_Z_INDEX }}
-      onPointerUp={(e) => {
-        if (e.button === 0 && e.target === e.currentTarget) handleClose();
-      }}
+      onPointerUp={handleOverlayPointerUp}
     >
       <section
+        ref={sectionRef}
         className={`p-3 max-w-[500px] max-h-[500px] w-full ${isFit ? "h-fit" : "h-full"}`}
+        style={sectionStyle}
       >
         {dialog}
       </section>

@@ -1,10 +1,15 @@
 import { Link, useLocation } from "@tanstack/react-router";
+import type { Ref } from "react";
 import { twMerge } from "tailwind-merge";
 import { useLogout } from "@/features/auth/model";
 import { CONTENT_LIST } from "@/shared/constants/contentList";
 import { LogoutIcon } from "@/shared/ui/icons";
 
-const Header = () => {
+interface HeaderProps {
+  ref?: Ref<HTMLElement>;
+}
+
+const Header = ({ ref }: HeaderProps) => {
   const location = useLocation();
   const { logout } = useLogout();
 
@@ -16,6 +21,7 @@ const Header = () => {
 
   return (
     <header
+      ref={ref}
       className={twMerge(
         "w-full px-5 shadow-md flex items-center justify-between",
       )}
