@@ -1,5 +1,6 @@
 import { addDoc, collection } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
+import { useModeStore } from "@/entities/mode/model";
 import { usePlayerStore } from "@/entities/player/model";
 import { useToastsStore } from "@/entities/toast/model";
 import { useTokenStore } from "@/entities/user/model";
@@ -9,6 +10,15 @@ import {
   getFireStoreData,
   updateFireStoreData,
 } from "@/shared/lib/firebase";
+import {
+  addLocalPlayList,
+  addLocalSavedList,
+  deleteLocalPlayList,
+  getLocalPlayList,
+  getLocalSavedList,
+  getLocalVolume,
+  setLocalVolume,
+} from "@/shared/lib/single-mode-storage";
 import type { Music } from "@/shared/types";
 import { defaultPlayer } from "@/shared/utils/common";
 
@@ -28,6 +38,7 @@ export const usePlayerLogic = () => {
   const [volume, setVolumeState] = useState(1);
   const [prevDisabled, _setPrevDisabled] = useState(true);
 
+  const { isSingleMode } = useModeStore();
   const { addToast } = useToastsStore();
   const { token } = useTokenStore();
 
@@ -41,6 +52,8 @@ export const usePlayerLogic = () => {
     setCurrentMusic,
     setIsSubmitPlaying,
     setAccessedUserReq,
+    setSubmitMusic,
+    setSavedMusic,
   } = usePlayerStore();
 
   // 재생상태를 지정하고 상태에 따른 플레이어 재생
@@ -58,10 +71,18 @@ export const usePlayerLogic = () => {
 
     // 신청곡이 있다면 차례로 재생
     const firstItem = submitMusic[0];
+
     // 리스트에서 삭제
-    // biome-ignore lint/style/noNonNullAssertion: 레거시 코드 - submitMusic[0]에 id가 항상 존재
-    const isDeleted = deleteFireStore(firstItem.id!, "playList");
-    if (!isDeleted) return alert("삭제에 실패하였습니다, 서버를 점검해주세요.");
+    if (isSingleMode) {
+      // biome-ignore lint/style/noNonNullAssertion: submitMusic[0]에 id가 항상 존재
+      deleteLocalPlayList(firstItem.id!);
+      setSubmitMusic(getLocalPlayList());
+    } else {
+      // biome-ignore lint/style/noNonNullAssertion: 레거시 코드 - submitMusic[0]에 id가 항상 존재
+      const isDeleted = deleteFireStore(firstItem.id!, "playList");
+      if (!isDeleted)
+        return alert("삭제에 실패하였습니다, 서버를 점검해주세요.");
+    }
 
     // setCurrentMusic -> link state를 변경하여 즉시 플레이어 실행
     setCurrentMusic(firstItem);
@@ -82,6 +103,18 @@ export const usePlayerLogic = () => {
         );
       }
 
+      if (isSingleMode) {
+        const localSavedList = getLocalSavedList();
+        if (localSavedList.some((list) => list.link === currentMusic.link)) {
+          return addToast("이미 저장된 플레이리스트입니다.");
+        }
+        // biome-ignore lint/suspicious/noExplicitAny: 레거시 코드 - accessedUserReq 동적 필드
+        currentMusic.title = (accessedUserReq as any)?.musicTitle;
+        addLocalSavedList(currentMusic);
+        setSavedMusic(getLocalSavedList());
+        return;
+      }
+
       const getSavedLists = await getFireStoreData<Music>("savedList");
       if (getSavedLists.some((list) => list.link === currentMusic.link)) {
         return addToast("이미 저장된 플레이리스트입니다.");
@@ -98,6 +131,18 @@ export const usePlayerLogic = () => {
 
   // 저장된 플리를 현재 플리에 추가 요청
   const handleAddCurrentPlayListRequest = (item: Music) => {
+    if (isSingleMode) {
+      addLocalPlayList({
+        // biome-ignore lint/suspicious/noExplicitAny: 레거시 코드 - Music 타입에 createAt 미정의
+        createAt: (item as any).createAt,
+        title: item.title,
+        link: item.link,
+      });
+      setSubmitMusic(getLocalPlayList());
+      addToast("플레이리스트에 추가되었습니다.");
+      return;
+    }
+
     (async () => {
       await addDoc(collection(initFireStore, "playList"), {
         // biome-ignore lint/suspicious/noExplicitAny: 레거시 코드 - Music 타입에 createAt 미정의
@@ -141,16 +186,22 @@ export const usePlayerLogic = () => {
         if (playerRef.current) {
           playerRef.current.volume = newVolume;
         }
-        (async () => {
-          const getVolume = await getFireStoreData("currentVolume");
-          await updateFireStoreData(
-            // biome-ignore lint/suspicious/noExplicitAny: 레거시 코드 - Firestore 문서 동적 id
-            (getVolume[0] as any).id,
-            // biome-ignore lint/suspicious/noExplicitAny: 레거시 코드 - accessedUserReq 동적 필드
-            { volume: (accessedUserReq as any).volume },
-            "currentVolume",
-          );
-        })();
+
+        if (isSingleMode) {
+          // biome-ignore lint/suspicious/noExplicitAny: 레거시 코드 - accessedUserReq 동적 필드
+          setLocalVolume((accessedUserReq as any).volume);
+        } else {
+          (async () => {
+            const getVolume = await getFireStoreData("currentVolume");
+            await updateFireStoreData(
+              // biome-ignore lint/suspicious/noExplicitAny: 레거시 코드 - Firestore 문서 동적 id
+              (getVolume[0] as any).id,
+              // biome-ignore lint/suspicious/noExplicitAny: 레거시 코드 - accessedUserReq 동적 필드
+              { volume: (accessedUserReq as any).volume },
+              "currentVolume",
+            );
+          })();
+        }
       }
     }
   };
@@ -184,29 +235,38 @@ export const usePlayerLogic = () => {
   }, [submitMusic]);
 
   // 영상이 존재했을 때 현재 볼륨 저장
+  // biome-ignore lint/correctness/useExhaustiveDependencies: isStart 변경 시에만 실행
   useEffect(() => {
-    if (isStart && playerRef.current) {
-      (async () => {
-        const getVolume = await getFireStoreData("currentVolume");
-        const playerVolume = Math.round((playerRef.current?.volume ?? 1) * 100);
-        if (getVolume.length) {
-          updateFireStoreData(
-            // biome-ignore lint/suspicious/noExplicitAny: 레거시 코드 - Firestore 문서 동적 id
-            (getVolume[0] as any).id,
-            { volume: playerVolume },
-            "currentVolume",
-          )
-            .then((res) => console.log(res))
-            .catch((e) => console.log(e));
-        } else {
-          addDoc(collection(initFireStore, "currentVolume"), {
-            volume: playerVolume,
-          })
-            .then((res) => console.log(res))
-            .catch((e) => console.log(e));
-        }
-      })();
+    if (!isStart || !playerRef.current) return;
+
+    // Single Mode: localStorage에서 볼륨 로드 및 적용
+    if (isSingleMode) {
+      const localVolume = getLocalVolume() / 100;
+      setVolumeState(localVolume);
+      if (playerRef.current) playerRef.current.volume = localVolume;
+      return;
     }
+
+    (async () => {
+      const getVolume = await getFireStoreData("currentVolume");
+      const playerVolume = Math.round((playerRef.current?.volume ?? 1) * 100);
+      if (getVolume.length) {
+        updateFireStoreData(
+          // biome-ignore lint/suspicious/noExplicitAny: 레거시 코드 - Firestore 문서 동적 id
+          (getVolume[0] as any).id,
+          { volume: playerVolume },
+          "currentVolume",
+        )
+          .then((res) => console.log(res))
+          .catch((e) => console.log(e));
+      } else {
+        addDoc(collection(initFireStore, "currentVolume"), {
+          volume: playerVolume,
+        })
+          .then((res) => console.log(res))
+          .catch((e) => console.log(e));
+      }
+    })();
   }, [isStart]);
 
   // 네트워크 이벤트 등록

@@ -1,5 +1,6 @@
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
+import { useModeStore } from "@/entities/mode/model";
 import { usePlayerStore } from "@/entities/player/model";
 import { useToastsStore } from "@/entities/toast/model";
 import { initFireStore } from "@/shared/config/firebase";
@@ -25,6 +26,7 @@ export const useRequestQueue = () => {
   const countRef = useRef(5);
   const [count, setCount] = useState(5);
   const [userRequestList, setUserRequestList] = useState<UserRequest[]>([]);
+  const { isSingleMode } = useModeStore();
   const { addToast } = useToastsStore();
   const { setAccessedUserReq } = usePlayerStore();
 
@@ -78,12 +80,15 @@ export const useRequestQueue = () => {
   // 요청이 있는 경우 카운팅
   // biome-ignore lint/correctness/useExhaustiveDependencies: 원본과 동일하게 userRequestList.length 변경 시에만 실행
   useEffect(() => {
+    if (isSingleMode) return;
     if (userRequestList.length > 0) secCounting();
   }, [userRequestList.length]);
 
   // Firestore userRequest 실시간 구독
   // biome-ignore lint/correctness/useExhaustiveDependencies: 마운트 시 1회만 실행
   useEffect(() => {
+    if (isSingleMode) return;
+
     const playListQuery = query(
       collection(initFireStore, "userRequest"),
       orderBy("createAt", "asc"),

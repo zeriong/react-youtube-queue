@@ -7,12 +7,18 @@ import {
   useState,
 } from "react";
 import ReactPlayer from "react-player";
+import { useModeStore } from "@/entities/mode/model";
 import { usePlayerStore } from "@/entities/player/model";
 import { useToastsStore } from "@/entities/toast/model";
 import { useTokenStore } from "@/entities/user/model";
 import { initFireStore } from "@/shared/config/firebase";
 import { YOUTUBE_BASE_URL } from "@/shared/constants";
 import { updateFireStoreData } from "@/shared/lib/firebase";
+import {
+  addLocalPlayList,
+  getLocalPlayList,
+  updateLocalPlayList,
+} from "@/shared/lib/single-mode-storage";
 
 /**
  * @description 음악 신청/수정 비즈니스 로직 훅
@@ -30,6 +36,7 @@ export const useSubmitMusic = () => {
   const [canSubmit, setCanSubmit] = useState(false);
   const [isOnce, setIsOnce] = useState(false);
 
+  const { isSingleMode } = useModeStore();
   const { addToast } = useToastsStore();
   const tokenStore = useTokenStore();
   const {
@@ -39,6 +46,7 @@ export const useSubmitMusic = () => {
     setSelectedCurrentMusic,
     isShowEditModal,
     setIsShowEditModal,
+    setSubmitMusic,
   } = usePlayerStore();
 
   // submit URL onChange (디바운스)
@@ -85,20 +93,32 @@ export const useSubmitMusic = () => {
       }
       const confirmSubmit = window.confirm("플레이리스트에 추가하시겠습니까?");
       if (confirmSubmit) {
-        await addDoc(collection(initFireStore, "playList"), {
-          nickName: tokenStore.token?.nickName,
-          createAt: Date.now(),
-          link: submitURLInput,
-          title: titleInputRef.current?.value,
-        })
-          .then(() => {
-            addToast("플레이리스트에 추가되었습니다.");
-            setIsShowEditModal(false);
-          })
-          .catch((e) => {
-            alert("플레이리스트 추가에 실패하였습니다.");
-            console.log(e);
+        if (isSingleMode) {
+          addLocalPlayList({
+            nickName: tokenStore.token?.nickName,
+            createAt: Date.now(),
+            link: submitURLInput,
+            title: titleInputRef.current?.value,
           });
+          setSubmitMusic(getLocalPlayList());
+          addToast("플레이리스트에 추가되었습니다.");
+          setIsShowEditModal(false);
+        } else {
+          await addDoc(collection(initFireStore, "playList"), {
+            nickName: tokenStore.token?.nickName,
+            createAt: Date.now(),
+            link: submitURLInput,
+            title: titleInputRef.current?.value,
+          })
+            .then(() => {
+              addToast("플레이리스트에 추가되었습니다.");
+              setIsShowEditModal(false);
+            })
+            .catch((e) => {
+              alert("플레이리스트 추가에 실패하였습니다.");
+              console.log(e);
+            });
+        }
       } else {
         addToast("플레이리스트 신청이 취소되었습니다.");
       }
@@ -108,16 +128,31 @@ export const useSubmitMusic = () => {
         addToast("이전 URL과 동일하여 수정을 취소합니다.");
         return setIsShowEditModal(false);
       }
-      const isUpdate = await updateFireStoreData(
+
+      if (isSingleMode) {
         // biome-ignore lint/style/noNonNullAssertion: selectedCurrentMusic 존재 시 id 보장
-        selectedCurrentMusic.id!,
-        { link: submitURLInput.trim() },
-        "playList",
-      );
-      if (isUpdate) setIsShowEditModal(false);
-      addToast(
-        isUpdate ? "링크가 수정되었습니다." : "링크 수정에 실패하였습니다.",
-      );
+        const isUpdate = updateLocalPlayList(selectedCurrentMusic.id!, {
+          link: submitURLInput.trim(),
+        });
+        if (isUpdate) {
+          setSubmitMusic(getLocalPlayList());
+          setIsShowEditModal(false);
+        }
+        addToast(
+          isUpdate ? "링크가 수정되었습니다." : "링크 수정에 실패하였습니다.",
+        );
+      } else {
+        const isUpdate = await updateFireStoreData(
+          // biome-ignore lint/style/noNonNullAssertion: selectedCurrentMusic 존재 시 id 보장
+          selectedCurrentMusic.id!,
+          { link: submitURLInput.trim() },
+          "playList",
+        );
+        if (isUpdate) setIsShowEditModal(false);
+        addToast(
+          isUpdate ? "링크가 수정되었습니다." : "링크 수정에 실패하였습니다.",
+        );
+      }
     }
   };
 

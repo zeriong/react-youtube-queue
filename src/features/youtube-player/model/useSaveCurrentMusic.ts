@@ -1,21 +1,28 @@
 import { addDoc, collection } from "firebase/firestore";
 import type { FormEvent, RefObject } from "react";
+import { useModeStore } from "@/entities/mode/model";
 import { usePlayerStore } from "@/entities/player/model";
 import { useToastsStore } from "@/entities/toast/model";
 import { useTokenStore } from "@/entities/user/model";
 import { initFireStore } from "@/shared/config/firebase";
 import { CANCEL_USER_REQ } from "@/shared/constants/message";
 import { getFireStoreData } from "@/shared/lib/firebase";
+import {
+  addLocalSavedList,
+  getLocalSavedList,
+} from "@/shared/lib/single-mode-storage";
 
 /**
  * @description 현재 재생 음악 저장 비즈니스 로직 훅
  * - 어드민: 직접 savedList에 저장
  * - 일반 유저: userRequest로 저장 요청
+ * - Single Mode: localStorage에 저장
  */
 export const useSaveCurrentMusic = (
   isAdmin: boolean,
   titleInputRef: RefObject<HTMLInputElement | null>,
 ) => {
+  const { isSingleMode } = useModeStore();
   const { addToast } = useToastsStore();
   const { token } = useTokenStore();
   const {
@@ -25,6 +32,7 @@ export const useSaveCurrentMusic = (
     isSubmitPlaying,
     currentMusic,
     savedMusic,
+    setSavedMusic,
     isShowSaveCurrentMusicRequestModal,
     setIsShowSaveCurrentMusicRequestModal,
   } = usePlayerStore();
@@ -35,7 +43,7 @@ export const useSaveCurrentMusic = (
       if (!titleInputRef.current?.value)
         return addToast("타이틀을 입력해주세요!");
 
-      // 어드민이 저장하는 경우
+      // 어드민이 저장하는 경우 (싱글모드 포함)
       if (isAdmin) {
         if (!isSubmitPlaying)
           return addToast("기본 음악은 저장할 수 없습니다.");
@@ -50,6 +58,19 @@ export const useSaveCurrentMusic = (
         );
         if (!confirmSubmit)
           return addToast("플레이리스트 저장이 취소되었습니다.");
+      }
+
+      // Single Mode: localStorage로 저장
+      if (isSingleMode) {
+        const localSavedList = getLocalSavedList();
+        if (localSavedList.some((list) => list.link === currentMusic.link)) {
+          return addToast("이미 저장된 플레이리스트입니다.");
+        }
+        currentMusic.title = titleInputRef.current?.value;
+        addLocalSavedList(currentMusic);
+        setSavedMusic(getLocalSavedList());
+        setIsShowSaveCurrentMusicModal(false);
+        return;
       }
 
       // 링크가 이미 존재한다면 추가하지 않음

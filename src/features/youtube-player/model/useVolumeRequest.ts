@@ -1,5 +1,6 @@
 import { addDoc, collection, onSnapshot, query } from "firebase/firestore";
 import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
+import { useModeStore } from "@/entities/mode/model";
 import { usePlayerStore } from "@/entities/player/model";
 import { useToastsStore } from "@/entities/toast/model";
 import { useTokenStore } from "@/entities/user/model";
@@ -15,6 +16,7 @@ import { CANCEL_USER_REQ } from "@/shared/constants/message";
 export const useVolumeRequest = () => {
   const [currentVolume, setCurrentVolume] = useState(100);
   const [submitVolume, setSubmitVolume] = useState(100);
+  const { isSingleMode } = useModeStore();
   const { token } = useTokenStore();
   const { addToast } = useToastsStore();
   const { setIsShowEditVolumeModal, isShowEditVolumeModal } = usePlayerStore();
@@ -76,7 +78,10 @@ export const useVolumeRequest = () => {
   }, [isShowEditVolumeModal, currentVolume]);
 
   // Firestore currentVolume 실시간 구독
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 마운트 시 1회만 실행
   useEffect(() => {
+    if (isSingleMode) return;
+
     const volumeQuery = query(collection(initFireStore, "currentVolume"));
 
     const unsubscribe = onSnapshot(volumeQuery, (snapshot) => {
