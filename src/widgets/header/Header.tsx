@@ -1,43 +1,19 @@
-import { Link, useLocation } from "@tanstack/react-router";
-import { type Ref, useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import type { Ref } from "react";
 import { twMerge } from "tailwind-merge";
 import { useLogout } from "@/features/auth/model";
 import { CONTENT_LIST } from "@/shared/constants/contentList";
 import { CloseIcon, LogoutIcon, MenuIcon } from "@/shared/ui/icons";
+import { useActiveTab, useMenuState } from "./model";
 
 interface HeaderProps {
   ref?: Ref<HTMLElement>;
 }
 
 const Header = ({ ref }: HeaderProps) => {
-  const location = useLocation();
+  const { activeName } = useActiveTab();
+  const { isMenuOpen, menuRef, toggleMenu } = useMenuState();
   const { logout } = useLogout();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  // pathname에서 활성 탭 이름 파생
-  const activeName = (() => {
-    const match = location.pathname.replace(/\/$/, "").match(/^\/main\/(.+)$/);
-    return match ? match[1] : undefined;
-  })();
-
-  // 메뉴 외부 클릭 시 닫기
-  useEffect(() => {
-    if (!isMenuOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMenuOpen]);
-
-  // 경로 변경 시 메뉴 닫기
-  // biome-ignore lint/correctness/useExhaustiveDependencies: 경로 변경 감지 목적
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location.pathname]);
 
   return (
     <header
@@ -83,7 +59,7 @@ const Header = ({ ref }: HeaderProps) => {
           <button
             type="button"
             className="p-1.5 rounded-md hover:bg-gray-200"
-            onClick={() => setIsMenuOpen((prev) => !prev)}
+            onClick={toggleMenu}
             aria-label={isMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
           >
             {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
@@ -116,7 +92,10 @@ const Header = ({ ref }: HeaderProps) => {
 
         <button
           type="button"
-          className="bg-gray-300 px-2 py-1.5 md:px-3 md:py-2 rounded-md text-base md:text-xl hover:scale-110"
+          className={twMerge(
+            "bg-gray-300 px-2 py-1.5 md:px-3 md:py-2",
+            "rounded-md text-base md:text-xl hover:scale-110",
+          )}
           onClick={logout}
         >
           <LogoutIcon />

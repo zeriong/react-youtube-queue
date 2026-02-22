@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/entities/toast/model";
+import { useOpenSubmitMusicModal } from "@/features/youtube-player/model";
 import SubmitListItem from "../lists/SubmitListItem";
 
 interface PlayerAsideProps {
@@ -8,20 +8,10 @@ interface PlayerAsideProps {
 }
 
 const PlayerAside = ({ variant = "default" }: PlayerAsideProps) => {
-  const { submitMusic, submitMaxLength, setIsShowEditModal } = usePlayerStore();
-  const { addToast } = useToastsStore();
+  const { submitMusic, submitMaxLength } = usePlayerStore();
+  const { openSubmitMusicModal } = useOpenSubmitMusicModal();
 
   const isSheet = variant === "sheet";
-
-  // 신청하기 버튼 함수
-  const handleEditMusicModal = () => {
-    if (submitMaxLength <= submitMusic.length) {
-      return addToast(
-        `신청 가능한 플레이리스트는 최대 ${submitMaxLength}개입니다.`,
-      );
-    }
-    setIsShowEditModal(true);
-  };
 
   return (
     <aside
@@ -46,7 +36,7 @@ const PlayerAside = ({ variant = "default" }: PlayerAsideProps) => {
         {/* 신청 버튼 */}
         <button
           type="button"
-          onClick={handleEditMusicModal}
+          onClick={openSubmitMusicModal}
           className={twMerge(
             "rounded-xl p-[3px] border-2 border-gray-500 bg-gray-300",
           )}
@@ -71,7 +61,7 @@ const PlayerAside = ({ variant = "default" }: PlayerAsideProps) => {
           )}
         >
           <p>유튜브 음악 리스트</p>
-          <p>{`${`${submitMusic.length}/${submitMaxLength}`}`}</p>
+          <p>{`${submitMusic.length}/${submitMaxLength}`}</p>
         </div>
         <div
           className={twMerge(
