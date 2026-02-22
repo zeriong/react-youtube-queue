@@ -33,7 +33,7 @@ const PlayerSection = () => {
   return (
     <section
       className={twMerge(
-        "w-full flex flex-col items-center",
+        "w-full h-full flex flex-col items-center",
         "p-4 md:p-10 overflow-hidden",
       )}
     >
@@ -151,7 +151,7 @@ const PlayerSection = () => {
         }
 
         {/* todo: 추가적인 컨텐츠 구상해보기 */}
-        <div className="grow w-full">
+        <div className="grow w-full h-full max-h-[calc(100%-260px)] md:max-h-full">
           <div className="border-4 border-gray-500 w-full h-full rounded-2xl p-4">
             <div className="text-lg md:text-2xl">
               준비중인 기능입니다.
@@ -161,7 +161,7 @@ const PlayerSection = () => {
         </div>
 
         {/* 일반유저 요청 nav (싱글모드에서는 숨김) */}
-        {token?.role === 1 && !isSingleMode && <RequestListSection />}
+        {isAdmin && !isSingleMode && <RequestListSection />}
       </div>
     </section>
   );

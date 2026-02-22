@@ -1,3 +1,4 @@
+export { BottomSheet } from "./bottom-sheet";
 export { default as Cursor } from "./Cursor";
 export * from "./icons";
 export {
