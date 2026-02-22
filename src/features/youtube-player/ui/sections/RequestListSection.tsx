@@ -8,11 +8,12 @@ const RequestListSection = () => {
   return (
     <nav
       className={twMerge(
-        "fixed left-5 -bottom-[400px] w-[250px] h-[400px]",
-        "border-4 border-gray-500 rounded-lg z-[200] bg-white p-3",
-        "flex flex-col gap-3 overflow-auto shadow-2xl",
+        "fixed left-2 md:left-5 -bottom-[350px] md:-bottom-[400px]",
+        "w-[200px] md:w-[250px] h-[350px] md:h-[400px]",
+        "border-4 border-gray-500 rounded-lg z-[200] bg-white p-2 md:p-3",
+        "flex flex-col gap-2 md:gap-3 overflow-auto shadow-2xl",
         "ease-in-out duration-500",
-        userRequestList.length && "bottom-5",
+        userRequestList.length && "bottom-3 md:bottom-5",
       )}
     >
       <div className="flex justify-between">

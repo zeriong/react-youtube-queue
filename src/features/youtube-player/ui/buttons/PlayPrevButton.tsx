@@ -18,7 +18,7 @@ const PlayPrevButton = ({
       type="button"
       className={twMerge(
         "border-2 border-gray-300 play-prev bg-gray-300 text-white",
-        "h-[80px] w-[110px] text-lg font-bold",
+        "h-[50px] w-[70px] md:h-[80px] md:w-[110px] text-sm md:text-lg font-bold",
         classNames,
       )}
       onClick={onClick}

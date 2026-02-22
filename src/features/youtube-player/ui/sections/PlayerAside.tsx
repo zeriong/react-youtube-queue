@@ -20,16 +20,16 @@ const PlayerAside = () => {
   return (
     <aside
       className={twMerge(
-        "flex flex-col relative right-0 pt-4 px-6 pb-6 border-dashed",
+        "flex flex-col relative right-0 pt-3 px-4 pb-4 md:pt-4 md:px-6 md:pb-6 border-dashed",
         "max-pc:border-t-[5px] pc:border-l-[5px] pc:border-gray-700",
         "pc:max-w-[430px] pc:w-full",
       )}
     >
       {/* 헤더 */}
-      <header className="flex flex-col gap-6 mb-4">
+      <header className="flex flex-col gap-4 md:gap-6 mb-4">
         {/* 상단 헤드라인 */}
         <div className="flex gap-4 items-center">
-          <p className="font-bold text-4xl whitespace-nowrap">
+          <p className="font-bold text-2xl md:text-4xl whitespace-nowrap">
             Youtube Queue Player!
           </p>
         </div>
@@ -44,7 +44,7 @@ const PlayerAside = () => {
         >
           <p
             className={twMerge(
-              "font-bold text-white bg-red-500/85 py-3 text-xl",
+              "font-bold text-white bg-red-500/85 py-2 md:py-3 text-base md:text-xl",
               "rounded-[9px] text_line border-2 border-gray-500",
             )}
           >
@@ -57,7 +57,7 @@ const PlayerAside = () => {
       <section className="h-full flex flex-col">
         <div
           className={twMerge(
-            "flex justify-between text-xl font-bold text-white",
+            "flex justify-between text-base md:text-xl font-bold text-white",
             "text_line mb-2 mt-3",
           )}
         >

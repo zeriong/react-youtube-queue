@@ -36,12 +36,18 @@ function Enter() {
   return (
     <div
       className={twMerge(
-        "relative w-full h-full flex flex-col gap-15 justify-center items-center",
+        "relative w-full h-full flex flex-col justify-center items-center",
+        "gap-8 md:gap-15 px-4 md:px-0",
       )}
     >
       <SingleModeButton />
-      <div className="flex flex-col gap-10 text-center mx-auto">
-        <div className="text-7xl font-extrabold flex gap-6">
+      <div className="flex flex-col gap-5 md:gap-10 text-center mx-auto">
+        <div
+          className={twMerge(
+            "font-extrabold flex flex-col md:flex-row gap-2 md:gap-6",
+            "text-3xl md:text-7xl",
+          )}
+        >
           <div>우리의 공간</div>
           <div className="font-black text_line text-amber-400">
             {"< Z-Space />"}
@@ -50,7 +56,7 @@ function Enter() {
       </div>
 
       <ul className="flex flex-col text-[15px] gap-4">
-        <div className="flex gap-4 mx-auto">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-4 mx-auto">
           <li
             className={twMerge(
               "px-4 font-medium py-2 border-[3px] shadow-lg",
@@ -68,7 +74,7 @@ function Enter() {
             # 사다리타기 걸린 사람이 오늘 커피 쏘는거야 ^^
           </li>
         </div>
-        <div className="flex gap-4 mx-auto font-medium">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-4 mx-auto font-medium">
           <li
             className={twMerge(
               "px-4 py-2 border-[3px] shadow-lg",
@@ -95,9 +101,9 @@ function Enter() {
           submitCertificateNumber(nickName, certificate);
         }}
       >
-        <div className="flex gap-5 items-center">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-5 items-stretch md:items-center">
           <label
-            className="w-[160px] text-2xl text-center"
+            className="md:w-[160px] text-lg md:text-2xl text-left md:text-center"
             htmlFor="login-nickname"
           >
             Nick Name
@@ -105,7 +111,7 @@ function Enter() {
           <div className="relative">
             <input
               id="login-nickname"
-              className="py-1 pl-4 pr-12 bg-gray-100 text-lg rounded-lg w-[300px]"
+              className="py-1 pl-4 pr-12 bg-gray-100 text-base md:text-lg rounded-lg w-full md:w-[300px]"
               ref={nickNameInputRef}
               type="text"
               onChange={onChangeNickName}
@@ -117,16 +123,16 @@ function Enter() {
           </div>
         </div>
 
-        <div className="flex gap-5 items-center">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-5 items-stretch md:items-center">
           <label
-            className="w-[160px] text-2xl text-center"
+            className="md:w-[160px] text-lg md:text-2xl text-left md:text-center"
             htmlFor="login-certificate"
           >
             Certificate
           </label>
           <input
             id="login-certificate"
-            className="py-1 px-4 bg-gray-100 text-lg rounded-lg w-[300px]"
+            className="py-1 px-4 bg-gray-100 text-base md:text-lg rounded-lg w-full md:w-[300px]"
             ref={certificateInputRef}
             type="password"
             onChange={(e) => setCertificate(e.target.value)}
@@ -136,7 +142,7 @@ function Enter() {
         </div>
 
         <button
-          className="text-6xl hover:scale-110 hover:bg-gray-100 mt-4"
+          className="text-3xl md:text-6xl hover:scale-110 hover:bg-gray-100 mt-2 md:mt-4"
           type="submit"
         >
           Enter

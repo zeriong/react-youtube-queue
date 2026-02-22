@@ -12,13 +12,10 @@ const YoutubeQueuePlay = () => {
       {/* transform을 설정하여 내부 컨텐츠 fixed 의 기준을 지정 */}
       <div
         className={twMerge(
-          "rotate-0 flex flex-col pc:flex-row w-full min-w-full h-full",
+          "flex flex-col pc:flex-row w-full min-w-full h-full",
           "cursor-default relative overflow-hidden",
         )}
       >
-        {/* 저장된 플레이리스트 버튼 */}
-        <SavedMusicListButton />
-
         {/* 플레이어 컨텐츠 섹션 */}
         <PlayerSection />
 

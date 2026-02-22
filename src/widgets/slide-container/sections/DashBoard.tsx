@@ -8,7 +8,7 @@ const DashBoard = () => {
       <div
         className={twMerge("md:max-w-[1300px] md:w-full md:py-10", "px-4 py-5")}
       >
-        <p className="text-[40px] font-bold mb-3">컨텐츠</p>
+        <p className="text-2xl md:text-[40px] font-bold mb-3">컨텐츠</p>
         <ul
           className={twMerge(
             "md:grid-cols-4 md:py-4",
@@ -21,7 +21,7 @@ const DashBoard = () => {
                 key={item.path}
                 to={`/main/${item.path}`}
                 className={twMerge(
-                  "border-2 relative transition-all ease-in-out border-gray-300 p-4",
+                  "border-2 relative transition-all ease-in-out border-gray-300 p-3 md:p-4",
                   "overflow-hidden rounded-md shadow-lg bottom-0 hover:bottom-2",
                 )}
               >
