@@ -1,3 +1,4 @@
+import { twMerge } from "tailwind-merge";
 import { useUserRequest } from "@/features/youtube-player/model";
 import { USER_REQUEST_LIST } from "@/shared/constants/userRequestList";
 import RequestEditVolumeModal from "../modals/RequestEditVolume.modal";
@@ -7,12 +8,15 @@ const UserRequestSection = () => {
   const { handleRequest } = useUserRequest();
 
   return (
-    <div className="border-2 border-gray-500 rounded-lg p-5">
+    <div className="border-2 border-gray-500 rounded-lg p-3 md:p-5 w-full">
       <div
-        className="flex flex-col justify-center items-center w-[600px] h-[330px]
-          bg-black text-white text-center gap-4 rounded-lg"
+        className={twMerge(
+          "flex flex-col justify-center items-center",
+          "w-full md:w-[600px] h-auto md:h-[330px] py-6 md:py-0",
+          "bg-black text-white text-center gap-3 md:gap-4 rounded-lg",
+        )}
       >
-        <p className="text-2xl">음악 재생은 어드민 유저에게 맡겨주세요!</p>
+        <p className="text-lg md:text-2xl">음악 재생은 어드민 유저에게 맡겨주세요!</p>
         <p>
           일반 인증 유저는 원하는 유튜브 음악을
           <br />

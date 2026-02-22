@@ -11,7 +11,7 @@ const PlayNextButton = ({ onClick, classNames }: PlayNextButtonProps) => {
       type="button"
       className={twMerge(
         "border-2 border-gray-700 play-next bg-black text-white",
-        "h-[80px] w-[110px] text-lg font-bold hover:scale-110",
+        "h-[50px] w-[70px] md:h-[80px] md:w-[110px] text-sm md:text-lg font-bold hover:scale-110",
         classNames,
       )}
       onClick={onClick}

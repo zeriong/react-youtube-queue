@@ -27,7 +27,7 @@ const SaveCurrentMusicButton = () => {
       <button
         type="button"
         onClick={handleOnClick}
-        className="border-4 border-gray-600 px-4 py-2 rounded-lg text-2xl hover:scale-105"
+        className="border-4 border-gray-600 px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-base md:text-2xl hover:scale-105"
       >
         재생중인 음악 저장
       </button>

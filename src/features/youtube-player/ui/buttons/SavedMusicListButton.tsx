@@ -1,3 +1,4 @@
+import { twMerge } from "tailwind-merge";
 import { usePlayerStore } from "@/entities/player/model";
 import { SavedPlayList } from "@/shared/ui/icons";
 
@@ -7,10 +8,13 @@ const SavedMusicListButton = () => {
   return (
     <button
       type="button"
-      className="fixed left-5 top-5 border-4 border-gray-800 rounded-lg"
+      className={twMerge(
+        "absolute  border-gray-800 rounded-lg w-fit h-fit",
+        "border-3 md:border-4 md:left-5 md:top-5 left-3 top-3",
+      )}
       onClick={() => setIsShowSavedListModal(true)}
     >
-      <SavedPlayList width={50} height={50} />
+      <SavedPlayList className="size-[36px] md:size-[50px]" />
     </button>
   );
 };
