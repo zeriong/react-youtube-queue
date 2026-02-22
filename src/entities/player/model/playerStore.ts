@@ -9,14 +9,6 @@ interface PlayerStore {
   // boolean types
   isSubmitPlaying: boolean;
 
-  // modals
-  isShowEditModal: boolean;
-  isShowPreViewModal: boolean;
-  isShowSavedListModal: boolean;
-  isShowSaveCurrentMusicModal: boolean;
-  isShowEditVolumeModal: boolean;
-  isShowSaveCurrentMusicRequestModal: boolean;
-
   // literals
   currentMusic: Music;
   savedMusic: Music[];
@@ -27,12 +19,6 @@ interface PlayerStore {
   // actions
   setIsSubmitPlaying: (payload: boolean) => void;
   setCurrentMusic: (payload: Music) => void;
-  setIsShowEditModal: (payload: boolean) => void;
-  setIsShowPreViewModal: (payload: boolean) => void;
-  setIsShowSavedListModal: (payload: boolean) => void;
-  setIsShowSaveCurrentMusicModal: (payload: boolean) => void;
-  setIsShowEditVolumeModal: (payload: boolean) => void;
-  setIsShowSaveCurrentMusicRequestModal: (payload: boolean) => void;
   setSavedMusic: (payload: Music[]) => void;
   setSubmitMusic: (payload: Music[]) => void;
   setSelectedCurrentMusic: (payload: Music | null) => void;
@@ -42,10 +28,9 @@ interface PlayerStore {
 }
 
 /**
- * @description 저장된 플레이리스트 스토어
- * - setSavedMusic: 매개변수로 전달받은 배열을 savedMusic에 적용
- * - saveMusic: 페이로드로 전달받은 객체를 savedMusic에 추가
- * - deleteMusic: savedMusic state에서 해당 리스트 삭제
+ * @description 플레이어 도메인 데이터 스토어
+ * - 음악 큐, 재생 상태, 저장 목록 등 비즈니스 데이터만 관리
+ * - 모달 UI 상태는 features/youtube-player/model/usePlayerModalStore.ts에서 관리
  */
 export const usePlayerStore = create<PlayerStore>((set) => ({
   // constants
@@ -54,14 +39,6 @@ export const usePlayerStore = create<PlayerStore>((set) => ({
 
   // boolean types
   isSubmitPlaying: true, // 신청곡 재생 여부
-
-  // modals
-  isShowEditModal: false,
-  isShowPreViewModal: false,
-  isShowSavedListModal: false,
-  isShowSaveCurrentMusicModal: false,
-  isShowEditVolumeModal: false,
-  isShowSaveCurrentMusicRequestModal: false,
 
   // literals
   currentMusic: {} as Music, // 실행 음악 info
@@ -75,19 +52,6 @@ export const usePlayerStore = create<PlayerStore>((set) => ({
 
   // 실행될 음악 setState
   setCurrentMusic: (payload) => set(() => ({ currentMusic: payload })),
-
-  // 모달 setStates
-  setIsShowEditModal: (payload) => set(() => ({ isShowEditModal: payload })),
-  setIsShowPreViewModal: (payload) =>
-    set(() => ({ isShowPreViewModal: payload })),
-  setIsShowSavedListModal: (payload) =>
-    set(() => ({ isShowSavedListModal: payload })),
-  setIsShowSaveCurrentMusicModal: (payload) =>
-    set(() => ({ isShowSaveCurrentMusicModal: payload })),
-  setIsShowEditVolumeModal: (payload) =>
-    set(() => ({ isShowEditVolumeModal: payload })),
-  setIsShowSaveCurrentMusicRequestModal: (payload) =>
-    set(() => ({ isShowSaveCurrentMusicRequestModal: payload })),
 
   // 저장된 음악 setState
   setSavedMusic: (payload) => set(() => ({ savedMusic: payload })),

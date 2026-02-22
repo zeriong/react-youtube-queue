@@ -1,7 +1,7 @@
 import { addDoc, collection } from "firebase/firestore";
 import { useModeStore } from "@/entities/mode/model";
 import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/entities/toast/model";
+import { useToastsStore } from "@/shared/hooks/useToastsStore";
 import { useTokenStore } from "@/entities/user/model";
 import { initFireStore } from "@/shared/config/firebase";
 import { CANCEL_USER_REQ } from "@/shared/constants/message";
@@ -14,6 +14,7 @@ import {
   getLocalSavedList,
 } from "@/shared/lib/single-mode-storage";
 import type { Music } from "@/shared/types";
+import { usePlayerModalStore } from "./usePlayerModalStore";
 
 /**
  * @description 플레이리스트 CRUD 비즈니스 로직 훅
@@ -25,8 +26,8 @@ export const usePlaylistCRUD = () => {
   const { isSingleMode } = useModeStore();
   const { addToast } = useToastsStore();
   const { token } = useTokenStore();
-  const { setIsShowEditModal, setSubmitMusic, setSavedMusic } =
-    usePlayerStore();
+  const { setSubmitMusic, setSavedMusic } = usePlayerStore();
+  const { setIsShowEditModal } = usePlayerModalStore();
 
   // 플레이리스트 삭제 함수
   const onDelete = async (item: Music, isSavedList?: boolean) => {

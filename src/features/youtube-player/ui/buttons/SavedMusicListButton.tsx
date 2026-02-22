@@ -1,9 +1,9 @@
 import { twMerge } from "tailwind-merge";
-import { usePlayerStore } from "@/entities/player/model";
+import { usePlayerModalStore } from "@/features/youtube-player/model";
 import { SavedPlayList } from "@/shared/ui/icons";
 
 const SavedMusicListButton = () => {
-  const { setIsShowSavedListModal } = usePlayerStore();
+  const { setIsShowSavedListModal } = usePlayerModalStore();
 
   return (
     <button

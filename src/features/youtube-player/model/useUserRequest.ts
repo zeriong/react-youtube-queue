@@ -1,9 +1,9 @@
 import { addDoc, collection } from "firebase/firestore";
-import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/entities/toast/model";
+import { useToastsStore } from "@/shared/hooks/useToastsStore";
 import { useTokenStore } from "@/entities/user/model";
 import { initFireStore } from "@/shared/config/firebase";
 import { CANCEL_USER_REQ } from "@/shared/constants/message";
+import { usePlayerModalStore } from "./usePlayerModalStore";
 
 /**
  * @description 일반 유저 요청 전송 비즈니스 로직 훅
@@ -13,7 +13,7 @@ export const useUserRequest = () => {
   const { addToast } = useToastsStore();
   const { token } = useTokenStore();
   const { setIsShowEditVolumeModal, setIsShowSaveCurrentMusicRequestModal } =
-    usePlayerStore();
+    usePlayerModalStore();
 
   const handleRequest = (item: { name: string; request: string }) => {
     // 볼륨, 저장은 별도 모달로 처리

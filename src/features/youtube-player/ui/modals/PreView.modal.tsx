@@ -1,15 +1,13 @@
 import { useEffect } from "react";
 import ReactPlayer from "react-player";
 import { usePlayerStore } from "@/entities/player/model";
+import { usePlayerModalStore } from "@/features/youtube-player/model";
 import { ModalStandard } from "@/shared/ui";
 
 const PreViewModal = () => {
-  const {
-    setSelectedCurrentMusic,
-    selectedCurrentMusic,
-    isShowPreViewModal,
-    setIsShowPreViewModal,
-  } = usePlayerStore();
+  const { setSelectedCurrentMusic, selectedCurrentMusic } = usePlayerStore();
+  const { isShowPreViewModal, setIsShowPreViewModal } =
+    usePlayerModalStore();
 
   // 모달이 사라지면 state 초기화
   useEffect(() => {

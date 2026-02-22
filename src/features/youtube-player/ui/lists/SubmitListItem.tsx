@@ -3,6 +3,7 @@ import { useTokenStore } from "@/entities/user/model";
 import {
   canDeleteItem,
   canEditItem,
+  usePlayerModalStore,
   usePlaylistCRUD,
 } from "@/features/youtube-player/model";
 import type { Music } from "@/shared/types";
@@ -16,8 +17,9 @@ interface SubmitListItemProps {
 
 const SubmitListItem = ({ item, idx, isSavedList }: SubmitListItemProps) => {
   const { token } = useTokenStore();
-  const { setSelectedCurrentMusic, setIsShowPreViewModal, setIsShowEditModal } =
-    usePlayerStore();
+  const { setSelectedCurrentMusic } = usePlayerStore();
+  const { setIsShowPreViewModal, setIsShowEditModal } =
+    usePlayerModalStore();
   const { onDelete, submitCurrentSavedMusic } = usePlaylistCRUD();
 
   // 미리보기 모달 함수

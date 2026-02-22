@@ -2,7 +2,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { useModeStore } from "@/entities/mode/model";
 import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/entities/toast/model";
+import { useToastsStore } from "@/shared/hooks/useToastsStore";
 import { useTokenStore } from "@/entities/user/model";
 import { initFireStore } from "@/shared/config/firebase";
 import {
@@ -20,7 +20,7 @@ import {
   setLocalVolume,
 } from "@/shared/lib/single-mode-storage";
 import type { Music } from "@/shared/types";
-import { defaultPlayer } from "@/shared/utils/common";
+import { defaultPlayer } from "./utils";
 
 /**
  * @description 플레이어 핵심 비즈니스 로직 훅

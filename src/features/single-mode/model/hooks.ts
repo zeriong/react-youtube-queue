@@ -1,8 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useModeStore } from "@/entities/mode/model";
-import { useTokenStore } from "@/entities/user/model";
+import { setAuthStorage, useTokenStore } from "@/entities/user/model";
 import { SINGLE_MODE_TOKEN } from "@/shared/constants/single-mode";
-import { setAuthStorage } from "@/shared/utils/auth";
 
 export const useSingleModeEntry = () => {
   const navigate = useNavigate();
