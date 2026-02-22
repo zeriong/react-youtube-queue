@@ -41,7 +41,7 @@ function Enter() {
       )}
     >
       <SingleModeButton />
-      <div className="flex flex-col gap-5 md:gap-10 text-center mx-auto">
+      <div className="flex flex-col gap-5 md:gap-10 text-center mx-auto mt-10 md:mt-0">
         <div
           className={twMerge(
             "font-extrabold flex flex-col md:flex-row gap-2 md:gap-6",
