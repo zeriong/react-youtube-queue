@@ -1,3 +1,4 @@
+export { canDeleteItem, canEditItem } from "./permissions";
 export { usePlayerLogic } from "./usePlayerLogic";
 export { usePlaylistCRUD } from "./usePlaylistCRUD";
 export { usePlaylistSubscription } from "./usePlaylistSubscription";

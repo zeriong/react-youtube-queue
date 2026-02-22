@@ -19,7 +19,7 @@ const PlayerSection = () => {
   const { isSingleMode } = useModeStore();
   const {
     playerRef,
-    token,
+    isAdmin,
     isStart,
     volume,
     prevDisabled,
@@ -39,7 +39,7 @@ const PlayerSection = () => {
       {/* 플레이어 섹션 */}
       {
         // 어드민인 경우 플레이어 렌더링
-        token?.role === 1 ? (
+        isAdmin ? (
           <div className="w-full flex flex-col">
             {isStart ? (
               <>
@@ -147,7 +147,7 @@ const PlayerSection = () => {
       </div>
 
       {/* 일반유저 요청 nav (싱글모드에서는 숨김) */}
-      {token?.role === 1 && !isSingleMode && <RequestListSection />}
+      {isAdmin && !isSingleMode && <RequestListSection />}
     </section>
   );
 };

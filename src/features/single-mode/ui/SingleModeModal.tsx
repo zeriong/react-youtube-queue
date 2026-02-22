@@ -1,5 +1,5 @@
+import { useSingleModeEntry } from "@/features/single-mode/model";
 import { ModalStandard } from "@/shared/ui";
-import { useSingleModeEntry } from "../model";
 
 interface SingleModeModalProps {
   isShow: boolean;

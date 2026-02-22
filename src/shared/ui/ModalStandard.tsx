@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { twMerge } from "tailwind-merge";
 import { useModalStandard } from "@/shared/hooks/useModalStandard";
 import { CloseIcon } from "./icons";
 import { MODAL_BASE_Z_INDEX } from "./ModalProvider";
@@ -85,7 +86,10 @@ export const ModalStandard = ({
       >
         <section
           ref={sectionRef}
-          className={`p-3 max-w-[500px] max-h-[500px] w-full pointer-events-auto ${isFit ? "h-fit" : "h-full"}`}
+          className={twMerge(
+            "p-3 max-w-[500px] max-h-[500px] w-full pointer-events-auto",
+            isFit ? "h-fit" : "h-full",
+          )}
           style={sectionStyle}
           onPointerDown={handleModalPointerDown}
         >

@@ -8,7 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import Toasts from "@/entities/toast/ui/Toasts";
+import { Toasts } from "@/entities/toast/ui";
 import { useRootAuth } from "@/features/auth/model";
 import appCss from "@/shared/assets/styles/global.css?url";
 

@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { useTokenStore, useUserStore } from "@/entities/user/model";
 import { useCertificateLogin, useNickNameInput } from "@/features/auth/model";
-import { SingleModeButton } from "@/features/single-mode/ui/SingleModeButton";
+import { SingleModeButton } from "@/features/single-mode/ui";
 import PrivateRoute from "@/shared/ui/PrivateRoute";
 
 export const Route = createFileRoute("/")({

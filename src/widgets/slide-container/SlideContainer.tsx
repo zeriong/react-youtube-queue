@@ -1,6 +1,6 @@
 import { useLocation } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
-import YoutubeQueuePlay from "@/features/youtube-player/ui/YoutubeQueuePlay";
+import { YoutubeQueuePlay } from "@/features/youtube-player/ui";
 import { CONTENT_LIST } from "@/shared/constants/contentList";
 import Prepare from "@/shared/ui/Prepare";
 import DashBoard from "./sections/DashBoard";

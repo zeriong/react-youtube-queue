@@ -281,9 +281,11 @@ export const usePlayerLogic = () => {
     };
   }, []);
 
+  const isAdmin = token?.role === 1;
+
   return {
     playerRef,
-    token,
+    isAdmin,
     isStart,
     volume,
     prevDisabled,
