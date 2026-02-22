@@ -20,7 +20,9 @@ const config = defineConfig({
       projects: ["./tsconfig.json"],
     }),
     tailwindcss() as PluginOption,
-    tanstackStart(),
+    tanstackStart({
+      spa: { enabled: true },
+    }),
     viteReact(),
   ],
 });
