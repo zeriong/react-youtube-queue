@@ -1,5 +1,5 @@
 import { twMerge } from "tailwind-merge";
-import { useToastSequencer } from "@/entities/toast/model";
+import { useToastSequencer } from "@/shared/hooks/useToastSequencer";
 import { AlarmIcon } from "@/shared/ui/icons";
 
 const Toasts = () => {

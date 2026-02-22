@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useToastsStore } from "./toastStore";
+import { useToastsStore } from "./useToastsStore";
 
 /**
- * @description 토스트 표시 순서를 관리하는 비즈니스 로직 훅
+ * @description 토스트 표시 순서를 관리하는 훅
  * - 토스트 큐에서 하나씩 꺼내어 표시/숨김 애니메이션 제어
  * - 재귀 타이머로 다음 토스트 자동 진행
  */

@@ -10,3 +10,4 @@ export {
 export { ModalStandard } from "./ModalStandard";
 export { default as NotFound } from "./NotFound";
 export { default as Prepare } from "./Prepare";
+export { Toasts } from "./toast";
