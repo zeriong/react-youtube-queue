@@ -9,7 +9,7 @@ import {
 import ReactPlayer from "react-player";
 import { useModeStore } from "@/entities/mode/model";
 import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/entities/toast/model";
+import { useToastsStore } from "@/shared/hooks/useToastsStore";
 import { useTokenStore } from "@/entities/user/model";
 import { initFireStore } from "@/shared/config/firebase";
 import { YOUTUBE_BASE_URL } from "@/shared/constants";
@@ -19,6 +19,7 @@ import {
   getLocalPlayList,
   updateLocalPlayList,
 } from "@/shared/lib/single-mode-storage";
+import { usePlayerModalStore } from "./usePlayerModalStore";
 
 /**
  * @description 음악 신청/수정 비즈니스 로직 훅
@@ -44,10 +45,9 @@ export const useSubmitMusic = () => {
     submitMusic,
     selectedCurrentMusic,
     setSelectedCurrentMusic,
-    isShowEditModal,
-    setIsShowEditModal,
     setSubmitMusic,
   } = usePlayerStore();
+  const { isShowEditModal, setIsShowEditModal } = usePlayerModalStore();
 
   // submit URL onChange (디바운스)
   const handleSubmitOnChange = ({

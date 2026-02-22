@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { MODAL_BASE_Z_INDEX, useModalContext } from "@/shared/ui/ModalProvider";
+import { MODAL_BASE_Z_INDEX, useModalContext } from "@/shared/ui";
 
 interface UseModalStandardParams {
   isShow: boolean;

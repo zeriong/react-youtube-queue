@@ -88,7 +88,7 @@ export const ModalStandard = ({
           ref={sectionRef}
           className={twMerge(
             "p-2 md:p-3 max-w-[calc(100vw-2rem)] md:max-w-[500px]",
-            "max-h-[calc(100vh-4rem)] md:max-h-[500px] w-full pointer-events-auto",
+            "max-h-[70vh] md:max-h-[500px] w-full pointer-events-auto",
             isFit ? "h-fit" : "h-full",
           )}
           style={sectionStyle}
@@ -112,7 +112,7 @@ export const ModalStandard = ({
         ref={sectionRef}
         className={twMerge(
           "p-2 md:p-3 max-w-[calc(100vw-2rem)] md:max-w-[500px]",
-          "max-h-[calc(100vh-4rem)] md:max-h-[500px] w-full",
+          "max-h-[70vh] md:max-h-[500px] w-full",
           isFit ? "h-fit" : "h-full",
         )}
         style={sectionStyle}

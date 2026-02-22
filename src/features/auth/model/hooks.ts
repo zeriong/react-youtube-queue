@@ -3,12 +3,16 @@ import { add, format } from "date-fns";
 import { addDoc, collection } from "firebase/firestore";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { useModeStore } from "@/entities/mode/model";
-import { useToastsStore } from "@/entities/toast/model";
-import { useTokenStore, useUserStore } from "@/entities/user/model";
+import { useToastsStore } from "@/shared/hooks/useToastsStore";
+import {
+  getAuthStorage,
+  setAuthStorage,
+  useTokenStore,
+  useUserStore,
+} from "@/entities/user/model";
 import { firebaseAuth, initFireStore } from "@/shared/config/firebase";
 import usePreventSpam from "@/shared/hooks/usePreventSpam";
 import { deleteUser, getFireStoreData } from "@/shared/lib/firebase";
-import { getAuthStorage, setAuthStorage } from "@/shared/utils/auth";
 import { validateByteFormLength } from "@/shared/utils/validation";
 
 /**
@@ -165,6 +169,7 @@ export const useLogout = () => {
 
   const logout = async () => {
     if (isSingleMode) {
+      if (!window.confirm("싱글모드를 종료하시겠습니까?")) return;
       setIsSingleMode(false);
       deleteToken();
       addToast("싱글모드가 종료되었습니다.");
@@ -172,6 +177,7 @@ export const useLogout = () => {
       return;
     }
 
+    if (!window.confirm("로그아웃 하시겠습니까?")) return;
     await firebaseAuth.signOut();
     await deleteUser(token?.id);
     deleteToken();

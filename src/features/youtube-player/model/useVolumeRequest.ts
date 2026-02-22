@@ -1,11 +1,11 @@
 import { addDoc, collection, onSnapshot, query } from "firebase/firestore";
 import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import { useModeStore } from "@/entities/mode/model";
-import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/entities/toast/model";
+import { useToastsStore } from "@/shared/hooks/useToastsStore";
 import { useTokenStore } from "@/entities/user/model";
 import { initFireStore } from "@/shared/config/firebase";
 import { CANCEL_USER_REQ } from "@/shared/constants/message";
+import { usePlayerModalStore } from "./usePlayerModalStore";
 
 /**
  * @description 볼륨 변경 요청 비즈니스 로직 훅
@@ -19,7 +19,8 @@ export const useVolumeRequest = () => {
   const { isSingleMode } = useModeStore();
   const { token } = useTokenStore();
   const { addToast } = useToastsStore();
-  const { setIsShowEditVolumeModal, isShowEditVolumeModal } = usePlayerStore();
+  const { isShowEditVolumeModal, setIsShowEditVolumeModal } =
+    usePlayerModalStore();
 
   // 직접입력 시 onChange 함수
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {

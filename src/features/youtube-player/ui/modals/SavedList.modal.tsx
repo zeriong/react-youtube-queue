@@ -1,15 +1,15 @@
 import { usePlayerStore } from "@/entities/player/model";
-import { useSavedMusicSubscription } from "@/features/youtube-player/model";
+import {
+  usePlayerModalStore,
+  useSavedMusicSubscription,
+} from "@/features/youtube-player/model";
 import { ModalStandard } from "@/shared/ui";
 import SubmitListItem from "../lists/SubmitListItem";
 
 const SavedListModal = () => {
-  const {
-    saveMusicMaxLength,
-    savedMusic,
-    isShowSavedListModal,
-    setIsShowSavedListModal,
-  } = usePlayerStore();
+  const { saveMusicMaxLength, savedMusic } = usePlayerStore();
+  const { isShowSavedListModal, setIsShowSavedListModal } =
+    usePlayerModalStore();
 
   useSavedMusicSubscription();
 

@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import SavedMusicListButton from "./buttons/SavedMusicListButton";
+import { BottomSheet } from "@/shared/ui";
 import EditModal from "./modals/Edit.modal";
 import PreViewModal from "./modals/PreView.modal";
 import SavedListModal from "./modals/SavedList.modal";
@@ -7,33 +8,41 @@ import PlayerAside from "./sections/PlayerAside";
 import PlayerSection from "./sections/PlayerSection";
 
 const YoutubeQueuePlay = () => {
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
   return (
-    <>
-      {/* transform을 설정하여 내부 컨텐츠 fixed 의 기준을 지정 */}
-      <div
-        className={twMerge(
-          "flex flex-col pc:flex-row w-full min-w-full h-full",
-          "cursor-default relative overflow-hidden",
-        )}
+    <div
+      className={twMerge(
+        "flex flex-col pc:flex-row w-full min-w-full h-full",
+        "cursor-default relative overflow-hidden",
+      )}
+    >
+      {/* 플레이어 컨텐츠 섹션 */}
+      <PlayerSection />
+
+      {/* 어사이드 바 (Desktop: 기존 aside, Mobile: 자체 hidden) */}
+      <PlayerAside />
+
+      {/* 어사이드 바 (Mobile: BottomSheet) */}
+      <BottomSheet
+        isOpen={isSheetOpen}
+        onOpen={() => setIsSheetOpen(true)}
+        onClose={() => setIsSheetOpen(false)}
       >
-        {/* 플레이어 컨텐츠 섹션 */}
-        <PlayerSection />
+        <PlayerAside variant="sheet" />
+      </BottomSheet>
 
-        {/* 어사이드 바 */}
-        <PlayerAside />
+      {/* -------------- Modals ------------- */}
 
-        {/* -------------- Modals ------------- */}
+      {/* 신청/수정 모달 */}
+      <EditModal />
 
-        {/* 신청/수정 모달 */}
-        <EditModal />
+      {/* 저장된 리스트 모달 */}
+      <SavedListModal />
 
-        {/* 저장된 리스트 모달 */}
-        <SavedListModal />
-
-        {/* 미리보기 모달 */}
-        <PreViewModal />
-      </div>
-    </>
+      {/* 미리보기 모달 */}
+      <PreViewModal />
+    </div>
   );
 };
 

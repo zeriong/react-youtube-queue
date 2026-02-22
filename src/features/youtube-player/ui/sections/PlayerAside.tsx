@@ -1,28 +1,27 @@
 import { twMerge } from "tailwind-merge";
 import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/entities/toast/model";
+import { useOpenSubmitMusicModal } from "@/features/youtube-player/model";
 import SubmitListItem from "../lists/SubmitListItem";
 
-const PlayerAside = () => {
-  const { submitMusic, submitMaxLength, setIsShowEditModal } = usePlayerStore();
-  const { addToast } = useToastsStore();
+interface PlayerAsideProps {
+  variant?: "default" | "sheet";
+}
 
-  // 신청하기 버튼 함수
-  const handleEditMusicModal = () => {
-    if (submitMaxLength <= submitMusic.length) {
-      return addToast(
-        `신청 가능한 플레이리스트는 최대 ${submitMaxLength}개입니다.`,
-      );
-    }
-    setIsShowEditModal(true);
-  };
+const PlayerAside = ({ variant = "default" }: PlayerAsideProps) => {
+  const { submitMusic, submitMaxLength } = usePlayerStore();
+  const { openSubmitMusicModal } = useOpenSubmitMusicModal();
+
+  const isSheet = variant === "sheet";
 
   return (
     <aside
       className={twMerge(
-        "flex flex-col relative right-0 pt-3 px-4 pb-4 md:pt-4 md:px-6 md:pb-6 border-dashed",
-        "max-pc:border-t-[5px] pc:border-l-[5px] pc:border-gray-700",
-        "pc:max-w-[430px] pc:w-full",
+        "flex flex-col relative right-0 pt-3 px-4 pb-4 md:pt-4 md:px-6 md:pb-6",
+        !isSheet && "border-dashed",
+        !isSheet &&
+          "max-pc:border-t-[5px] pc:border-l-[5px] pc:border-gray-700",
+        !isSheet && "pc:max-w-[430px] pc:w-full max-pc:hidden",
+        isSheet && "h-full",
       )}
     >
       {/* 헤더 */}
@@ -37,7 +36,7 @@ const PlayerAside = () => {
         {/* 신청 버튼 */}
         <button
           type="button"
-          onClick={handleEditMusicModal}
+          onClick={openSubmitMusicModal}
           className={twMerge(
             "rounded-xl p-[3px] border-2 border-gray-500 bg-gray-300",
           )}
@@ -54,7 +53,7 @@ const PlayerAside = () => {
       </header>
 
       {/* 신청 리스트 */}
-      <section className="h-full flex flex-col">
+      <section className="h-full flex flex-col min-h-0">
         <div
           className={twMerge(
             "flex justify-between text-base md:text-xl font-bold text-white",
@@ -62,12 +61,12 @@ const PlayerAside = () => {
           )}
         >
           <p>유튜브 음악 리스트</p>
-          <p>{`${`${submitMusic.length}/${submitMaxLength}`}`}</p>
+          <p>{`${submitMusic.length}/${submitMaxLength}`}</p>
         </div>
         <div
           className={twMerge(
-            "p-2 bg-gray-100 rounded-md grow overflow-hidden h-full",
-            "min-h-[200px]",
+            "p-2 bg-gray-100 rounded-md grow overflow-hidden",
+            isSheet ? "min-h-0" : "h-full min-h-[200px]",
           )}
         >
           <ul
