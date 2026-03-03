@@ -82,14 +82,14 @@ const RequestEditVolumeModal = () => {
             </div>
 
             <div className="flex items-center gap-2 px-2">
-              <p>직접 입력: </p>
+              <p className="whitespace-nowrap">직접 입력: </p>
               <input
                 className="bg-gray-100 rounded-md px-4 py-1 text-lg w-full"
                 type="text"
                 value={submitVolume}
                 onChange={handleOnChange}
               />
-              <button type="submit" className="border-2 rounded-md p-1">
+              <button type="submit" className="border-2 rounded-md p-1 whitespace-nowrap">
                 요청하기
               </button>
             </div>
