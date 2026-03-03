@@ -56,7 +56,7 @@ const SaveCurrentMusicModal = ({ isAdmin }: SaveCurrentMusicModalProps) => {
             </button>
           </div>
           <button
-            className="border px-2 rounded-md bg-gray-300 font-bold hover:scale-105"
+            className="border px-2 rounded-md bg-gray-300 font-bold hover:scale-105 whitespace-nowrap"
             type="submit"
           >
             저장하기
