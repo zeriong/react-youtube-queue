@@ -2,6 +2,7 @@ import { addDoc, collection } from "firebase/firestore";
 import {
   type ChangeEvent,
   type FormEvent,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -9,10 +10,10 @@ import {
 import ReactPlayer from "react-player";
 import { useModeStore } from "@/entities/mode/model";
 import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/shared/hooks/useToastsStore";
 import { useTokenStore } from "@/entities/user/model";
 import { initFireStore } from "@/shared/config/firebase";
 import { YOUTUBE_BASE_URL } from "@/shared/constants";
+import { useToastsStore } from "@/shared/hooks/useToastsStore";
 import { updateFireStoreData } from "@/shared/lib/firebase";
 import {
   addLocalPlayList,
@@ -54,19 +55,21 @@ export const useSubmitMusic = () => {
     target: { value },
   }: ChangeEvent<HTMLInputElement>) => {
     setCanSubmit(false);
-    if (value.trim() === "") return;
+
+    // 기존 디바운스 타이머 정리
     if (timeoutRef.current !== null) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
-
-      timeoutRef.current = setTimeout(() => {
-        setSubmitURLInput(value);
-      }, 1000);
-    } else {
-      timeoutRef.current = setTimeout(() => {
-        setSubmitURLInput(value);
-      }, 1000);
     }
+
+    if (value.trim() === "") {
+      setSubmitURLInput("");
+      return;
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setSubmitURLInput(value);
+    }, 1000);
   };
 
   // 신청곡 url submit
@@ -161,7 +164,12 @@ export const useSubmitMusic = () => {
     if (submitInputRef.current) {
       submitInputRef.current.value = "";
       setSubmitURLInput("");
+      setCanSubmit(false);
       submitInputRef.current.focus();
+    }
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
   };
 
@@ -172,6 +180,11 @@ export const useSubmitMusic = () => {
       titleInputRef.current.focus();
     }
   };
+
+  // ReactPlayer 이벤트 핸들러 (onLoadedMetadata / onError)
+  // - canSubmit 상태는 오직 플레이어 이벤트로만 제어
+  const handlePlayerReady = useCallback(() => setCanSubmit(true), []);
+  const handlePlayerError = useCallback(() => setCanSubmit(false), []);
 
   // 모달 창이 닫히면 state 초기화
   useEffect(() => {
@@ -209,7 +222,8 @@ export const useSubmitMusic = () => {
     setIsShowEditModal,
     handleSubmitOnChange,
     submitURL,
-    setCanSubmit,
+    handlePlayerReady,
+    handlePlayerError,
     clearSubmitInput,
     clearTitleInput,
   };

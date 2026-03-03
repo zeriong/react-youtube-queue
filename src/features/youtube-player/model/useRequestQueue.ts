@@ -2,8 +2,8 @@ import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { useModeStore } from "@/entities/mode/model";
 import { usePlayerStore } from "@/entities/player/model";
-import { useToastsStore } from "@/shared/hooks/useToastsStore";
 import { initFireStore } from "@/shared/config/firebase";
+import { useToastsStore } from "@/shared/hooks/useToastsStore";
 import { deleteFireStore } from "@/shared/lib/firebase";
 
 interface UserRequest {
@@ -24,6 +24,7 @@ interface UserRequest {
 export const useRequestQueue = () => {
   const countTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const countRef = useRef(5);
+  const userRequestListRef = useRef<UserRequest[]>([]);
   const [count, setCount] = useState(5);
   const [userRequestList, setUserRequestList] = useState<UserRequest[]>([]);
   const { isSingleMode } = useModeStore();
@@ -61,11 +62,14 @@ export const useRequestQueue = () => {
     else addToast("해당 요청 삭제에 실패하였습니다.");
   };
 
-  // 카운트 + 자동 승인 함수
+  // 카운트 + 자동 승인 함수 (ref 기반으로 최신 리스트 참조)
   const secCounting = () => {
     if (countRef.current <= 0) {
       countTimeoutRef.current = setTimeout(() => {
-        accessReq(userRequestList[0]);
+        const currentList = userRequestListRef.current;
+        if (currentList.length > 0) {
+          accessReq(currentList[0]);
+        }
         resetCount();
       }, 1000);
       return;
@@ -78,7 +82,7 @@ export const useRequestQueue = () => {
   };
 
   // 요청이 있는 경우 카운팅
-  // biome-ignore lint/correctness/useExhaustiveDependencies: 원본과 동일하게 userRequestList.length 변경 시에만 실행
+  // biome-ignore lint/correctness/useExhaustiveDependencies: userRequestList.length 변경 시에만 실행
   useEffect(() => {
     if (isSingleMode) return;
     if (userRequestList.length > 0) secCounting();
@@ -100,6 +104,7 @@ export const useRequestQueue = () => {
         ...doc.data(),
       })) as UserRequest[];
       resetCount();
+      userRequestListRef.current = contentArr;
       setUserRequestList(contentArr);
     });
 
