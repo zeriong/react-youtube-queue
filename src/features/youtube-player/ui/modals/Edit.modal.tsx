@@ -15,7 +15,8 @@ const EditModal = () => {
     setIsShowEditModal,
     handleSubmitOnChange,
     submitURL,
-    setCanSubmit,
+    handlePlayerReady,
+    handlePlayerError,
     clearSubmitInput,
     clearTitleInput,
   } = useSubmitMusic();
@@ -89,6 +90,9 @@ const EditModal = () => {
                         ? "수정할 제목을 입력해주세요."
                         : "신청곡의 제목을 입력해주세요."
                     }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") e.preventDefault();
+                    }}
                   />
                   <button
                     type="button"
@@ -111,6 +115,7 @@ const EditModal = () => {
                   : "bg-gray-100 text-gray-400",
               )}
               type="submit"
+              disabled={!canSubmit}
             >
               {selectedCurrentMusic ? "수정하기" : "신청하기"}
             </button>
@@ -124,7 +129,8 @@ const EditModal = () => {
                   height="100%"
                   controls={true}
                   src={submitURLInput}
-                  onReady={() => setCanSubmit(true)}
+                  onLoadedMetadata={handlePlayerReady}
+                  onError={handlePlayerError}
                 />
               ) : (
                 <div
