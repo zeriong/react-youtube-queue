@@ -8,7 +8,11 @@ const UserRequestSection = () => {
   const { handleRequest } = useUserRequest();
 
   return (
-    <div className="border-2 border-gray-500 rounded-lg p-3 md:p-5 w-fit">
+    <div
+      className={twMerge(
+        "border-2 border-gray-500 rounded-lg p-3 md:p-5 w-fit",
+      )}
+    >
       <div
         className={twMerge(
           "flex flex-col justify-center items-center",
